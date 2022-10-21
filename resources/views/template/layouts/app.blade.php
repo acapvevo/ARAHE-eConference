@@ -1,12 +1,12 @@
-@extends('template.layouts.base')
+@extends('layouts.base')
 
 @section('root')
 <body id="page-top">
     <div id="wrapper">
-        @include('template.components.sidebar')
+        @include('template.layouts.sidebar')
         <div class="d-flex flex-column" id="content-wrapper">
             <div id="content">
-                @include('template.components.navbar')
+                @include('template.layouts.navbar')
                 <div class="container-fluid">
                     @yield('content')
                 </div>
