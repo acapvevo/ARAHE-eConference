@@ -5,7 +5,9 @@ use App\Http\Controllers\SuperAdmin\DashboardController;
 use App\Http\Controllers\SuperAdmin\User\PictureController;
 use App\Http\Controllers\SuperAdmin\User\ProfileController;
 use App\Http\Controllers\SuperAdmin\User\SettingController;
+use App\Http\Controllers\SuperAdmin\System\HealthController;
 use App\Http\Controllers\SuperAdmin\User\PasswordController;
+use App\Http\Controllers\SuperAdmin\System\ManualController;
 use App\Http\Controllers\SuperAdmin\Auth\NewPasswordController;
 use App\Http\Controllers\SuperAdmin\Auth\VerifyEmailController;
 use Spatie\Health\Http\Controllers\HealthCheckResultsController;
@@ -62,43 +64,51 @@ Route::prefix('super_admin')->name('super_admin.')->group(function () {
         Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
             ->name('logout');
 
-        Route::middleware('verified:super_admin.verification.notice')->group(function () {
-            Route::get('/', [DashboardController::class, 'index']);
+        // Route::middleware('verified:super_admin.verification.notice')->group(function () {
+        Route::get('/', [DashboardController::class, 'index']);
 
-            Route::get('/dashboard', [DashboardController::class, 'index'])
-                ->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])
+            ->name('dashboard');
 
-            //Pengurusan Pengguna Routes
-            Route::prefix('user')->name('user.')->group(function () {
+        //Pengurusan Pengguna Routes
+        Route::prefix('user')->name('user.')->group(function () {
 
-                //Profile
-                Route::prefix('profile')->name('profile.')->group(function () {
-                    Route::get('', [ProfileController::class, 'view'])->name('view');
-                    Route::patch('', [ProfileController::class, 'update'])->name('update');
-                });
-
-                //Setting
-                Route::prefix('setting')->name('setting.')->group(function () {
-                    Route::get('', [SettingController::class, 'view'])->name('view');
-                });
-
-                //Password
-                Route::prefix('password')->name('password.')->group(function () {
-                    Route::patch('', [PasswordController::class, 'update'])->name('update');
-                });
-
-                //Profile Picture
-                Route::prefix('picture')->name('picture.')->group(function () {
-                    Route::patch('', [PictureController::class, 'update'])->name('update');
-                    Route::get('', [PictureController::class, 'show'])->name('show');
-                });
+            //Profile
+            Route::prefix('profile')->name('profile.')->group(function () {
+                Route::get('', [ProfileController::class, 'view'])->name('view');
+                Route::patch('', [ProfileController::class, 'update'])->name('update');
             });
 
+            //Setting
             Route::prefix('setting')->name('setting.')->group(function () {
-                Route::prefix('health')->name('health.')->group(function () {
-                    Route::get('', HealthCheckResultsController::class)->name('main');
-                });
+                Route::get('', [SettingController::class, 'view'])->name('view');
+            });
+
+            //Password
+            Route::prefix('password')->name('password.')->group(function () {
+                Route::patch('', [PasswordController::class, 'update'])->name('update');
+            });
+
+            //Profile Picture
+            Route::prefix('picture')->name('picture.')->group(function () {
+                Route::patch('', [PictureController::class, 'update'])->name('update');
+                Route::get('', [PictureController::class, 'show'])->name('show');
             });
         });
+
+        Route::prefix('system')->name('system.')->group(function () {
+            Route::prefix('manual')->name('manual.')->group(function () {
+                Route::get('', [ManualController::class, 'list'])->name('list');
+                Route::get('/{id}', [ManualController::class, 'view'])->name('view');
+                Route::get('/stream/{id}', [ManualController::class, 'stream'])->name('stream');
+                Route::patch('/{id}', [ManualController::class, 'update'])->name('update');
+            });
+
+            Route::prefix('health')->name('health.')->group(function () {
+                Route::get('/main', HealthCheckResultsController::class)->name('main');
+                Route::get('', [HealthController::class, 'view'])->name('view');
+            });
+        });
+        // });
     });
 });

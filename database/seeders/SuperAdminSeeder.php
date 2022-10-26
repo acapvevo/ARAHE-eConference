@@ -20,7 +20,7 @@ class SuperAdminSeeder extends Seeder
             'name' => env('APP_NAME'),
             'username' => 'admin',
             'password' => Hash::make('admin'),
-            'email' => 'hamlala@gmail.com'
+            'email' => 'hamlala8@gmail.com'
         ]);
     }
 }

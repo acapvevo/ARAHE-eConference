@@ -1,75 +1,105 @@
 <?php
 
-use App\Http\Controllers\Reviewer\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Reviewer\Auth\ConfirmablePasswordController;
-use App\Http\Controllers\Reviewer\Auth\EmailVerificationNotificationController;
-use App\Http\Controllers\Reviewer\Auth\EmailVerificationPromptController;
-use App\Http\Controllers\Reviewer\Auth\NewPasswordController;
-use App\Http\Controllers\Reviewer\Auth\PasswordResetLinkController;
-use App\Http\Controllers\Reviewer\Auth\RegisteredUserController;
-use App\Http\Controllers\Reviewer\Auth\VerifyEmailController;
-use App\Http\Controllers\Reviewer\DashboardController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Reviewer\DashboardController;
+use App\Http\Controllers\Reviewer\User\PictureController;
+use App\Http\Controllers\Reviewer\User\ProfileController;
+use App\Http\Controllers\Reviewer\User\SettingController;
+use App\Http\Controllers\Reviewer\System\ManualController;
+use App\Http\Controllers\Reviewer\User\PasswordController;
+use App\Http\Controllers\Reviewer\Auth\NewPasswordController;
+use App\Http\Controllers\Reviewer\Auth\VerifyEmailController;
+use App\Http\Controllers\Reviewer\Auth\RegisteredUserController;
+use App\Http\Controllers\Reviewer\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Reviewer\Auth\ConfirmablePasswordController;
+use App\Http\Controllers\Reviewer\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Reviewer\Auth\EmailVerificationPromptController;
+use App\Http\Controllers\Reviewer\Auth\EmailVerificationNotificationController;
 
 Route::prefix('reviewer')->name('reviewer.')->group(function () {
 
-    Route::get('/', [DashboardController::class, 'index'])
-        ->middleware('auth:reviewer');
+    Route::middleware('guest:reviewer')->group(function () {
+        // Route::get('/register', [RegisteredUserController::class, 'create'])
+        //     ->name('register');
 
-    Route::get('/dashboard', [DashboardController::class, 'index'])
-        ->middleware('auth:reviewer')
-        ->name('dashboard');
+        // Route::post('/register', [RegisteredUserController::class, 'store']);
 
-    Route::get('/register', [RegisteredUserController::class, 'create'])
-        ->middleware('guest:reviewer')
-        ->name('register');
+        Route::get('/login', [AuthenticatedSessionController::class, 'create'])
+            ->name('login');
 
-    Route::post('/register', [RegisteredUserController::class, 'store'])
-        ->middleware('guest:reviewer');
+        Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 
-    Route::get('/login', [AuthenticatedSessionController::class, 'create'])
-        ->middleware('guest:reviewer')
-        ->name('login');
+        Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])
+            ->name('password.request');
 
-    Route::post('/login', [AuthenticatedSessionController::class, 'store'])
-        ->middleware('guest:reviewer');
+        Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
+            ->name('password.email');
 
-    Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])
-        ->middleware('guest:reviewer')
-        ->name('password.request');
+        Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])
+            ->name('password.reset');
 
-    Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
-        ->middleware('guest:reviewer')
-        ->name('password.email');
+        Route::post('/reset-password', [NewPasswordController::class, 'store'])
+            ->name('password.update');
+    });
 
-    Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])
-        ->middleware('guest:reviewer')
-        ->name('password.reset');
+    Route::middleware('auth:reviewer')->group(function () {
+        Route::get('/verify-email', [EmailVerificationPromptController::class, '__invoke'])
+            ->name('verification.notice');
 
-    Route::post('/reset-password', [NewPasswordController::class, 'store'])
-        ->middleware('guest:reviewer')
-        ->name('password.update');
+        Route::get('/verify-email/{id}/{hash}', [VerifyEmailController::class, '__invoke'])
+            ->middleware(['signed', 'throttle:6,1'])
+            ->name('verification.verify');
 
-    Route::get('/verify-email', [EmailVerificationPromptController::class, '__invoke'])
-        ->middleware('auth:reviewer')
-        ->name('verification.notice');
+        Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
+            ->middleware(['throttle:6,1'])
+            ->name('verification.send');
 
-    Route::get('/verify-email/{id}/{hash}', [VerifyEmailController::class, '__invoke'])
-        ->middleware(['auth:reviewer', 'signed', 'throttle:6,1'])
-        ->name('verification.verify');
+        Route::get('/confirm-password', [ConfirmablePasswordController::class, 'show'])
+            ->name('password.confirm');
 
-    Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
-        ->middleware(['auth:reviewer', 'throttle:6,1'])
-        ->name('verification.send');
+        Route::post('/confirm-password', [ConfirmablePasswordController::class, 'store']);
 
-    Route::get('/confirm-password', [ConfirmablePasswordController::class, 'show'])
-        ->middleware('auth:reviewer')
-        ->name('password.confirm');
+        Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+            ->name('logout');
 
-    Route::post('/confirm-password', [ConfirmablePasswordController::class, 'store'])
-        ->middleware('auth:reviewer');
+        // Route::middleware('verified:reviewer.verification.notice')->group(function () {
+        Route::get('/', [DashboardController::class, 'index']);
 
-    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
-        ->middleware('auth:reviewer')
-        ->name('logout');
+        Route::get('/dashboard', [DashboardController::class, 'index'])
+            ->name('dashboard');
+
+        //Pengurusan Pengguna Routes
+        Route::prefix('user')->name('user.')->group(function () {
+
+            //Profile
+            Route::prefix('profile')->name('profile.')->group(function () {
+                Route::get('', [ProfileController::class, 'view'])->name('view');
+                Route::patch('', [ProfileController::class, 'update'])->name('update');
+            });
+
+            //Setting
+            Route::prefix('setting')->name('setting.')->group(function () {
+                Route::get('', [SettingController::class, 'view'])->name('view');
+            });
+
+            //Password
+            Route::prefix('password')->name('password.')->group(function () {
+                Route::patch('', [PasswordController::class, 'update'])->name('update');
+            });
+
+            //Profile Picture
+            Route::prefix('picture')->name('picture.')->group(function () {
+                Route::patch('', [PictureController::class, 'update'])->name('update');
+                Route::get('', [PictureController::class, 'show'])->name('show');
+            });
+        });
+
+        Route::prefix('system')->name('system.')->group(function () {
+            Route::prefix('manual')->name('manual.')->group(function () {
+                Route::get('', [ManualController::class, 'view'])->name('view');
+                Route::get('/stream/{id}', [ManualController::class, 'stream'])->name('stream');
+            });
+        });
+        // });
+    });
 });

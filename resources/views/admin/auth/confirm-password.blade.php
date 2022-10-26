@@ -1,36 +1,47 @@
-<x-admin-guest-layout>
-    <x-auth-card>
-        <x-slot name="logo">
-            <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-            </a>
-        </x-slot>
+@extends('layouts.guest')
 
-        <div class="mb-4 text-sm text-gray-600">
-            {{ __('This is a secure area of the application. Please confirm your password before continuing.') }}
+@section('content')
+    <div class="row">
+        <div class="col-lg-6 d-none d-lg-flex">
+            <div class="flex-grow-1 bg-login-image" style="background-image: url(&quot;assets/img/dogs/image3.jpeg&quot;);">
+            </div>
         </div>
+        <div class="col-lg-6">
+            <div class="p-5">
+                <div class="text-center">
+                    <h4 class="text-dark mb-4">Password Confimation</h4>
+                </div>
 
-        <!-- Validation Errors -->
-        <x-auth-validation-errors class="mb-4" :errors="$errors" />
+                <div class="card text-bg-primary mb-3">
+                    <div class="card-body">
+                        <p class="card-text">This is a secure area of the application. Please confirm your password before continuing.</p>
+                    </div>
+                </div>
 
-        <form method="POST" action="{{ route('admin.password.confirm') }}">
-            @csrf
+                @if (session()->has('status'))
+                    <div class="card text-bg-success mb-3">
+                        <div class="card-body">
+                            <p class="card-text">{{session('status')}}</p>
+                        </div>
+                    </div>
+                @endif
 
-            <!-- Password -->
-            <div>
-                <x-label for="password" :value="__('Password')" />
+                <form class="user" method="POST" action="{{ route('admin.password.confirm') }}">
+                    @csrf
+                    <div class="mb-3">
+                        <input class="form-control form-control-user {{ $errors->has('password') ? 'is-invalid' : '' }}"
+                            type="password" id="password" placeholder="Enter Password" name="password" required
+                            autocomplete="current-password">
+                        @error('password')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
 
-                <x-input id="password" class="block mt-1 w-full"
-                                type="password"
-                                name="password"
-                                required autocomplete="current-password" />
+                    <button class="btn btn-primary d-block btn-user w-100" type="submit">Confirm</button>
+                </form>
             </div>
-
-            <div class="flex justify-end mt-4">
-                <x-button>
-                    {{ __('Confirm') }}
-                </x-button>
-            </div>
-        </form>
-    </x-auth-card>
-</x-admin-guest-layout>
+        </div>
+    </div>
+@endsection

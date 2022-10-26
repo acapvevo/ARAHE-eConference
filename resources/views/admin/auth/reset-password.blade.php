@@ -1,48 +1,72 @@
-<x-admin-guest-layout>
-    <x-auth-card>
-        <x-slot name="logo">
-            <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-            </a>
-        </x-slot>
+@extends('layouts.guest')
 
-        <!-- Validation Errors -->
-        <x-auth-validation-errors class="mb-4" :errors="$errors" />
+@section('content')
+    <div class="p-5">
+        <div class="text-center">
+            <h4 class="text-dark mb-4">Reset Password</h4>
+        </div>
 
-        <form method="POST" action="{{ route('admin.password.update') }}">
+        <div class="card text-bg-primary mb-3">
+            <div class="card-body">
+                <p class="card-text">Forgot your password? No problem. Just let us know your email address and we will email
+                    you a password reset link that will allow you to choose a new one.</p>
+            </div>
+        </div>
+
+        @if (session()->has('status'))
+            <div class="card text-bg-success mb-3">
+                <div class="card-body">
+                    <p class="card-text">{{ session('status') }}</p>
+                </div>
+            </div>
+        @endif
+
+        <form class="user" method="POST" action="{{ route('admin.password.update') }}">
             @csrf
 
             <!-- Password Reset Token -->
             <input type="hidden" name="token" value="{{ $request->route('token') }}">
+            @error('token')
+                <div class="invalid-feedback">
+                    {{ $message }}
+                </div>
+            @enderror
 
-            <!-- Email Address -->
-            <div>
-                <x-label for="email" :value="__('Email')" />
-
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email', $request->email)" required autofocus />
+            <div class="mb-3">
+                <input class="form-control form-control-user {{ $errors->has('email') ? 'is-invalid' : '' }}" type="email"
+                    id="email" placeholder="Enter Email Address" name="email" required
+                    value="{{ old('email', $request->email) }}">
+                @error('email')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
             </div>
 
-            <!-- Password -->
-            <div class="mt-4">
-                <x-label for="password" :value="__('Password')" />
-
-                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required />
+            <div class="mb-3">
+                <input class="form-control form-control-user {{ $errors->has('password') ? 'is-invalid' : '' }}"
+                    type="password" id="password" placeholder="Enter Password" name="password" required
+                    autocomplete="current-password">
+                @error('password')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
             </div>
 
-            <!-- Confirm Password -->
-            <div class="mt-4">
-                <x-label for="password_confirmation" :value="__('Confirm Password')" />
-
-                <x-input id="password_confirmation" class="block mt-1 w-full"
-                                    type="password"
-                                    name="password_confirmation" required />
+            <div class="mb-3">
+                <input
+                    class="form-control form-control-user {{ $errors->has('password_confirmation') ? 'is-invalid' : '' }}"
+                    type="password" id="password_confirmation" placeholder="Enter Password Again"
+                    name="password_confirmation" required autocomplete="password_confirmation">
+                @error('password_confirmation')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
             </div>
 
-            <div class="flex items-center justify-end mt-4">
-                <x-button>
-                    {{ __('Reset Password') }}
-                </x-button>
-            </div>
+            <button class="btn btn-primary d-block btn-user w-100" type="submit">Email Password Reset Link</button>
         </form>
-    </x-auth-card>
-</x-admin-guest-layout>
+    </div>
+@endsection

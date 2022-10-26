@@ -1,5 +1,5 @@
 
-@extends('template.layouts.guest')
+@extends('layouts.guest')
 
 @section('content')
     <div class="row">

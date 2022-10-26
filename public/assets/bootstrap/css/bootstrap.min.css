@@ -64,8 +64,8 @@
     --bs-body-font-size: 1rem;
     --bs-body-font-weight: 400;
     --bs-body-line-height: 1.5;
-    --bs-body-color: #858796;
-    --bs-body-bg: #fff;
+    --bs-body-color: var(--bs-black);
+    --bs-body-bg: var(--bs-gray);
     --bs-border-width: 1px;
     --bs-border-style: solid;
     --bs-border-color: #e3e6f0;
@@ -4080,7 +4080,7 @@ fieldset:disabled .btn {
     --bs-card-cap-bg: #f8f9fc;
     --bs-card-cap-color: ;
     --bs-card-height: ;
-    --bs-card-color: ;
+    --bs-card-color: rgb(0, 0, 0);
     --bs-card-bg: #fff;
     --bs-card-img-overlay-padding: 1rem;
     --bs-card-group-margin: 0.75rem;
@@ -10509,7 +10509,7 @@ a:focus {
     display: flex;
 }
 #wrapper #content-wrapper {
-    background-color: #f8f9fc;
+    background-color: var(--bs-gray-200);
     width: 100%;
     overflow-x: hidden;
 }

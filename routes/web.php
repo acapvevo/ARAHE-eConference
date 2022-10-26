@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('template.login');
+    return view('welcome');
 });
 
 require __DIR__.'/super_admin.php';

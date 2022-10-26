@@ -19,7 +19,9 @@ class Admin extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'image',
         'password',
+        'login_at',
     ];
 
     /**
@@ -28,6 +30,8 @@ class Admin extends Authenticatable
      * @var array
      */
     protected $hidden = [
+        'id',
+        'username',
         'password',
         'remember_token',
     ];
@@ -39,5 +43,11 @@ class Admin extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'login_at' => 'datetime',
     ];
+
+    public function getImageURL()
+    {
+        return isset($this->image) ? route('admin.user.picture.show') : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png';
+    }
 }

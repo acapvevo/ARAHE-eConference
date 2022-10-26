@@ -1,13 +1,10 @@
-
-
-
 <div class='notifications'></div>
 
 
 <script>
     @if (Session::has('success'))
         Swal.fire(
-            'Berjaya',
+            'Success',
             "{{ session('success') }}",
             'success'
         );
@@ -19,7 +16,7 @@
 
     @if (Session::has('error'))
         Swal.fire(
-            'Masalah',
+            'Error',
             "{{ session('error') }}",
             'error'
         );
@@ -30,8 +27,8 @@
 
     @if ($errors->any())
         Swal.fire(
-            'Masalah Timbul Semasa Validasi Input',
-            "Sila Periksa Input Semula",
+            'Form Validation Error',
+            "Please Check Your Input",
             'error'
         );
     @endif
@@ -39,7 +36,7 @@
 
     @if (Session::has('info'))
         Swal.fire(
-            'Maklumat',
+            'Information',
             "{{ session('info') }}",
             'info'
         );
@@ -51,7 +48,7 @@
 
     @if (Session::has('warning'))
         Swal.fire(
-            'Amaran',
+            'Warning',
             "{{ session('warning') }}",
             'warning'
         );
@@ -59,4 +56,12 @@
             Session::forget('warning');
         @endphp
     @endif
+
+    function confirmation(question, then){
+        Swal.fire(
+            'Confirmation',
+            question,
+            'question'
+        ).then(then);
+    }
 </script>

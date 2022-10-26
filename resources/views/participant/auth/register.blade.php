@@ -1,59 +1,69 @@
-<x-participant-guest-layout>
-    <x-auth-card>
-        <x-slot name="logo">
-            <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-            </a>
-        </x-slot>
+@extends('layouts.guest')
 
-        <!-- Validation Errors -->
-        <x-auth-validation-errors class="mb-4" :errors="$errors" />
-
-        <form method="POST" action="{{ route('participant.register') }}">
-            @csrf
-
-            <!-- Name -->
-            <div>
-                <x-label for="name" :value="__('Name')" />
-
-                <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus />
+@section('content')
+    <div class="row">
+        <div class="col-lg-6 d-none d-lg-flex">
+            <div class="flex-grow-1 bg-login-image" style="background-image: url(&quot;assets/img/dogs/image3.jpeg&quot;);">
             </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="p-5">
+                <div class="text-center">
+                    <h4 class="text-dark mb-4">Register</h4>
+                </div>
 
-            <!-- Email Address -->
-            <div class="mt-4">
-                <x-label for="email" :value="__('Email')" />
+                <form class="user" method="POST" action="{{ route('participant.register') }}">
+                    @csrf
 
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required />
+                    <div class="mb-3">
+                        <input class="form-control form-control-user {{ $errors->has('name') ? 'is-invalid' : '' }}"
+                            type="text" placeholder="Enter Name" name="name" id="name"
+                            value="{{ old('name') }}" required autofocus>
+                        @error('name')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <input class="form-control form-control-user {{ $errors->has('email') ? 'is-invalid' : '' }}"
+                            type="email" placeholder="Enter Email Address" name="email" id="email"
+                            value="{{ old('email') }}" required>
+                        @error('email')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <input class="form-control form-control-user {{ $errors->has('password') ? 'is-invalid' : '' }}"
+                            type="password" id="password" placeholder="Enter Password" name="password" required
+                            autocomplete="current-password">
+                        @error('password')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <input class="form-control form-control-user {{ $errors->has('password_confirmation') ? 'is-invalid' : '' }}"
+                            type="password" id="password_confirmation" placeholder="Enter Password Again For Confirmation" name="password_confirmation" required>
+                        @error('password_confirmation')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+
+                    <button class="btn btn-primary d-block btn-user w-100" type="submit">Register</button>
+                </form>
+                <div class="text-center pt-3">
+                    <a class="small" href="{{ route('participant.login') }}">Already Have An Account? Login Here</a>
+                </div>
             </div>
-
-            <!-- Password -->
-            <div class="mt-4">
-                <x-label for="password" :value="__('Password')" />
-
-                <x-input id="password" class="block mt-1 w-full"
-                                type="password"
-                                name="password"
-                                required autocomplete="new-password" />
-            </div>
-
-            <!-- Confirm Password -->
-            <div class="mt-4">
-                <x-label for="password_confirmation" :value="__('Confirm Password')" />
-
-                <x-input id="password_confirmation" class="block mt-1 w-full"
-                                type="password"
-                                name="password_confirmation" required />
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('participant.login') }}">
-                    {{ __('Already registered?') }}
-                </a>
-
-                <x-button class="ml-4">
-                    {{ __('Register') }}
-                </x-button>
-            </div>
-        </form>
-    </x-auth-card>
-</x-participant-guest-layout>
+        </div>
+    </div>
+@endsection
