@@ -49,4 +49,12 @@ class Participant extends Authenticatable
     {
         return isset($this->image) ? route('participant.user.picture.show') : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png';
     }
+
+    /**
+     * Get the Submissions for the Participant.
+     */
+    public function submissions()
+    {
+        return $this->hasMany(Submission::class);
+    }
 }
