@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             ReviewerSeeder::class,
             ParticipantSeeder::class,
             ManualSeeder::class,
+            StatusSeeder::class,
         ]);
     }
 }

@@ -7,6 +7,10 @@
                     href="{{ route('participant.dashboard') }}"><i
                         class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
             <li class="nav-item"><a
+                    class="nav-link {{ request()->routeIs('participant.competition.submission.*') ? 'active' : '' }}"
+                    href="{{ route('participant.competition.submission.list') }}"><i
+                        class="fas fa-file-upload"></i><span>Submission</span></a></li>
+            <li class="nav-item"><a
                     class="nav-link {{ request()->routeIs('participant.system.manual.*') ? 'active' : '' }}"
                     href="{{ route('participant.system.manual.view') }}"><i class="fas fa-book-reader"></i><span>User
                         Manual</span></a></li>

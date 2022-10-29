@@ -15,6 +15,7 @@ use App\Http\Controllers\Participant\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Participant\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Participant\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Participant\Auth\EmailVerificationNotificationController;
+use App\Http\Controllers\Participant\Competition\SubmissionController;
 
 Route::prefix('participant')->name('participant.')->group(function () {
 
@@ -91,6 +92,15 @@ Route::prefix('participant')->name('participant.')->group(function () {
             Route::prefix('picture')->name('picture.')->group(function () {
                 Route::patch('', [PictureController::class, 'update'])->name('update');
                 Route::get('', [PictureController::class, 'show'])->name('show');
+            });
+        });
+
+        Route::prefix('competition')->name('competition.')->group(function () {
+            Route::prefix('submission')->name('submission.')->group(function () {
+                Route::get('', [SubmissionController::class, 'list'])->name('list');
+                Route::get('/{form_id}', [SubmissionController::class, 'view'])->name('view');
+                Route::patch('/{id}', [SubmissionController::class, 'update'])->name('update');
+                Route::get('/download/{filename}', [SubmissionController::class, 'download'])->name('download');
             });
         });
 

@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Submission extends Model
 {
@@ -19,7 +20,11 @@ class Submission extends Model
         'participant_id',
         'abstract',
         'title',
-        'file',
+        'paper',
+        'status_code',
+        'reviewer_id',
+        'mark',
+        'comment',
     ];
 
     /**
@@ -30,7 +35,7 @@ class Submission extends Model
     protected $casts = [];
 
     /**
-     * Get the Form that owns the Submission.
+     * Get the Form that use by the Submission.
      */
     public function form()
     {
@@ -46,10 +51,33 @@ class Submission extends Model
     }
 
     /**
-     * Get the Marks for the Form.
+     * Get the Reviwer that review the Submission.
+     */
+    public function reviewer()
+    {
+        return $this->belongsTo(Reviewer::class);
+    }
+
+    /**
+     * Get the Marks for the Submission.
      */
     public function marks()
     {
         return $this->hasMany(Mark::class);
+    }
+
+    public function getStatusLabel()
+    {
+        return DB::table('status')->where('code', $this->status_code)->first()->label;
+    }
+
+    public function getStatusDescription()
+    {
+        return DB::table('status')->where('code', $this->status_code)->first()->description;
+    }
+
+    public function checkEnableSubmit()
+    {
+        return $this->status_code === 'N' || $this->status_code === 'C';
     }
 }
