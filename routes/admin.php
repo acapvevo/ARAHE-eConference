@@ -9,12 +9,14 @@ use App\Http\Controllers\Admin\System\ManualController;
 use App\Http\Controllers\Admin\User\PasswordController;
 use App\Http\Controllers\Admin\Auth\NewPasswordController;
 use App\Http\Controllers\Admin\Auth\VerifyEmailController;
+use App\Http\Controllers\Admin\Competition\FormController;
 use App\Http\Controllers\Admin\Auth\RegisteredUserController;
 use App\Http\Controllers\Admin\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Admin\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Admin\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Admin\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Admin\Auth\EmailVerificationNotificationController;
+use App\Http\Controllers\Admin\Competition\RubricController;
 
 Route::prefix('admin')->name('admin.')->group(function () {
 
@@ -91,6 +93,22 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::prefix('picture')->name('picture.')->group(function () {
                 Route::patch('', [PictureController::class, 'update'])->name('update');
                 Route::get('', [PictureController::class, 'show'])->name('show');
+            });
+        });
+
+        Route::prefix('competition')->name('competition.')->group(function () {
+            Route::prefix('form')->name('form.')->group(function () {
+                Route::get('', [FormController::class, 'list'])->name('list');
+                Route::post('', [FormController::class, 'create'])->name('create');
+                Route::get('/{id}', [FormController::class, 'view'])->name('view');
+                Route::patch('/{id}', [FormController::class, 'update'])->name('update');
+            });
+
+            Route::prefix('rubric')->name('rubric.')->group(function () {
+                Route::post('', [RubricController::class, 'create'])->name('create');
+                Route::get('/{id}', [RubricController::class, 'view'])->name('view');
+                Route::patch('/{id}', [RubricController::class, 'update'])->name('update');
+                Route::delete('', [RubricController::class, 'delete'])->name('delete');
             });
         });
 

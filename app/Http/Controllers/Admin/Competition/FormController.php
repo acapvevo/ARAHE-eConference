@@ -16,16 +16,20 @@ class FormController extends Controller
     {
         $forms = Form::all();
 
+        $yearsAvailable = $this->getYearsAvailable();
+
         return view('admin.competition.form.list')->with([
             'forms' => $forms,
+            'yearsAvailable' => $yearsAvailable,
         ]);
     }
 
     public function create(Request $request)
     {
         $request->validate([
-            'sesi.year' => 'required|date_format:Y|unique:App\Models\Session,year',
-            'copyOldForm' => ''
+            'session.year' => 'required|date_format:Y|unique:App\Models\Session,year',
+            'copyOldForm' => 'nullable|integer|starts_with:1',
+            'oldForm' => 'required_if:copyOldForm,1|integer|exists:App\Models\Form,id'
         ]);
 
         $form = Form::create();
@@ -33,10 +37,10 @@ class FormController extends Controller
         $this->createSession($form->id, $request->session);
 
         if($request->has('copyOldForm')){
-            $this->copyForm($request->form_id, $form);
+            $this->copyForm($request->oldForm, $form);
         }
 
-        return redirect(route('admin.competition.form.list'))->with('success', 'Form for ' . $form->session->year . 'was created successfully');
+        return redirect(route('admin.competition.form.list'))->with('success', 'Form for ' . $form->session->year . ' was created successfully');
     }
 
     public function view($id)

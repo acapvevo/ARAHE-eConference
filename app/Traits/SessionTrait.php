@@ -10,8 +10,8 @@ trait SessionTrait
     {
         return Session::create([
             'form_id' => $form_id,
-            'year' => $session['year'],
-            'year' => [
+            'year' => (int) $session['year'],
+            'submission' => [
                 'start' => null,
                 'end' => null
             ],
@@ -20,5 +20,10 @@ trait SessionTrait
                 'end' => null
             ],
         ]);
+    }
+
+    public function checkSession($year)
+    {
+        return Session::where('year', $year)->exists();
     }
 }
