@@ -51,7 +51,7 @@ class Submission extends Model
     }
 
     /**
-     * Get the Reviwer that review the Submission.
+     * Get the Reviewer that review the Submission.
      */
     public function reviewer()
     {

@@ -38,4 +38,12 @@ class Form extends Model
     {
         return $this->hasMany(Rubric::class);
     }
+
+    /**
+     * Get the Submissions that use the Form.
+     */
+    public function submissions()
+    {
+        return $this->hasMany(Submission::class);
+    }
 }

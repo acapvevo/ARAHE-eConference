@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-    <h3 class="text-dark mb-1">Form Detail and Rubrics</h3>
+    <h3 class="text-dark mb-1">Form Management - Form Detail and Rubrics</h3>
 
     <div class="card">
         <h4 class="card-header text-center">Form Detail</h4>

@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Models\Submission;
 use Illuminate\Support\Facades\Storage;
 
 trait SubmissionTrait
@@ -26,5 +27,10 @@ trait SubmissionTrait
                 return Storage::response($filePath);
                 break;
         }
+    }
+
+    public function getSubmission($id)
+    {
+        return Submission::find($id);
     }
 }

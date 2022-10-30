@@ -4,7 +4,7 @@
 @endsection
 
 @section('content')
-    <h3 class="text-dark mb-1">Submission Detail</h3>
+    <h3 class="text-dark mb-1">Submission - Submission Detail</h3>
 
     <div class="card">
         <div class="card-body">

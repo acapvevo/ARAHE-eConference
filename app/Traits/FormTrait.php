@@ -40,6 +40,13 @@ trait FormTrait
         return $yearsAvailable;
     }
 
+    public function getCurrentForm()
+    {
+        $session = $this->getCurrentSession();
+
+        return $session->form;
+    }
+
     public function getForms()
     {
         return Form::all();

@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-    <h3 class="text-dark mb-1">Form List</h3>
+    <h3 class="text-dark mb-1">Form Management - Form List</h3>
 
     <div class="card">
         <div class="card-body">
