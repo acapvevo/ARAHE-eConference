@@ -80,4 +80,9 @@ class Submission extends Model
     {
         return $this->status_code === 'N' || $this->status_code === 'C';
     }
+
+    public function calculatePercentage()
+    {
+        return ($this->mark / $this->form->calculateFullMark()) * 100;
+    }
 }

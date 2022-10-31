@@ -10,10 +10,16 @@
         <div class="card-body">
             <div class="row pt-3 pb-3">
                 <div class="col">
+                    @if ($submission->status_code === 'WP')
+                    <button type="button" class="btn btn-success float-end">
+                        Proceed to Payment
+                    </button>
+                    @else
                     <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal"
                         data-bs-target="#updateSubmissionModal" {{ $submission->checkEnableSubmit() ? '' : 'disabled' }}>
                         Update Submission
                     </button>
+                    @endif
                 </div>
             </div>
             <div class="table-responsive">
@@ -54,7 +60,7 @@
                         </tr>
                         <tr>
                             <th class='w-25'>Comment</th>
-                            <td>{{ $submission->comment ?? '' }}</td>
+                            <td>{!! $submission->comment ?? '' !!}</td>
                         </tr>
                     </tbody>
                 </table>

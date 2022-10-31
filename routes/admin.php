@@ -118,7 +118,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::get('', [AssignController::class, 'list'])->name('list');
                 Route::get('/{id}', [AssignController::class, 'view'])->name('view');
                 Route::patch('/{id}', [AssignController::class, 'update'])->name('update');
-                Route::patch('reject/{id}', [AssignController::class, 'reject'])->name('reject');
                 Route::get('/download/{filename}', [AssignController::class, 'download'])->name('download');
             });
         });

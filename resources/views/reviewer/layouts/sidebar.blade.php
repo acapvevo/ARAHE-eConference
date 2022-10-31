@@ -7,6 +7,10 @@
                     href="{{ route('reviewer.dashboard') }}"><i
                         class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
             <li class="nav-item"><a
+                    class="nav-link {{ request()->routeIs('reviewer.submission.review.*') ? 'active' : '' }}"
+                    href="{{ route('reviewer.submission.review.list') }}"><i
+                        class="fas fa-file-signature"></i><span>Give Review</span></a></li>
+            <li class="nav-item"><a
                     class="nav-link {{ request()->routeIs('reviewer.system.manual.*') ? 'active' : '' }}"
                     href="{{ route('reviewer.system.manual.view') }}"><i class="fas fa-book-reader"></i><span>User
                         Manual</span></a></li>

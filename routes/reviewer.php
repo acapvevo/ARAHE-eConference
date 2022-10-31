@@ -15,6 +15,7 @@ use App\Http\Controllers\Reviewer\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Reviewer\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Reviewer\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Reviewer\Auth\EmailVerificationNotificationController;
+use App\Http\Controllers\Reviewer\Submission\ReviewController;
 
 Route::prefix('reviewer')->name('reviewer.')->group(function () {
 
@@ -91,6 +92,15 @@ Route::prefix('reviewer')->name('reviewer.')->group(function () {
             Route::prefix('picture')->name('picture.')->group(function () {
                 Route::patch('', [PictureController::class, 'update'])->name('update');
                 Route::get('', [PictureController::class, 'show'])->name('show');
+            });
+        });
+
+        Route::prefix('submission')->name('submission.')->group(function () {
+            Route::prefix('review')->name('review.')->group(function () {
+                Route::get('', [ReviewController::class, 'list'])->name('list');
+                Route::get('/{id}', [ReviewController::class, 'view'])->name('view');
+                Route::patch('/{id}', [ReviewController::class, 'update'])->name('update');
+                Route::get('/download/{filename}', [ReviewController::class, 'download'])->name('download');
             });
         });
 

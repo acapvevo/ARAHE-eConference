@@ -46,4 +46,15 @@ class Form extends Model
     {
         return $this->hasMany(Submission::class);
     }
+
+    public function calculateFullMark()
+    {
+        $fullMark = 0;
+
+        foreach ($this->rubrics as $rubric) {
+            $fullMark += $rubric->mark;
+        }
+
+        return $fullMark;
+    }
 }
