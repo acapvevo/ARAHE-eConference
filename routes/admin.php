@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\Competition\RubricController;
 use App\Http\Controllers\Admin\Member\ParticipantController;
 use App\Http\Controllers\Admin\Member\ReviewerController;
 use App\Http\Controllers\Admin\Submission\AssignController;
+use App\Http\Controllers\Admin\Submission\PaperController;
 
 Route::prefix('admin')->name('admin.')->group(function () {
 
@@ -136,6 +137,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::get('/{id}', [AssignController::class, 'view'])->name('view');
                 Route::patch('/{id}', [AssignController::class, 'update'])->name('update');
                 Route::get('/download/{filename}', [AssignController::class, 'download'])->name('download');
+            });
+
+            Route::prefix('paper')->name('paper.')->group(function () {
+                Route::get('', [PaperController::class, 'list'])->name('list');
+                Route::get('/{id}', [PaperController::class, 'view'])->name('view');
+                Route::post('/download', [PaperController::class, 'download'])->name('download');
             });
         });
 
