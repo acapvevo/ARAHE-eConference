@@ -23,10 +23,6 @@
                             <th class='w-25'>Description</th>
                             <td>{{ $rubric->description }}</td>
                         </tr>
-                        <tr>
-                            <th class='w-25'>Mark</th>
-                            <td>{{ $rubric->mark }}</td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -46,25 +42,12 @@
                         @method('PATCH')
 
                         <div class="row">
-                            <div class="col-md-8">
+                            <div class="col-12">
                                 <div class="mb-3">
                                     <label for="description" class="form-label">Description</label>
-                                    <textarea class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" rows="1" name="description"
+                                    <textarea class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" rows="3" name="description"
                                         id="description" placeholder="Enter Rubric Description" required>{{ old('description', $rubric->description) }}</textarea>
                                     @error('description')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="mark" class="form-label">Mark</label>
-                                    <input type="number"
-                                        class="form-control {{ $errors->has('mark') ? 'is-invalid' : '' }}" name="mark"
-                                        id="mark" placeholder="Enter Rubric Mark" value="{{ old('mark', $rubric->mark) }}">
-                                    @error('mark')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>

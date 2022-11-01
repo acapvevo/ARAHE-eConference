@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Form extends Model
 {
@@ -49,12 +50,7 @@ class Form extends Model
 
     public function calculateFullMark()
     {
-        $fullMark = 0;
-
-        foreach ($this->rubrics as $rubric) {
-            $fullMark += $rubric->mark;
-        }
-
-        return $fullMark;
+        $countScale = DB::table('scale')->get()->count();
+        return $this->rubrics->count() * $countScale;
     }
 }

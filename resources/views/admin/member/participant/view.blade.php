@@ -113,8 +113,8 @@
                                                 <td>{{ $submission->reviewer->participant->name ?? '' }}</td>
                                             </tr>
                                             <tr>
-                                                <th class='w-25'>Mark</th>
-                                                <td>{{ $submission->mark === 0 ? '' : $submission->mark }}</td>
+                                                <th class='w-25'>Total Mark</th>
+                                                <td>{{ $submission->calculatePercentage() === 0 ? '' : number_format($submission->calculatePercentage(), 2) . '%' }}</td>
                                             </tr>
                                             <tr>
                                                 <th class='w-25'>Comment</th>

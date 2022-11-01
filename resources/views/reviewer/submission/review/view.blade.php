@@ -97,28 +97,35 @@
                                     <div class="pt-3"></div>
                                 @enderror
 
+                                @php
+                                    $scales = DB::table('scale')->get();
+                                @endphp
+
                                 <div class="table-responsive">
                                     <table class="table table-bordered">
                                         <thead class="table-primary">
                                             <tr>
-                                                <th>Description</th>
-                                                <th style="width: 10%">Mark</th>
-                                                <th style="width: 5%">Pass?</th>
+                                                <th style="width: 60%" class="align-middle text-center" rowspan="2">Description</th>
+                                                <th class="align-middle text-center" colspan="5">Scale</th>
+                                            </tr>
+                                            <tr>
+                                                @foreach ($scales as $scale)
+                                                    <th class="text-center">{{ $scale->mark }}</th>
+                                                @endforeach
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach ($submission->form->rubrics as $rubric)
                                                 <tr>
                                                     <td>{{ $rubric->description }}</td>
-                                                    <td class="text-center">{{ $rubric->mark }}</td>
-                                                    <td>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                id="rubrics{{ $rubric->id }}"
-                                                                name="rubrics[{{ $rubric->id }}]"
-                                                                @checked(old('rubrics.' . $rubric->id, false))>
-                                                        </div>
-                                                    </td>
+                                                    @foreach ($scales as $scale)
+                                                        <td>
+                                                            <div class="form-check text-center">
+                                                                <input class="form-check-input float-none" type="radio" value="{{$scale->code}}"
+                                                                    name="rubrics[{{$rubric->id}}]" id="rubrics{{$rubric->id}}_{{$scale->id}}" @checked(old('rubrics.' . $rubric->id) == $scale->code)>
+                                                            </div>
+                                                        </td>
+                                                    @endforeach
                                                 </tr>
                                             @endforeach
                                         </tbody>

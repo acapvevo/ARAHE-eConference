@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('paper')->nullable();
             $table->string('status_code');
             $table->integer('reviewer_id')->nullable();
-            $table->integer('mark')->default(0);
+            $table->integer('totalMark')->default(0);
             $table->text('comment')->nullable();
             $table->string('correction')->nullable();
 

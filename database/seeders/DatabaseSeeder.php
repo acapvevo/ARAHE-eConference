@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             ReviewerSeeder::class,
             ManualSeeder::class,
             StatusSeeder::class,
+            ScaleSeeder::class,
         ]);
     }
 }

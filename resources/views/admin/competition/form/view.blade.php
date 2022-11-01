@@ -58,7 +58,6 @@
                                     <div class="checkbox"><input type="checkbox" id="checkAll"></div>
                                 </th>
                                 <th>Rubric</th>
-                                <th style="width:10%">Mark</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -69,7 +68,6 @@
                                                 value="{{ $rubric->id }}"></div>
                                     </td>
                                     <td><a href="{{ route('admin.competition.rubric.view', ['id' => $rubric->id]) }}">{{ $rubric->description }}</a></td>
-                                    <td class="text-center">{{ $rubric->mark }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -93,25 +91,12 @@
                         <input type="hidden" name="form_id" value="{{ $form->id }}">
 
                         <div class="row">
-                            <div class="col-md-8">
+                            <div class="col-12">
                                 <div class="mb-3">
                                     <label for="description" class="form-label">Description</label>
-                                    <textarea class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" rows="1" name="description"
+                                    <textarea class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" rows="3" name="description"
                                         id="description" placeholder="Enter Rubric Description" required>{{ old('description') }}</textarea>
                                     @error('description')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="mark" class="form-label">Mark</label>
-                                    <input type="number"
-                                        class="form-control {{ $errors->has('mark') ? 'is-invalid' : '' }}" name="mark"
-                                        id="mark" placeholder="Enter Rubric Mark" value="{{ old('mark') }}">
-                                    @error('mark')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>

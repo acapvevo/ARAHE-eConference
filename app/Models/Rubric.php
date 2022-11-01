@@ -17,7 +17,6 @@ class Rubric extends Model
     protected $fillable = [
         'form_id',
         'description',
-        'mark',
     ];
 
     /**

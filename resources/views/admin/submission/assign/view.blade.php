@@ -93,7 +93,7 @@
                                                         id="reviewer_id{{ $index }}" value="{{ $reviewer->id }}">
                                                 </div>
                                             </td>
-                                            <td>{{ $reviewer->name }}</td>
+                                            <td>{{ $reviewer->participant->name }}</td>
                                             <td class="text-center">{{ $reviewer->submissions->count() }}</td>
                                         </tr>
                                     @endforeach

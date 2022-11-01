@@ -18,7 +18,7 @@ return new class extends Migration
 
             $table->integer('rubric_id');
             $table->integer('submission_id');
-            $table->boolean('pass');
+            $table->string('scale_code');
 
             $table->timestamps();
         });

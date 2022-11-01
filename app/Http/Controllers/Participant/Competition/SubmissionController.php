@@ -77,7 +77,7 @@ class SubmissionController extends Controller
         } else if($submission->status_code === 'C'){
             $submission->status_code = 'IR';
             $submission->deletePaper('correction');
-            $submission->mark = 0;
+            $submission->totalMark = 0;
             $submission->comment = null;
         }
 

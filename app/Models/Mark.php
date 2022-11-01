@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Mark extends Model
 {
@@ -17,7 +18,7 @@ class Mark extends Model
     protected $fillable = [
         'rubric_id',
         'submission_id',
-        'pass',
+        'scale_code',
     ];
 
     /**
@@ -41,5 +42,10 @@ class Mark extends Model
     public function submission()
     {
         return $this->belongsTo(Submission::class);
+    }
+
+    public function getScale()
+    {
+        return DB::table('scale')->where('code', $this->scale_code)->first();
     }
 }

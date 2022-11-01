@@ -12,14 +12,12 @@ class RubricController extends Controller
     {
         $request->validate([
             'form_id' => 'required|integer|exists:App\Models\Form,id',
-            'description' => 'required|string',
-            'mark' => 'required|integer|min:1|max:5'
+            'description' => 'required|string'
         ]);
 
         $rubric = Rubric::create([
             'form_id' => $request->form_id,
-            'description' => $request->description,
-            'mark' => $request->mark,
+            'description' => $request->description
         ]);
 
         return redirect(route('admin.competition.form.view', ['id' => $rubric->form->id]))->with('success', 'The Rubric was successfully created');
@@ -37,14 +35,12 @@ class RubricController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'description' => 'required|string',
-            'mark' => 'required|integer|min:1|max:5'
+            'description' => 'required|string'
         ]);
 
         $rubric = Rubric::find($id);
 
         $rubric->description = $request->description;
-        $rubric->mark = $request->mark;
 
         $rubric->save();
 

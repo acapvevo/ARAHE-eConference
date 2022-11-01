@@ -35,12 +35,14 @@ class ReviewController extends Controller
 
     public function update(Request $request, $id)
     {
-        $validator = $request->validate([
+        $request->validate([
             'submit' => 'required|in:save,reject',
             'comment' => 'required_if:submit,save|nullable|string',
             'rubrics' => 'array|required_if:submit,save',
             'rubrics.*' => [
                 'required',
+                'string',
+                'exists:scale,code',
                 function ($attribute, $value, $fail) {
                     $rubric_id = explode('.', $attribute)[1];
 
@@ -67,24 +69,23 @@ class ReviewController extends Controller
         }
 
         $totalMark = 0;
-        foreach($submission->form->rubrics as $rubric) {
-            $isPass = array_key_exists($rubric->id,$request->rubrics);
-
-            if(Mark::where('rubric_id', $rubric->id)->where('submission_id', $submission->id)->exists())
-                $mark = Mark::where('rubric_id', $rubric->id)->where('submission_id', $submission->id)->first();
+        foreach($request->rubrics as $id => $value) {
+            if(Mark::where('rubric_id', $id)->where('submission_id', $submission->id)->exists())
+                $mark = Mark::where('rubric_id', $id)->where('submission_id', $submission->id)->first();
             else{
                 $mark = new Mark;
 
-                $mark->rubric_id = $rubric->id;
+                $mark->rubric_id = $id;
                 $mark->submission_id = $submission->id;
             }
 
-            $mark->pass = $isPass;
+            $mark->scale_code = $value;
+            $mark->save();
 
-            $totalMark += $isPass ? $rubric->mark : 0;
+            $totalMark += $mark->getScale()->mark;
         }
 
-        $submission->mark = $totalMark;
+        $submission->totalMark = $totalMark;
         $submission->comment = $request->comment;
 
         if($request->has('correction'))

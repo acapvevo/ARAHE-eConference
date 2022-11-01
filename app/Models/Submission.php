@@ -24,7 +24,7 @@ class Submission extends Model
         'paper',
         'status_code',
         'reviewer_id',
-        'mark',
+        'totalMark',
         'comment',
         'correction',
     ];
@@ -85,7 +85,7 @@ class Submission extends Model
 
     public function calculatePercentage()
     {
-        return ($this->mark / $this->form->calculateFullMark()) * 100;
+        return ($this->totalMark / $this->form->calculateFullMark()) * 100;
     }
 
     public function uploadPaper($type, $request)
