@@ -24,7 +24,10 @@ class AssignController extends Controller
     public function view($id)
     {
         $submission = $this->getSubmission($id);
-        $reviewers = $this->getReviewers();
+        $reviewers = $this->getReviewers()->where('active', true)->reject(function ($reviewer) use ($submission) {
+            if(isset($submission->reviewer))
+                return $submission->reviewer->id === $reviewer->id;
+        });
 
         session(['submission_id' => $submission->id]);
 

@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Admin\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Admin\Competition\RubricController;
 use App\Http\Controllers\Admin\Member\ParticipantController;
+use App\Http\Controllers\Admin\Member\ReviewerController;
 use App\Http\Controllers\Admin\Submission\AssignController;
 
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -104,6 +105,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::get('/{id}', [ParticipantController::class, 'view'])->name('view');
                 Route::patch('/{id}', [ParticipantController::class, 'update'])->name('update');
                 Route::post('/download', [ParticipantController::class, 'download'])->name('download');
+            });
+
+            Route::prefix('reviewer')->name('reviewer.')->group(function () {
+                Route::get('', [ReviewerController::class, 'list'])->name('list');
+                Route::get('/{id}', [ReviewerController::class, 'view'])->name('view');
+                Route::patch('/{id}', [ReviewerController::class, 'update'])->name('update');
             });
         });
 

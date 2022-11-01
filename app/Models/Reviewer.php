@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Carbon;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
 class Reviewer extends Authenticatable
 {
@@ -63,5 +64,10 @@ class Reviewer extends Authenticatable
     public function getImageURL()
     {
         return isset($this->participant->image) ? route('reviewer.user.picture.show') : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png';
+    }
+
+    public function getHiredSince()
+    {
+        return Carbon::parse($this->created_at)->translatedFormat('j F Y');
     }
 }
