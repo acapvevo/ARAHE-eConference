@@ -53,7 +53,7 @@
                 <div class="modal-body">
 
                     <form action="{{ route('reviewer.submission.review.update', ['id' => $submission->id]) }}"
-                        method="post" id="giveReview">
+                        method="post" id="giveReview" enctype="multipart/form-data">
                         @csrf
                         @method('PATCH')
 
@@ -68,19 +68,33 @@
                                     data-bs-target="#comment-tab-pane" type="button" role="tab"
                                     aria-controls="comment-tab-pane" aria-selected="false">Comment</button>
                             </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="correction-tab" data-bs-toggle="tab"
+                                    data-bs-target="#correction-tab-pane" type="button" role="tab"
+                                    aria-controls="correction-tab-pane" aria-selected="false">Paper with Correction</button>
+                            </li>
                         </ul>
 
                         <div class="tab-content pt-3" id="myTabContent">
                             <div class="tab-pane fade show active" id="rubric-tab-pane" role="tabpanel"
                                 aria-labelledby="rubric-tab" tabindex="0">
 
-                                @error('rubrics.*')
-                                <div class="card text-bg-danger">
-                                    <div class="card-body">
-                                        <p class="card-text">{{$message}}</p>
+                                @error('rubrics')
+                                    <div class="card text-bg-danger">
+                                        <div class="card-body">
+                                            <p class="card-text">{{ $message }}</p>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="pt-3"></div>
+                                    <div class="pt-3"></div>
+                                @enderror
+
+                                @error('rubrics.*')
+                                    <div class="card text-bg-danger">
+                                        <div class="card-body">
+                                            <p class="card-text">{{ $message }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="pt-3"></div>
                                 @enderror
 
                                 <div class="table-responsive">
@@ -101,7 +115,8 @@
                                                         <div class="form-check">
                                                             <input class="form-check-input" type="checkbox"
                                                                 id="rubrics{{ $rubric->id }}"
-                                                                name="rubrics[{{ $rubric->id }}]">
+                                                                name="rubrics[{{ $rubric->id }}]"
+                                                                @checked(old('rubrics.' . $rubric->id, false))>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -111,19 +126,42 @@
                                 </div>
 
                             </div>
-                            <div class="tab-pane fade" id="comment-tab-pane" role="tabpanel" aria-labelledby="comment-tab"
-                                tabindex="0">
+                            <div class="tab-pane fade" id="comment-tab-pane" role="tabpanel"
+                                aria-labelledby="comment-tab" tabindex="0">
 
                                 @error('comment')
-                                <div class="card text-bg-danger">
-                                    <div class="card-body">
-                                        <p class="card-text">{{$message}}</p>
+                                    <div class="card text-bg-danger">
+                                        <div class="card-body">
+                                            <p class="card-text">{{ $message }}</p>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="pt-3"></div>
+                                    <div class="pt-3"></div>
                                 @enderror
 
-                                <textarea id="summernote" name="comment"></textarea>
+                                <textarea id="summernote" name="comment">{!! old('comment') !!}</textarea>
+                            </div>
+
+                            <div class="tab-pane fade" id="correction-tab-pane" role="tabpanel"
+                                aria-labelledby="correction-tab" tabindex="0">
+
+                                @error('correction')
+                                    <div class="card text-bg-danger">
+                                        <div class="card-body">
+                                            <p class="card-text">{{ $message }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="pt-3"></div>
+                                @enderror
+
+                                <div class="mb-3">
+                                    <label for="correction" class="form-label">Upload Paper with Correction <small
+                                            class="text-muted">(PDF only, Max:
+                                            4MB)</small></label>
+                                    <input type="file"
+                                        class="form-control {{ $errors->has('correction') ? 'is-invalid' : '' }}"
+                                        name="correction" id="correction" placeholder="Upload Paper with Correction">
+                                </div>
+
                             </div>
                         </div>
 

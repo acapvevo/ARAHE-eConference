@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Reviewer;
+use App\Models\Participant;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -16,10 +17,12 @@ class ReviewerSeeder extends Seeder
      */
     public function run()
     {
+        $participant = Participant::find(1);
+
         Reviewer::create([
-            'name' => 'reviewer1',
-            'password' => Hash::make('reviewer1'),
-            'email' => 'reviewer1@gmail.com'
+            'participant_id' => $participant->id,
+            'password' => $participant->password,
+            'email' => $participant->email,
         ]);
     }
 }

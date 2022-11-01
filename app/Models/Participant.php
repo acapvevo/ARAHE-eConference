@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
 class Participant extends Authenticatable
 {
@@ -20,6 +22,7 @@ class Participant extends Authenticatable
         'name',
         'email',
         'image',
+        'active',
         'password',
         'login_at',
     ];
@@ -56,5 +59,29 @@ class Participant extends Authenticatable
     public function submissions()
     {
         return $this->hasMany(Submission::class);
+    }
+
+    /**
+     * Get the Reviewer associated with the Participant.
+     */
+    public function reviewer()
+    {
+        return $this->hasOne(Reviewer::class);
+    }
+
+    public function getJoinedSince()
+    {
+        return Carbon::parse($this->created_at)->translatedFormat('j F Y');
+    }
+
+    public function getImageSrc()
+    {
+        if(isset($this->image)){
+            $image = Storage::get('profile_picture/participant/' . $this->image);
+            $type = pathinfo('profile_picture/participant/' . $this->image, PATHINFO_EXTENSION);
+            return 'data:image/' . $type . ';base64,' . base64_encode($image);
+        }
+
+        return 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png';
     }
 }

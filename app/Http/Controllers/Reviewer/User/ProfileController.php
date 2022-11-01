@@ -30,10 +30,11 @@ class ProfileController extends Controller
             ]
         ]);
 
-        $user->name = $request->name;
-        $user->email = $request->email;
+        $user->participant->name = $request->name;
+        $user->email = $user->participant->email = $request->email;
 
         $user->save();
+        $user->participant->save();
 
         return redirect(route('reviewer.user.profile.view'))->with('success', 'Your User Profile Successfully updated');
     }

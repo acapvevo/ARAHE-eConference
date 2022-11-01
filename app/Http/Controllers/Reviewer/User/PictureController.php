@@ -12,18 +12,18 @@ class PictureController extends Controller
 {
     public function update(Request $request)
     {
-        $user = Auth::guard('reviewer')->user();
+        $user = Auth::guard('reviewer')->user()->participant;
 
         $request->validate([
             'ProfilePicture' => 'required|image|mimes:png,jpg,jpeg|max:2048'
         ]);
 
         $imageName = $user->id . '.' . $request->ProfilePicture->extension();
-        $imagePath = "app\profile_picture\\reviewer";
+        $imagePath = "app\profile_picture\\participant";
 
         $img = Image::make($request->ProfilePicture);
-        if(!Storage::exists("profile_picture\\reviewer")) {
-            Storage::makeDirectory("profile_picture\\reviewer"); //creates directory
+        if(!Storage::exists("profile_picture\\participant")) {
+            Storage::makeDirectory("profile_picture\\participant"); //creates directory
         }
         $img->fit(300)->save(storage_path($imagePath . "\\" . $imageName));
 
@@ -38,6 +38,6 @@ class PictureController extends Controller
     {
         $user = Auth::guard('reviewer')->user();
 
-        return Storage::response('profile_picture/reviewer/' . $user->image);
+        return Storage::response('profile_picture/participant/' . $user->participant->image);
     }
 }

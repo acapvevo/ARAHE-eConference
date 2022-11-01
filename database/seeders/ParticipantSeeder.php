@@ -17,6 +17,12 @@ class ParticipantSeeder extends Seeder
     public function run()
     {
         Participant::create([
+            'name' => 'reviewer1',
+            'password' => Hash::make('reviewer1'),
+            'email' => 'reviewer1@gmail.com'
+        ]);
+
+        Participant::create([
             'name' => 'participant1',
             'password' => Hash::make('participant1'),
             'email' => 'participant1@gmail.com'

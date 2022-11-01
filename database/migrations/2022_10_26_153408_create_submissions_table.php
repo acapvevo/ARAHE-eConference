@@ -19,12 +19,13 @@ return new class extends Migration
             $table->integer('form_id');
             $table->integer('participant_id');
             $table->text('abstract')->nullable();
-            $table->string('title')->nullable();
+            $table->string('title')->nullable()->unique();
             $table->string('paper')->nullable();
             $table->string('status_code');
             $table->integer('reviewer_id')->nullable();
             $table->integer('mark')->default(0);
             $table->text('comment')->nullable();
+            $table->string('correction')->nullable();
 
             $table->timestamps();
         });

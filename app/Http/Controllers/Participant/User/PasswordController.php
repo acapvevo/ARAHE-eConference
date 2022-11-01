@@ -19,6 +19,12 @@ class PasswordController extends Controller
 
         $user->password = Hash::make($request->password);
 
+        if(isset($user->reviewer)){
+            $user->reviewer->password = $user->password;
+
+            $user->reviewer->save();
+        }
+
         $user->save();
 
         return redirect(route('participant.user.setting.view'))->with('success', 'Your Password Successfully updated');

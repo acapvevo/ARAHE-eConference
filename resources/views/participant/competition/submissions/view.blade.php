@@ -37,7 +37,7 @@
                             <th class='w-25'>Paper</th>
                             @if (isset($submission->paper))
                                 <td><a target="_blank"
-                                        href="{{ route('participant.competition.submission.download', ['filename' => $submission->paper]) }}">{{ $submission->paper }}</a>
+                                        href="{{ route('participant.competition.submission.download', ['filename' => $submission->paper, 'type' => 'paper']) }}">{{ $submission->paper }}</a>
                                 </td>
                             @else
                                 <td></td>
@@ -52,7 +52,7 @@
                         </tr>
                         <tr>
                             <th class='w-25'>Reviewer</th>
-                            <td>{{ $submission->reviewer->name ?? '' }}</td>
+                            <td>{{ $submission->reviewer->participant->name ?? '' }}</td>
                         </tr>
                         <tr>
                             <th class='w-25'>Mark</th>
@@ -61,6 +61,16 @@
                         <tr>
                             <th class='w-25'>Comment</th>
                             <td>{!! $submission->comment ?? '' !!}</td>
+                        </tr>
+                        <tr>
+                            <th class='w-25'>Paper with Correction</th>
+                            @if (isset($submission->correction))
+                                <td><a target="_blank"
+                                        href="{{ route('participant.competition.submission.download', ['filename' => $submission->correction, 'type' => 'correction']) }}">{{ $submission->correction }}</a>
+                                </td>
+                            @else
+                                <td></td>
+                            @endif
                         </tr>
                     </tbody>
                 </table>

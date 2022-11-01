@@ -16,9 +16,10 @@ class CreatereviewersTable extends Migration
         Schema::create('reviewers', function (Blueprint $table) {
             $table->id();
 
-            $table->string('name');
+            $table->integer('participant_id')->unique();
+
             $table->string('email')->unique();
-            $table->string('image')->nullable();
+            $table->boolean('active')->default(true);
 
             $table->string('password');
 

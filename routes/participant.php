@@ -69,7 +69,7 @@ Route::prefix('participant')->name('participant.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])
             ->name('dashboard');
 
-        //Pengurusan Pengguna Routes
+        //User Management Routes
         Route::prefix('user')->name('user.')->group(function () {
 
             //Profile
@@ -100,7 +100,7 @@ Route::prefix('participant')->name('participant.')->group(function () {
                 Route::get('', [SubmissionController::class, 'list'])->name('list');
                 Route::get('/{form_id}', [SubmissionController::class, 'view'])->name('view');
                 Route::patch('/{id}', [SubmissionController::class, 'update'])->name('update');
-                Route::get('/download/{filename}', [SubmissionController::class, 'download'])->name('download');
+                Route::get('/download/{type}/{filename}', [SubmissionController::class, 'download'])->name('download');
             });
         });
 

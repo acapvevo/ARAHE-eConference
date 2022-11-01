@@ -69,6 +69,6 @@ class AssignController extends Controller
     public function download($filename)
     {
         $submission = $this->getSubmission(session('submission_id'));
-        return $this->getPaper($filename, $submission);
+        return $this->getPaper('paper',$filename, $submission);
     }
 }

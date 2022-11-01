@@ -14,6 +14,10 @@
                     class="nav-link {{ request()->routeIs('admin.submission.assign.*') ? 'active' : '' }}"
                     href="{{ route('admin.submission.assign.list') }}"><i class="fas fa-user-tie"></i><span>Assign
                         Reviewer</span></a></li>
+            <li class="nav-item"><a
+                    class="nav-link {{ request()->routeIs('admin.member.participant.*') ? 'active' : '' }}"
+                    href="{{ route('admin.member.participant.list') }}"><i
+                        class="fas fa-user-graduate"></i><span>Participant Management</span></a></li>
             <li class="nav-item"><a class="nav-link {{ request()->routeIs('admin.system.manual.*') ? 'active' : '' }}"
                     href="{{ route('admin.system.manual.view') }}"><i class="fas fa-book-reader"></i><span>User
                         Manual</span></a></li>

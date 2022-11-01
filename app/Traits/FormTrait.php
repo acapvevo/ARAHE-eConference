@@ -51,4 +51,9 @@ trait FormTrait
     {
         return Form::all();
     }
+
+    public function getForm($id)
+    {
+        return Form::find($id);
+    }
 }

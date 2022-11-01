@@ -10,4 +10,13 @@ trait ReviewerTrait
     {
         return Reviewer::all();
     }
+
+    public function upgradeToReviewer($participant)
+    {
+        Reviewer::create([
+            'participant_id' => $participant->id,
+            'password' => $participant->password,
+            'email' => $participant->email,
+        ]);
+    }
 }

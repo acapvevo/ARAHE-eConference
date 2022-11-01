@@ -69,7 +69,7 @@ Route::prefix('reviewer')->name('reviewer.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])
             ->name('dashboard');
 
-        //Pengurusan Pengguna Routes
+        //User Management Routes
         Route::prefix('user')->name('user.')->group(function () {
 
             //Profile

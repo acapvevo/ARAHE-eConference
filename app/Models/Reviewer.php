@@ -17,9 +17,8 @@ class Reviewer extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name',
+        'participant_id',
         'email',
-        'image',
         'password',
         'login_at',
     ];
@@ -53,8 +52,16 @@ class Reviewer extends Authenticatable
         return $this->hasMany(Submission::class);
     }
 
+    /**
+     * Get the Participant that become Reviewer.
+     */
+    public function participant()
+    {
+        return $this->belongsTo(Participant::class);
+    }
+
     public function getImageURL()
     {
-        return isset($this->image) ? route('reviewer.user.picture.show') : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png';
+        return isset($this->participant->image) ? route('reviewer.user.picture.show') : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png';
     }
 }

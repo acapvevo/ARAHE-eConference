@@ -70,7 +70,7 @@ Route::prefix('super_admin')->name('super_admin.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])
             ->name('dashboard');
 
-        //Pengurusan Pengguna Routes
+        //User Management Routes
         Route::prefix('user')->name('user.')->group(function () {
 
             //Profile

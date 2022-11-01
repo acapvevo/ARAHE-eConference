@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Submission extends Model
@@ -25,6 +26,7 @@ class Submission extends Model
         'reviewer_id',
         'mark',
         'comment',
+        'correction',
     ];
 
     /**
@@ -84,5 +86,19 @@ class Submission extends Model
     public function calculatePercentage()
     {
         return ($this->mark / $this->form->calculateFullMark()) * 100;
+    }
+
+    public function uploadPaper($type, $request)
+    {
+        $fileName = preg_replace('/\s+/', '_', '[' . strtoupper($type) . '] ' . $this->title);
+        $request->file($type)->storeAs('ARAHE' . $this->form->session->year . '/' . $type, $fileName);
+
+        $this->{$type} = $fileName;
+    }
+
+    public function deletePaper($type)
+    {
+        Storage::delete('ARAHE' . $this->form->session->year . '/' . $type . '/' . $this->{$type});
+        $this->correction = null;
     }
 }

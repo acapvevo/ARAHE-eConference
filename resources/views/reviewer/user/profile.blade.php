@@ -15,7 +15,7 @@
                 <table class="table table-bordered">
                     <tr>
                         <th class="w-25">Nama: </th>
-                        <td>{{ $user->name }}</td>
+                        <td>{{ $user->participant->name }}</td>
                     </tr>
                     <tr>
                         <th class="w-25">Emel: </th>
@@ -41,7 +41,7 @@
                         <div class="form-floating mb-3">
                             <input class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" id="name"
                                 type="text" placeholder="Enter Name" name="name"
-                                value="{{ old('name', $user->name) }}">
+                                value="{{ old('name', $user->participant->name) }}">
                             <label class="form-label" for="name">Name</label>
                             @error('name')
                                 <div class="invalid-feedback">

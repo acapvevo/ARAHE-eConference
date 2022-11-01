@@ -69,16 +69,16 @@ class SubmissionController extends Controller
         $submission->abstract = $request->abstract;
 
         if($request->has('paper')){
-            $fileName = $this->reformatFileName($request->file('paper')->getClientOriginalName());
-            $request->file('paper')->storeAs('submission/ARAHE' . $submission->form->session->year, $fileName);
-
-            $submission->paper = $fileName;
+            $submission->uploadPaper('paper', $request);
         }
 
         if($submission->status_code === 'N'){
             $submission->status_code = 'P';
         } else if($submission->status_code === 'C'){
             $submission->status_code = 'IR';
+            $submission->deletePaper('correction');
+            $submission->mark = 0;
+            $submission->comment = null;
         }
 
         $submission->save();
@@ -86,9 +86,9 @@ class SubmissionController extends Controller
         return redirect(route('participant.competition.submission.view', ['form_id' => $submission->form->id]))->with('success', 'This Submission has successfully updated');
     }
 
-    public function download($filename)
+    public function download($type, $filename)
     {
         $submission = Submission::find(session('submission_id'));
-        return $this->getPaper($filename, $submission);
+        return $this->getPaper($type, $filename, $submission);
     }
 }

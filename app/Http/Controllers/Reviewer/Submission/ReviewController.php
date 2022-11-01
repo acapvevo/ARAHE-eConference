@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Reviewer\Submission;
 
+use App\Models\Mark;
 use App\Traits\FormTrait;
 use App\Traits\RubricTrait;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Traits\SubmissionTrait;
+use App\Http\Controllers\Controller;
 
 class ReviewController extends Controller
 {
@@ -34,11 +35,10 @@ class ReviewController extends Controller
 
     public function update(Request $request, $id)
     {
-
-        $request->validate([
+        $validator = $request->validate([
             'submit' => 'required|in:save,reject',
             'comment' => 'required_if:submit,save|nullable|string',
-            'rubrics' => 'array|nullable',
+            'rubrics' => 'array|required_if:submit,save',
             'rubrics.*' => [
                 'required',
                 function ($attribute, $value, $fail) {
@@ -47,6 +47,12 @@ class ReviewController extends Controller
                     if(!$this->checkRubricID($rubric_id))
                         $fail('Please Try Again');
                 }
+            ],
+            'correction' => [
+                'nullable',
+                'file',
+                'mimes:pdf',
+                'max:4096'
             ]
         ]);
 
@@ -54,23 +60,46 @@ class ReviewController extends Controller
 
         if($request->submit === 'reject'){
             $submission->status_code = 'R';
+            $submission->comment = 'rejected by Reviewer';
             $submission->save();
 
             return redirect(route('reviewer.submission.review.list'))->with('success', 'Submission from ' . $submission->participant->name . 'has been successfully rejected.');
         }
 
         $totalMark = 0;
-        foreach ($request->rubrics as $id => $value){
-            $rubric = $this->getRubric($id);
+        foreach($submission->form->rubrics as $rubric) {
+            $isPass = array_key_exists($rubric->id,$request->rubrics);
 
-            $totalMark += $rubric->mark;
+            if(Mark::where('rubric_id', $rubric->id)->where('submission_id', $submission->id)->exists())
+                $mark = Mark::where('rubric_id', $rubric->id)->where('submission_id', $submission->id)->first();
+            else{
+                $mark = new Mark;
+
+                $mark->rubric_id = $rubric->id;
+                $mark->submission_id = $submission->id;
+            }
+
+            $mark->pass = $isPass;
+
+            $totalMark += $isPass ? $rubric->mark : 0;
         }
 
         $submission->mark = $totalMark;
         $submission->comment = $request->comment;
 
-        if($submission->calculatePercentage() >= 80)
+        if($request->has('correction'))
+            $submission->uploadPaper('correction', $request);
+        else{
+            if($submission->calculatePercentage() < 80)
+                return back()->withInput()->withErrors([
+                    'correction' => 'Need to upload correction if given mark is lower than 80%'
+                ]);
+        }
+
+        if($submission->calculatePercentage() >= 80){
             $submission->status_code = 'WP';
+            $submission->deletePaper('correction');
+        }
         else
             $submission->status_code = 'C';
 
@@ -82,6 +111,6 @@ class ReviewController extends Controller
     public function download($filename)
     {
         $submission = $this->getSubmission(session('submission_id'));
-        return $this->getPaper($filename, $submission);
+        return $this->getPaper('paper', $filename, $submission);
     }
 }

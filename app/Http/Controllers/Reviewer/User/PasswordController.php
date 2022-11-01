@@ -17,9 +17,10 @@ class PasswordController extends Controller
             'password' => 'required|string|confirmed|min:8',
         ]);
 
-        $user->password = Hash::make($request->password);
+        $user->password = $user->participant->password = Hash::make($request->password);
 
         $user->save();
+        $user->participant->save();
 
         return redirect(route('reviewer.user.setting.view'))->with('success', 'Your Password Successfully updated');
     }
