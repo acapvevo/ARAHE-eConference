@@ -19,7 +19,10 @@ class Bill extends Model
         'submission_id',
         'amount',
         'code',
-        'pay_at',
+        'pay_attempt_at',
+        'pay_complete_at',
+        'status',
+        'reason',
     ];
 
     /**

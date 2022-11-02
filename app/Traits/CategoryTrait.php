@@ -3,16 +3,17 @@
 namespace App\Traits;
 
 use App\Models\Category;
-use Tarsoft\Toyyibpay\ToyyibpayFacade as Toyyibpay;
 
 trait CategoryTrait
 {
-    public function createCategory($form)
+    use PaymentTrait;
+
+    public function generateCategory($form)
     {
         $name = 'ARAHE' . $form->session->year;
         $description = "Payment for participation of ARAHE". $form->session->year;
 
-        $response = Toyyibpay::createCategory($name, $description);
+        $response = $this->createCategory($name, $description);
 
         Category::create([
             'form_id' => $form->id,

@@ -5,14 +5,16 @@ namespace App\Http\Controllers\Admin\Payment;
 use App\Models\Bill;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Tarsoft\Toyyibpay\ToyyibpayFacade as Toyyibpay;
+use App\Traits\PaymentTrait;
 
 class BillController extends Controller
 {
+    use PaymentTrait;
+    
     public function view($id)
     {
         $bill = Bill::find($id);
-        $infoToyyibPay = Toyyibpay::getBill($bill->code);
+        $infoToyyibPay = $this->getBill($bill->code);
 
         return view('admin.payment.bill.view')->with([
             'bill' => $bill,

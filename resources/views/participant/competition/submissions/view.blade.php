@@ -11,14 +11,19 @@
             <div class="row pt-3 pb-3">
                 <div class="col">
                     @if ($submission->status_code === 'WP')
-                    <button type="button" class="btn btn-success float-end">
-                        Proceed to Payment
-                    </button>
+                        <form action="{{route('participant.payment.pay.main')}}" method="post">
+                            @csrf
+
+                            <button type="submit" name="submission_id" value="{{$submission->id}}" class="btn btn-success float-end">
+                                Proceed to Payment
+                            </button>
+                        </form>
                     @else
-                    <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal"
-                        data-bs-target="#updateSubmissionModal" {{ $submission->checkEnableSubmit() ? '' : 'disabled' }}>
-                        Update Submission
-                    </button>
+                        <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal"
+                            data-bs-target="#updateSubmissionModal"
+                            {{ $submission->checkEnableSubmit() ? '' : 'disabled' }}>
+                            Update Submission
+                        </button>
                     @endif
                 </div>
             </div>
@@ -36,8 +41,16 @@
                         <tr>
                             <th class='w-25'>Paper</th>
                             @if (isset($submission->paper))
-                                <td><a target="_blank"
-                                        href="{{ route('participant.competition.submission.download', ['filename' => $submission->paper, 'type' => 'paper']) }}">{{ $submission->paper }}</a>
+                                <td>
+                                    <form action="{{ route('participant.competition.submission.download') }}"
+                                        method="post" target="_blank">
+                                        @csrf
+                                        <input type="hidden" name="type" value="paper">
+                                        <input type="hidden" name="filename"
+                                            value="{{ $submission->paper }}">
+                                        <button type="submit" class="btn btn-link" name="submission_id"
+                                            value="{{ $submission->id }}">{{ $submission->paper }}</button>
+                                    </form>
                                 </td>
                             @else
                                 <td></td>
@@ -56,7 +69,8 @@
                         </tr>
                         <tr>
                             <th class='w-25'>Total Mark</th>
-                            <td>{{ $submission->calculatePercentage() === 0 ? '' : number_format($submission->calculatePercentage(), 2) . '%' }}</td>
+                            <td>{{ $submission->calculatePercentage() === 0 ? '' : number_format($submission->calculatePercentage(), 2) . '%' }}
+                            </td>
                         </tr>
                         <tr>
                             <th class='w-25'>Comment</th>
@@ -65,8 +79,16 @@
                         <tr>
                             <th class='w-25'>Paper with Correction</th>
                             @if (isset($submission->correction))
-                                <td><a target="_blank"
-                                        href="{{ route('participant.competition.submission.download', ['filename' => $submission->correction, 'type' => 'correction']) }}">{{ $submission->correction }}</a>
+                                <td>
+                                    <form action="{{ route('participant.competition.submission.download') }}"
+                                        method="post" target="_blank">
+                                        @csrf
+                                        <input type="hidden" name="type" value="correction">
+                                        <input type="hidden" name="filename"
+                                            value="{{ $submission->correction }}">
+                                        <button type="submit" class="btn btn-link" name="submission_id"
+                                            value="{{ $submission->id }}">{{ $submission->correction }}</button>
+                                    </form>
                                 </td>
                             @else
                                 <td></td>

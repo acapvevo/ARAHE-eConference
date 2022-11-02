@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Admin\Payment;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
-use Tarsoft\Toyyibpay\ToyyibpayFacade as Toyyibpay;
 use App\Http\Controllers\Controller;
+use App\Traits\PaymentTrait;
 
 class CategoryController extends Controller
 {
+    use PaymentTrait;
+
     public function list()
     {
         $categories = Category::all();
@@ -21,7 +23,7 @@ class CategoryController extends Controller
     public function view($id)
     {
         $category = Category::find($id);
-        $infoToyyibpay = Toyyibpay::getCategory($category->code);
+        $infoToyyibpay = $this->getCategory($category->code);
 
         return view('admin.payment.category.view')->with([
             'category' => $category,

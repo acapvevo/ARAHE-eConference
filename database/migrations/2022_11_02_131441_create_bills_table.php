@@ -18,9 +18,11 @@ return new class extends Migration
 
             $table->integer('submission_id');
             $table->integer('amount');
-            $table->string('code');
-            $table->timestamp('pay_at');
-
+            $table->string('code')->unique();
+            $table->timestamp('pay_attempt_at');
+            $table->timestamp('pay_complete_at')->nullable();
+            $table->integer('status')->nullable();
+            $table->string('reason')->nullable();
 
             $table->timestamps();
         });

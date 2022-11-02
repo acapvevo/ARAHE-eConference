@@ -86,9 +86,15 @@ class SubmissionController extends Controller
         return redirect(route('participant.competition.submission.view', ['form_id' => $submission->form->id]))->with('success', 'This Submission has successfully updated');
     }
 
-    public function download($type, $filename)
+    public function download(Request $request)
     {
-        $submission = Submission::find(session('submission_id'));
-        return $this->getPaper($type, $filename, $submission);
+        $request->validate([
+            'submission_id' => 'required|integer|exists:App\Models\Submission,id',
+            'type' => 'required|string|in:paper,correction',
+            'filename' => 'required|required'
+        ]);
+
+        $submission = Submission::find($request->submission_id);
+        return $this->getPaper($request->type, $request->filename, $submission);
     }
 }

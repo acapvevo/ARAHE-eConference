@@ -41,7 +41,7 @@ class FormController extends Controller
             $this->copyForm($request->oldForm, $form);
         }
 
-        $this->createCategory($form);
+        $this->generateCategory($form);
 
         return redirect(route('admin.competition.form.list'))->with('success', 'Form for ' . $form->session->year . ' was created successfully');
     }

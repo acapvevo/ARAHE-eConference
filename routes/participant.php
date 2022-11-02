@@ -16,6 +16,7 @@ use App\Http\Controllers\Participant\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Participant\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Participant\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Participant\Competition\SubmissionController;
+use App\Http\Controllers\Participant\Payment\PayController;
 
 Route::prefix('participant')->name('participant.')->group(function () {
 
@@ -100,9 +101,18 @@ Route::prefix('participant')->name('participant.')->group(function () {
                 Route::get('', [SubmissionController::class, 'list'])->name('list');
                 Route::get('/{form_id}', [SubmissionController::class, 'view'])->name('view');
                 Route::patch('/{id}', [SubmissionController::class, 'update'])->name('update');
-                Route::get('/download/{type}/{filename}', [SubmissionController::class, 'download'])->name('download');
+                Route::post('/download', [SubmissionController::class, 'download'])->name('download');
             });
         });
+
+        Route::prefix('payment')->name('payment.')->group(function () {
+            Route::prefix('pay')->name('pay.')->group(function () {
+                Route::post('', [PayController::class, 'main'])->name('main');
+                Route::post('/callback', [PayController::class, 'callback'])->name('callback');
+                Route::get('/return', [PayController::class, 'return'])->name('return');
+            });
+        });
+
 
         Route::prefix('system')->name('system.')->group(function () {
             Route::prefix('manual')->name('manual.')->group(function () {
