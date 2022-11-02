@@ -40,8 +40,13 @@ class Bill extends Model
         return $this->belongsTo(Submission::class);
     }
 
-    public function getPayAt()
+    public function getPayAttemptAt()
     {
-        return Carbon::parse($this->pay_at)->translatedFormat('j F Y');
+        return Carbon::parse($this->pay_attempt_at)->translatedFormat('j F Y');
+    }
+
+    public function getPayCompleteAt()
+    {
+        return Carbon::parse($this->pay_complete_at)->translatedFormat('j F Y');
     }
 }

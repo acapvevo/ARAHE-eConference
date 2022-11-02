@@ -23,7 +23,7 @@ trait PaymentTrait
     {
         $response = Http::asForm()->post($url, $data);
 
-        return (object) $response->json();
+        return $response->json();
     }
 
     public function createCategory($name, $description)
@@ -37,7 +37,7 @@ trait PaymentTrait
         ];
 
         $res = $this->post($url, $data);
-        return $res;
+        return (object) $res;
     }
 
     public function getCategory($code)
@@ -50,7 +50,7 @@ trait PaymentTrait
         ];
 
         $res = $this->post($url, $data);
-        return $res;
+        return (object) $res;
     }
 
     public function createBill($code, $bill_object)
@@ -79,7 +79,7 @@ trait PaymentTrait
         ];
 
         $res = $this->post($url, $data);
-        return $res;
+        return (object) $res[0];
     }
 
     public function getBill($code)

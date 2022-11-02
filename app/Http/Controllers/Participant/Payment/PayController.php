@@ -44,32 +44,52 @@ class PayController extends Controller
         ]);
 
         $bill->pay_attempt_at = Carbon::now();
-        $bill->code = $response[0]->BillCode;
+        $bill->code = $response->BillCode;
 
         $bill->save();
 
         return redirect()->away($this->billPaymentLink($bill->code));
     }
 
+    public function return(Request $request)
+    {
+        $request->validate([
+            'billcode' => 'required|string|exists:App\Models\Bill,code'
+        ]);
+
+        $bill = Bill::where('code', $request->billcode)->first();
+
+        $bill->pay_complete_at = Carbon::now();
+        $bill->status = $request->status_id;
+
+        $bill->save();
+
+        if($bill->status == 1){
+            $bill->submission->status_code = 'A';
+            $bill->submission->save();
+
+            $message = 'Your Payment has been successfully completed';
+            $key = 'success';
+        } else if($bill->status == 2){
+            $message = 'Your Payment was still in pending';
+            $key = 'warning';
+        }
+        else{
+            $message = 'Your Payment was failed, please try again';
+            $key = 'error';
+        }
+
+        return redirect(route('participant.competition.submission.view', ['form_id' => $bill->submission->form->id]))->with($key, $message);
+    }
+
     public function callback(Request $request)
     {
         $request->validate([
-            'order_id' => 'required|string|exists:App\Models\Bill,code'
+            'billcode' => 'required|string|exists:App\Models\Bill,code'
         ]);
 
         $bill = Bill::where('code', $request->billcode)->first();
 
         dd($request->all(), $bill);
-    }
-
-    public function return(Request $request)
-    {
-        $request->validate([
-            'order_id' => 'required|string|exists:App\Models\Bill,code'
-        ]);
-
-        $bill = Bill::where('code', $request->billcode)->first();
-
-        dd($request->query->all(), $bill);
     }
 }
