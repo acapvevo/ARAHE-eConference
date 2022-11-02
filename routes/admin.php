@@ -19,6 +19,8 @@ use App\Http\Controllers\Admin\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Admin\Competition\RubricController;
 use App\Http\Controllers\Admin\Member\ParticipantController;
 use App\Http\Controllers\Admin\Member\ReviewerController;
+use App\Http\Controllers\Admin\Payment\BillController;
+use App\Http\Controllers\Admin\Payment\CategoryController;
 use App\Http\Controllers\Admin\Submission\AssignController;
 use App\Http\Controllers\Admin\Submission\PaperController;
 
@@ -143,6 +145,19 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::get('', [PaperController::class, 'list'])->name('list');
                 Route::get('/{id}', [PaperController::class, 'view'])->name('view');
                 Route::post('/download', [PaperController::class, 'download'])->name('download');
+            });
+        });
+
+        Route::prefix('payment')->name('payment.')->group(function () {
+            Route::prefix('category')->name('category.')->group(function () {
+                Route::get('', [CategoryController::class, 'list'])->name('list');
+                Route::get('/{id}', [CategoryController::class, 'view'])->name('view');
+                Route::patch('/{id}', [CategoryController::class, 'update'])->name('update');
+            });
+
+            Route::prefix('bill')->name('bill.')->group(function () {
+                Route::get('/{id}', [BillController::class, 'view'])->name('view');
+                Route::post('/download', [BillController::class, 'download'])->name('download');
             });
         });
 

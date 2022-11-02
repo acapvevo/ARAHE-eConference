@@ -22,7 +22,7 @@ class Participant extends Authenticatable
         'name',
         'email',
         'image',
-        'active',
+        'telephoneNumber',
         'password',
         'login_at',
     ];

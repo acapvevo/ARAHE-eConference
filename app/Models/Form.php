@@ -48,6 +48,14 @@ class Form extends Model
         return $this->hasMany(Submission::class);
     }
 
+    /**
+     * Get the Category associated with the Form.
+     */
+    public function category()
+    {
+        return $this->hasOne(Category::class);
+    }
+
     public function calculateFullMark()
     {
         $countScale = DB::table('scale')->get()->count();

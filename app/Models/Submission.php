@@ -68,6 +68,14 @@ class Submission extends Model
         return $this->hasMany(Mark::class);
     }
 
+    /**
+     * Get the Bill associated with the Submission.
+     */
+    public function bill()
+    {
+        return $this->hasOne(Bill::class);
+    }
+
     public function getStatusLabel()
     {
         return DB::table('status')->where('code', $this->status_code)->first()->label;

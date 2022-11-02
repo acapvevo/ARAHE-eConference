@@ -26,12 +26,18 @@ class ProfileController extends Controller
                 'required',
                 'email',
                 'string',
-                Rule::unique('users')->ignore($user->id),
+                Rule::unique('participants')->ignore($user->id),
+            ],
+            'telephoneNumber' => [
+                'required',
+                'string',
+                Rule::unique('participants')->ignore($user->id),
             ]
         ]);
 
         $user->name = $request->name;
         $user->email = $request->email;
+        $user->telephoneNumber = $request->telephoneNumber;
 
         if(isset($user->reviewer)){
             $user->reviewer->email = $request->email;

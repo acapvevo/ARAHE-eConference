@@ -21,6 +21,10 @@
                         <th class="w-25">Emel: </th>
                         <td>{{ $user->email }}</td>
                     </tr>
+                    <tr>
+                        <th class="w-25">Telephone Number: </th>
+                        <td>{{ $user->participant->telephoneNumber }}</td>
+                    </tr>
                 </table>
             </div>
         </div>
@@ -55,6 +59,17 @@
                                 value="{{ old('email', $user->email) }}">
                             <label class="form-label" for="email">Email Address</label>
                             @error('email')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input class="form-control {{ $errors->has('telephoneNumber') ? 'is-invalid' : '' }}" id="telephoneNumber"
+                                type="string" placeholder="Enter Email Address" name="telephoneNumber"
+                                value="{{ old('telephoneNumber', $user->participant->telephoneNumber) }}">
+                            <label class="form-label" for="telephoneNumber">Telephone Number</label>
+                            @error('telephoneNumber')
                                 <div class="invalid-feedback">
                                     {{ $message }}
                                 </div>

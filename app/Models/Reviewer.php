@@ -19,6 +19,7 @@ class Reviewer extends Authenticatable
      */
     protected $fillable = [
         'participant_id',
+        'active',
         'email',
         'password',
         'login_at',

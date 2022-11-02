@@ -7,10 +7,11 @@ use App\Traits\FormTrait;
 use App\Traits\SessionTrait;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Traits\CategoryTrait;
 
 class FormController extends Controller
 {
-    use SessionTrait, FormTrait;
+    use SessionTrait, FormTrait, CategoryTrait;
 
     public function list()
     {
@@ -39,6 +40,8 @@ class FormController extends Controller
         if($request->has('copyOldForm')){
             $this->copyForm($request->oldForm, $form);
         }
+
+        $this->createCategory($form);
 
         return redirect(route('admin.competition.form.list'))->with('success', 'Form for ' . $form->session->year . ' was created successfully');
     }

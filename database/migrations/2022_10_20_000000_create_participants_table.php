@@ -19,6 +19,7 @@ class CreateparticipantsTable extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('image')->nullable();
+            $table->string('telephoneNumber');
 
             $table->string('password');
 

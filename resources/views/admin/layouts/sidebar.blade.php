@@ -8,16 +8,16 @@
             </li>
             <li class="nav-item"><a
                     class="nav-link {{ request()->routeIs('admin.competition.form.*') || request()->routeIs('admin.competition.rubric.*') ? 'active' : '' }}"
-                    href="{{ route('admin.competition.form.list') }}"><i
-                        class="fab fa-wpforms"></i><span>Form Setting</span></a></li>
+                    href="{{ route('admin.competition.form.list') }}"><i class="fab fa-wpforms"></i><span>Form
+                        Setting</span></a></li>
             <li class="nav-item"><a
                     class="nav-link {{ request()->routeIs('admin.submission.assign.*') ? 'active' : '' }}"
                     href="{{ route('admin.submission.assign.list') }}"><i class="fas fa-user-check"></i><span>Assign
                         Reviewer</span></a></li>
             <li class="nav-item"><a
                     class="nav-link {{ request()->routeIs('admin.submission.paper.*') ? 'active' : '' }}"
-                    href="{{ route('admin.submission.paper.list') }}"><i
-                        class="far fa-file-alt"></i><span>View Papers</span></a></li>
+                    href="{{ route('admin.submission.paper.list') }}"><i class="far fa-file-alt"></i><span>View
+                        Papers</span></a></li>
             <li class="nav-item"><a
                     class="nav-link {{ request()->routeIs('admin.member.participant.*') ? 'active' : '' }}"
                     href="{{ route('admin.member.participant.list') }}"><i
@@ -25,6 +25,10 @@
             <li class="nav-item"><a
                     class="nav-link {{ request()->routeIs('admin.member.reviewer.*') ? 'active' : '' }}"
                     href="{{ route('admin.member.reviewer.list') }}"><i class="fas fa-user-tie"></i><span>Reviewer
+                        Management</span></a></li>
+            <li class="nav-item"><a
+                    class="nav-link {{ request()->routeIs('admin.payment.category.*') || request()->routeIs('admin.payment.bill.*') ? 'active' : '' }}"
+                    href="{{ route('admin.payment.category.list') }}"><i class="fas fa-money-check"></i><span>Payment
                         Management</span></a></li>
             <li class="nav-item"><a class="nav-link {{ request()->routeIs('admin.system.manual.*') ? 'active' : '' }}"
                     href="{{ route('admin.system.manual.view') }}"><i class="fas fa-book-reader"></i><span>User
