@@ -108,7 +108,6 @@ Route::prefix('participant')->name('participant.')->group(function () {
         Route::prefix('payment')->name('payment.')->group(function () {
             Route::prefix('pay')->name('pay.')->group(function () {
                 Route::post('', [PayController::class, 'main'])->name('main');
-                Route::post('/callback', [PayController::class, 'callback'])->name('callback');
                 Route::get('/return', [PayController::class, 'return'])->name('return');
             });
         });
@@ -122,4 +121,6 @@ Route::prefix('participant')->name('participant.')->group(function () {
         });
         // });
     });
+
+    Route::post('/payment/pay/callback', [PayController::class, 'callback'])->name('payment.pay.callback');
 });

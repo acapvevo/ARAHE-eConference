@@ -90,6 +90,9 @@ class PayController extends Controller
 
         $bill = Bill::where('code', $request->billcode)->first();
 
-        dd($request->all(), $bill);
+        $bill->pay_complete_at = $request->transaction_time;
+        $bill->status = $request->status;
+
+        $bill->save();
     }
 }
