@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             ManualSeeder::class,
             StatusSeeder::class,
             ScaleSeeder::class,
+            StatusPaymentSeeder::class,
         ]);
     }
 }

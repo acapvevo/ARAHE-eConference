@@ -29,22 +29,24 @@ class PayController extends Controller
                 'amount' => $submission->form->category->standardAmount * 100,
             ]);
 
-        $response = $this->createBill($submission->form->category->code, (object)[
-            'billName' => 'ARAHE' . $submission->form->session->year . ' - ' . $submission->participant->name,
-            'billDescription' => 'Payment for participation ARAHE' . $submission->form->session->year . ' from ' . $submission->participant->name,
-            'billPriceSetting' => 1,
-            'billPayorInfo' => 1,
-            'billAmount' => $bill->amount,
-            'billExternalReferenceNo' => $bill->id,
-            'billTo' => $submission->participant->name,
-            'billEmail' => $submission->participant->email,
-            'billPhone' => $submission->participant->telephoneNumber,
-            'billReturnUrl' => route('participant.payment.pay.return'),
-            'billCallbackUrl' => route('participant.payment.pay.callback'),
-        ]);
+        if(!isset($bill->code)){
+            $response = $this->createBill($submission->form->category->code, (object)[
+                'billName' => 'ARAHE' . $submission->form->session->year . ' - ' . $submission->participant->name,
+                'billDescription' => 'Payment for ARAHE' . $submission->form->session->year . ' participation from ' . $submission->participant->name,
+                'billPriceSetting' => 1,
+                'billPayorInfo' => 1,
+                'billAmount' => $bill->amount,
+                'billExternalReferenceNo' => $bill->id,
+                'billTo' => $submission->participant->name,
+                'billEmail' => $submission->participant->email,
+                'billPhone' => $submission->participant->telephoneNumber,
+                'billReturnUrl' => route('participant.payment.pay.return'),
+                'billCallbackUrl' => route('participant.payment.pay.callback'),
+            ]);
+            $bill->code = $response->BillCode;
+        }
 
         $bill->pay_attempt_at = Carbon::now();
-        $bill->code = $response->BillCode;
 
         $bill->save();
 

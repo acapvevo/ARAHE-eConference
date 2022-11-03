@@ -69,7 +69,8 @@
                             <thead class="table-primary">
                                 <tr>
                                     <th>Name</th>
-                                    <th>Date</th>
+                                    <th>Date Attempt</th>
+                                    <th>Date Completed</th>
                                     <th>Amount Paid</th>
                                 </tr>
                             </thead>
@@ -86,7 +87,10 @@
                                                 href="{{ route('admin.payment.bill.view', $bill->id) }}">{{ $submission->participant->name }}</a>
                                         </td>
                                         <td>
-                                            {{$bill->getPayAt()}}
+                                            {{$bill->getPayAttemptAt()}}
+                                        </td>
+                                        <td>
+                                            {{$bill->getPayCompleteAt()}}
                                         </td>
                                         <td>
                                             RM {{number_format($bill->amount, 2)}}

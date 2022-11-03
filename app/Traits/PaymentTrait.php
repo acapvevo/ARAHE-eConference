@@ -91,7 +91,7 @@ trait PaymentTrait
         ];
 
         $res = $this->post($url, $data);
-        return $res;
+        return (object) $res[0];
     }
 
     public function billPaymentLink($bill_code)

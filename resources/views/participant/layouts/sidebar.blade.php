@@ -11,6 +11,10 @@
                     href="{{ route('participant.competition.submission.list') }}"><i
                         class="fas fa-file-upload"></i><span>Submission</span></a></li>
             <li class="nav-item"><a
+                    class="nav-link {{ request()->routeIs('participant.payment.record.*') ? 'active' : '' }}"
+                    href="{{ route('participant.payment.record.list') }}"><i
+                        class="fas fa-money-check"></i><span>Payment Record</span></a></li>
+            <li class="nav-item"><a
                     class="nav-link {{ request()->routeIs('participant.system.manual.*') ? 'active' : '' }}"
                     href="{{ route('participant.system.manual.view') }}"><i class="fas fa-book-reader"></i><span>User
                         Manual</span></a></li>

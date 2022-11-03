@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -42,11 +43,16 @@ class Bill extends Model
 
     public function getPayAttemptAt()
     {
-        return Carbon::parse($this->pay_attempt_at)->translatedFormat('j F Y');
+        return Carbon::parse($this->pay_attempt_at)->translatedFormat('j F Y h:m:s A');
     }
 
     public function getPayCompleteAt()
     {
-        return Carbon::parse($this->pay_complete_at)->translatedFormat('j F Y');
+        return Carbon::parse($this->pay_complete_at)->translatedFormat('j F Y h:m:s A');
+    }
+
+    public function getStatusPayment()
+    {
+        return DB::table('status_payment')->where('code', $this->status)->first();
     }
 }

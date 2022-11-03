@@ -1,10 +1,10 @@
-@extends('admin.layouts.app')
+@extends('participant.layouts.app')
 
 @section('styles')
 @endsection
 
 @section('content')
-    <h3 class="text-dark mb-1">Payment Management - Bill Detail</h3>
+    <h3 class="text-dark mb-1">Payment Record - Bill Detail</h3>
 
     <div class="card">
         <div class="card-body">
@@ -12,8 +12,8 @@
                 <table class="table table-bordered" id="table_id">
                     <tbody>
                         <tr>
-                            <th class="w-25">Participant</th>
-                            <td>{{ $bill->submission->participant->name }}</td>
+                            <th class="w-25">Year</th>
+                            <td>{{ $bill->submission->form->session->year }}</td>
                         </tr>
                         <tr>
                             <th class="w-25">Date Attempt</th>
@@ -32,23 +32,27 @@
                             <td>{{ $bill->getStatusPayment()->description }}</td>
                         </tr>
                         <tr>
+                            <th class="w-25">Payment Link</th>
+                            <td><a href="{{ $paymentLink }}" target="_blank">{{ $paymentLink }}</a></td>
+                        </tr>
+                        <tr>
                             <th colspan="2" class="text-center">ToyyibPay Infomation</th>
                         </tr>
                         <tr>
                             <th class="w-25">Bill Name</th>
-                            <td>{{ $infoToyyibPay->billName ?? '' }}</td>
+                            <td>{{ $infoToyyibpay->billName ?? '' }}</td>
                         </tr>
                         <tr>
                             <th class="w-25">Bill Description</th>
-                            <td>{{ $infoToyyibPay->billDescription ?? '' }}</td>
+                            <td>{{ $infoToyyibpay->billDescription ?? '' }}</td>
                         </tr>
                         <tr>
                             <th class="w-25">Bill Payment Channel</th>
-                            <td>{{ $infoToyyibPay->billpaymentChannel ?? '' }}</td>
+                            <td>{{ $infoToyyibpay->billpaymentChannel ?? '' }}</td>
                         </tr>
                         <tr>
                             <th class="w-25">Bill Payment Invoice Number</th>
-                            <td>{{ $infoToyyibPay->billpaymentInvoiceNo ?? '' }}</td>
+                            <td>{{ $infoToyyibpay->billpaymentInvoiceNo ?? '' }}</td>
                         </tr>
                     </tbody>
                 </table>

@@ -17,6 +17,7 @@ use App\Http\Controllers\Participant\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Participant\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Participant\Competition\SubmissionController;
 use App\Http\Controllers\Participant\Payment\PayController;
+use App\Http\Controllers\Participant\Payment\RecordController;
 
 Route::prefix('participant')->name('participant.')->group(function () {
 
@@ -109,6 +110,11 @@ Route::prefix('participant')->name('participant.')->group(function () {
             Route::prefix('pay')->name('pay.')->group(function () {
                 Route::post('', [PayController::class, 'main'])->name('main');
                 Route::get('/return', [PayController::class, 'return'])->name('return');
+            });
+
+            Route::prefix('record')->name('record.')->group(function () {
+                Route::get('', [RecordController::class, 'list'])->name('list');
+                Route::get('/{id}', [RecordController::class, 'view'])->name('view');
             });
         });
 
