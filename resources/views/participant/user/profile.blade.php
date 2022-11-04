@@ -1,5 +1,9 @@
 @extends('participant.layouts.app')
 
+@section('styles')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+@endsection
+
 @section('content')
     <h3 class="text-dark mb-1">Profile</h3>
 
@@ -33,7 +37,8 @@
     <div class="modal fade" id="UpdateProfileModal" tabindex="-1" aria-labelledby="UpdateProfileModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-xl">
-            <form action="{{ route('participant.user.profile.update') }}" method="post">
+            <form action="{{ route('participant.user.profile.update') }}" method="post" onsubmit="process(event)"
+                id="myForm">
                 @csrf
                 @method('PATCH')
                 <div class="modal-content">
@@ -64,11 +69,12 @@
                                 </div>
                             @enderror
                         </div>
-                        <div class="form-floating mb-3">
-                            <input class="form-control {{ $errors->has('telephoneNumber') ? 'is-invalid' : '' }}" id="telephoneNumber"
-                                type="string" placeholder="Enter Email Address" name="telephoneNumber"
+                        <div class=" mb-3">
+                            <input class="form-control {{ $errors->has('telephoneNumber') ? 'is-invalid' : '' }}"
+                                id="telephoneNumber" type="string" placeholder="Enter Email Address" name="telephoneNumber"
                                 value="{{ old('telephoneNumber', $user->telephoneNumber) }}">
-                            <label class="form-label" for="telephoneNumber">Telephone Number</label>
+                            <div class="invalid-feedback" id="alert-error" style="display: none;">
+                            </div>
                             @error('telephoneNumber')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -84,4 +90,37 @@
             </form>
         </div>
     </div>
+@endsection
+
+@section('scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+
+    <script>
+        const phoneInputField = document.querySelector("#telephoneNumber");
+        const phoneInput = window.intlTelInput(phoneInputField, {
+            initialCountry: "my",
+            preferredCountries: ["my"],
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+        });
+
+        const error = document.querySelector("#alert-error");
+
+        function process(event) {
+            event.preventDefault();
+
+            const phoneNumber = phoneInput.getNumber();
+
+            error.style.display = "none";
+            phoneInputField.classList.remove("is-invalid");
+
+            if (phoneInput.isValidNumber()) {
+                phoneInputField.value = phoneNumber;
+                document.getElementById("myForm").submit();
+            } else {
+                error.style.display = "block";
+                error.innerHTML = `Invalid phone number.`;
+                phoneInputField.classList.add("is-invalid");
+            }
+        }
+    </script>
 @endsection

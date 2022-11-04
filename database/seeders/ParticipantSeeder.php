@@ -23,14 +23,14 @@ class ParticipantSeeder extends Seeder
             'name' => 'reviewer1',
             'email' => 'reviewer1@gmail.com',
             'password' => Hash::make('reviewer1'),
-            'telephoneNumber' => $faker->numerify('01#-#######'),
+            'telephoneNumber' => $faker->mobileNumber(),
         ]);
 
         Participant::create([
             'name' => 'participant1',
             'email' => 'participant1@gmail.com',
             'password' => Hash::make('participant1'),
-            'telephoneNumber' => $faker->numerify('01#-#######'),
+            'telephoneNumber' => $faker->mobileNumber(),
         ]);
     }
 }

@@ -38,13 +38,16 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:participants',
+            'telephoneNumber' => 'required|string|max:255|unique:App\Models\Participant,telephoneNumber',
             'password' => 'required|string|confirmed|min:8',
         ]);
 
         Auth::guard('participant')->login($participant = Participant::create([
             'name' => $request->name,
             'email' => $request->email,
+            'telephoneNumber' => $request->telephoneNumber,
             'password' => Hash::make($request->password),
+            'login_at' =>Carbon::now(),
         ]));
 
         VerifyEmail::createUrlUsing(function ($notifiable) {

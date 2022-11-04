@@ -21,7 +21,11 @@ class ProfileController extends Controller
         $user = Auth::guard('reviewer')->user();
 
         $request->validate([
-            'name' => 'required|string',
+            'name' => [
+                'required',
+                'string',
+                Rule::unique('participants')->ignore($user->id),
+            ],
             'email' => [
                 'required',
                 'email',
