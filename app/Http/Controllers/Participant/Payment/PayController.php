@@ -96,5 +96,7 @@ class PayController extends Controller
         $bill->status = $request->status;
 
         $bill->save();
+
+        return response()->noContent();
     }
 }
