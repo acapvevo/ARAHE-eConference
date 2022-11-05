@@ -10,7 +10,7 @@ use App\Traits\PaymentTrait;
 class BillController extends Controller
 {
     use PaymentTrait;
-    
+
     public function view($id)
     {
         $bill = Bill::find($id);

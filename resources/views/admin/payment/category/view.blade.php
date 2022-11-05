@@ -127,7 +127,7 @@
                             <input type="number" step="0.01"
                                 class="form-control {{ $errors->has('standardAmount') ? 'is-invalid' : '' }}"
                                 id="standardAmount" name="standardAmount" placeholder="Enter Standard Amount"
-                                aria-label="Standard Amount" aria-describedby="standardAmountLabel">
+                                aria-label="Standard Amount" aria-describedby="standardAmountLabel" value="{{old('standardAmount', $category->standardAmount)}}">
                             @error('standardAmount')
                                 <div class="invalid-feedback">
                                     {{ $message }}
