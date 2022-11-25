@@ -13,7 +13,11 @@ class CategoryController extends Controller
 
     public function list()
     {
-        $categories = Category::all();
+        $categories = Category::with('form')->get();
+
+        foreach($categories as $category){
+            $category->form->load('session');
+        }
 
         return view('admin.payment.category.list')->with([
             'categories' => $categories,

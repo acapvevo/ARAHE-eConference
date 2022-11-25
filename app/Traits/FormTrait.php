@@ -49,7 +49,7 @@ trait FormTrait
 
     public function getForms()
     {
-        return Form::all();
+        return Form::with('session')->get();
     }
 
     public function getForm($id)

@@ -52,12 +52,6 @@
                     </div>
 
                     <button class="btn btn-primary d-block btn-user w-100" type="submit">Login</button>
-
-                    <hr><a class="btn btn-primary d-block btn-google btn-user w-100 mb-2" role="button"><i
-                            class="fab fa-google"></i>&nbsp; Login with Google</a><a
-                        class="btn btn-primary d-block btn-facebook btn-user w-100" role="button"><i
-                            class="fab fa-facebook-f"></i>&nbsp; Login with Facebook</a>
-                    <hr>
                 </form>
                 <div class="text-center"><a class="small" href="{{ route('reviewer.password.request') }}">Forgot
                         Password?</a></div>

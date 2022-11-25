@@ -15,7 +15,7 @@ class FormController extends Controller
 
     public function list()
     {
-        $forms = Form::all();
+        $forms = Form::with('session')->get();
 
         $yearsAvailable = $this->getYearsAvailable();
 
