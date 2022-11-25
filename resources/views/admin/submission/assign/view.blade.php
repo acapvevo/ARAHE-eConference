@@ -83,7 +83,7 @@
                                         @php
                                             dd($reviewer->submissions);
                                             $submissions = $reviewer->submissions->filter(function ($currentSubmission) use ($submission) {
-                                                return $currentSubmission->session->id === $submission->session->id;
+                                                return $currentSubmission->form->session->id === $submission->form->session->id;
                                             });
                                         @endphp
 
