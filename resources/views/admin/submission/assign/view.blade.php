@@ -81,7 +81,6 @@
                                 <tbody>
                                     @foreach ($reviewers as $index => $reviewer)
                                         @php
-                                            dd($reviewer->submissions);
                                             $submissions = $reviewer->submissions->filter(function ($currentSubmission) use ($submission) {
                                                 return $currentSubmission->form->session->id === $submission->form->session->id;
                                             });
