@@ -13,7 +13,7 @@ class PaperController extends Controller
 
     public function list()
     {
-        $submissions = Submission::all();
+        $submissions = Submission::with(['form', 'participant', 'reviewer', 'reviewer.participant'])->get();
 
         return view('admin.submission.paper.list')->with([
             'submissions' => $submissions

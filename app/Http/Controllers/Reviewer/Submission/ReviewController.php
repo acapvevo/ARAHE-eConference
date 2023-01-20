@@ -36,9 +36,8 @@ class ReviewController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'submit' => 'required|in:save,reject',
-            'comment' => 'required_if:submit,save|nullable|string',
-            'rubrics' => 'array|required_if:submit,save',
+            'comment' => 'required|nullable|string',
+            'rubrics' => 'array|required',
             'rubrics.*' => [
                 'required',
                 'string',
@@ -59,14 +58,6 @@ class ReviewController extends Controller
         ]);
 
         $submission = $this->getSubmission($id);
-
-        if($request->submit === 'reject'){
-            $submission->status_code = 'R';
-            $submission->comment = 'rejected by Reviewer';
-            $submission->save();
-
-            return redirect(route('reviewer.submission.review.list'))->with('success', 'Submission from ' . $submission->participant->name . 'has been successfully rejected.');
-        }
 
         $totalMark = 0;
         foreach($request->rubrics as $id => $value) {

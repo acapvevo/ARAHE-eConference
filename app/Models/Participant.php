@@ -22,7 +22,6 @@ class Participant extends Authenticatable
         'name',
         'email',
         'image',
-        'telephoneNumber',
         'password',
         'login_at',
     ];
@@ -51,6 +50,30 @@ class Participant extends Authenticatable
     public function getImageURL()
     {
         return isset($this->image) ? route('participant.user.picture.show') : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png';
+    }
+
+    /**
+     * Get the Address for the Participant.
+     */
+    public function address()
+    {
+        return $this->hasOne(Address::class);
+    }
+
+    /**
+     * Get the Institution for the Participant.
+     */
+    public function institution()
+    {
+        return $this->hasOne(Institution::class);
+    }
+
+    /**
+     * Get the Contact for the Participant.
+     */
+    public function contact()
+    {
+        return $this->hasOne(Contact::class);
     }
 
     /**
