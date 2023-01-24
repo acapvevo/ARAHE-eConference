@@ -24,6 +24,7 @@ class ParticipantSeeder extends Seeder
 
         $participant = Participant::create([
             'name' => 'reviewer1',
+            'registration_id' => 'ARAHE-2023-1',
             'email' => 'reviewer1@gmail.com',
             'password' => Hash::make('reviewer1'),
         ]);
@@ -50,6 +51,7 @@ class ParticipantSeeder extends Seeder
 
         Participant::create([
             'name' => 'participant1',
+            'registration_id' => 'ARAHE-2023-2',
             'email' => 'participant1@gmail.com',
             'password' => Hash::make('participant1'),
         ]);

@@ -24,6 +24,7 @@ class Participant extends Authenticatable
         'image',
         'password',
         'login_at',
+        'registration_id'
     ];
 
     /**
