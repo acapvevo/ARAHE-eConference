@@ -48,8 +48,7 @@ class RegisteredUserController extends Controller
             'institution.university' => [
                 'string',
                 'required',
-                'max:255',
-                new CheckUniversity
+                'max:255'
             ],
             'institution.faculty' => 'required|string|max:255',
             'institution.department' => 'nullable|string|max:255',
@@ -63,14 +62,12 @@ class RegisteredUserController extends Controller
             'address.state' => [
                 'string',
                 'required',
-                'max:255',
-                new CheckState
+                'max:255'
             ],
             'address.country' => [
                 'string',
                 'required',
-                'max:255',
-                new CheckCountry
+                'max:255'
             ],
         ]);
 
