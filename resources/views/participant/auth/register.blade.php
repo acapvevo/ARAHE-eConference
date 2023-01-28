@@ -22,19 +22,33 @@
                     @csrf
 
                     <nav>
-                        <div class="nav nav-pills" id="nav-tab" role="tablist">
+                        <div class="nav nav-pills nav-justified" id="nav-tab" role="tablist">
                             <button class="nav-link active" id="nav-account-tab" data-bs-toggle="tab"
                                 data-bs-target="#nav-account" type="button" role="tab" aria-controls="nav-account"
-                                aria-selected="true">Account Detail</button>
-                            <button class="nav-link" id="nav-institute-tab" data-bs-toggle="tab"
-                                data-bs-target="#nav-institute" type="button" role="tab" aria-controls="nav-institute"
-                                aria-selected="false">Institute</button>
+                                aria-selected="true">Account
+                                @error('account.*')
+                                    <span class="badge text-bg-danger">!</span>
+                                @enderror
+                            </button>
+                            <button class="nav-link" id="nav-institution-tab" data-bs-toggle="tab"
+                                data-bs-target="#nav-institution" type="button" role="tab"
+                                aria-controls="nav-institution" aria-selected="false">Institution
+                                @error('institution.*')
+                                    <span class="badge text-bg-danger">!</span>
+                                @enderror
+                            </button>
                             <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact"
-                                type="button" role="tab" aria-controls="nav-contact"
-                                aria-selected="false">Contact</button>
+                                type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Contact
+                                @error('contact.*')
+                                    <span class="badge text-bg-danger">!</span>
+                                @enderror
+                            </button>
                             <button class="nav-link" id="nav-address-tab" data-bs-toggle="tab" data-bs-target="#nav-address"
-                                type="button" role="tab" aria-controls="nav-address"
-                                aria-selected="false">Address</button>
+                                type="button" role="tab" aria-controls="nav-address" aria-selected="false">Address
+                                @error('address.*')
+                                    <span class="badge text-bg-danger">!</span>
+                                @enderror
+                            </button>
                         </div>
                     </nav>
                     <div class="tab-content pt-3" id="nav-tabContent">
@@ -42,10 +56,11 @@
                             aria-labelledby="nav-account-tab" tabindex="0">
 
                             <div class="mb-3">
-                                <input class="form-control form-control-user {{ $errors->has('name') ? 'is-invalid' : '' }}"
-                                    type="text" placeholder="Enter Name" name="name" id="name"
-                                    value="{{ old('name') }}" required autofocus>
-                                @error('name')
+                                <input
+                                    class="form-control form-control-user {{ $errors->has('account.name') ? 'is-invalid' : '' }}"
+                                    type="text" placeholder="Enter Name" name="account[name]" id="account.name"
+                                    value="{{ old('account.name') }}" autofocus>
+                                @error('account.name')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>
@@ -54,10 +69,10 @@
 
                             <div class="mb-3">
                                 <input
-                                    class="form-control form-control-user {{ $errors->has('email') ? 'is-invalid' : '' }}"
-                                    type="email" placeholder="Enter Email Address" name="email" id="email"
-                                    value="{{ old('email') }}" required>
-                                @error('email')
+                                    class="form-control form-control-user {{ $errors->has('account.email') ? 'is-invalid' : '' }}"
+                                    type="email" placeholder="Enter Email Address" name="account[email]"
+                                    id="account.email" value="{{ old('account.email') }}">
+                                @error('account.email')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>
@@ -66,10 +81,10 @@
 
                             <div class="mb-3">
                                 <input
-                                    class="form-control form-control-user {{ $errors->has('password') ? 'is-invalid' : '' }}"
-                                    type="password" id="password" placeholder="Enter Password" name="password" required
-                                    autocomplete="current-password">
-                                @error('password')
+                                    class="form-control form-control-user {{ $errors->has('account.password') ? 'is-invalid' : '' }}"
+                                    type="password" placeholder="Enter Password" name="account[password]"
+                                    id="account.password" autocomplete="current-password">
+                                @error('account.password')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>
@@ -78,11 +93,10 @@
 
                             <div class="mb-3">
                                 <input
-                                    class="form-control form-control-user {{ $errors->has('password_confirmation') ? 'is-invalid' : '' }}"
-                                    type="password" id="password_confirmation"
-                                    placeholder="Enter Password Again For Confirmation" name="password_confirmation"
-                                    required>
-                                @error('password_confirmation')
+                                    class="form-control form-control-user {{ $errors->has('account.password_confirmation') ? 'is-invalid' : '' }}"
+                                    type="password" placeholder="Enter Password Again For Confirmation"
+                                    name="account[password_confirmation]" id="account.password_confirmation">
+                                @error('account.password_confirmation')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>
@@ -90,14 +104,15 @@
                             </div>
 
                         </div>
-                        <div class="tab-pane fade" id="nav-institute" role="tabpanel" aria-labelledby="nav-institute-tab"
-                            tabindex="0">
+                        <div class="tab-pane fade" id="nav-institution" role="tabpanel"
+                            aria-labelledby="nav-institution-tab" tabindex="0">
 
                             <div class="mb-3">
                                 <input
-                                    class="form-control form-control-user {{ $errors->has('university') ? 'is-invalid' : '' }}"
-                                    type="text" placeholder="Enter University" list="universityList" name="university"
-                                    id="university" value="{{ old('university') }}" required>
+                                    class="form-control form-control-user {{ $errors->has('institution.university') ? 'is-invalid' : '' }}"
+                                    type="text" placeholder="Enter University" list="universityList"
+                                    name="institution[university]" id="institution.university"
+                                    value="{{ old('institution.university') }}">
                                 <datalist id="universityList">
                                 </datalist>
                                 @error('university')
@@ -109,10 +124,10 @@
 
                             <div class="mb-3">
                                 <input
-                                    class="form-control form-control-user {{ $errors->has('faculty') ? 'is-invalid' : '' }}"
-                                    type="text" placeholder="Enter Faculty" name="faculty" id="faculty"
-                                    value="{{ old('faculty') }}" required>
-                                @error('faculty')
+                                    class="form-control form-control-user {{ $errors->has('institution.faculty') ? 'is-invalid' : '' }}"
+                                    type="text" placeholder="Enter Faculty" name="institution[faculty]"
+                                    id="institution.faculty" value="{{ old('institution.faculty') }}">
+                                @error('institution.faculty')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>
@@ -121,10 +136,10 @@
 
                             <div class="mb-3">
                                 <input
-                                    class="form-control form-control-user {{ $errors->has('department') ? 'is-invalid' : '' }}"
-                                    type="text" placeholder="Enter Department" name="department" id="department"
-                                    value="{{ old('department') }}">
-                                @error('department')
+                                    class="form-control form-control-user {{ $errors->has('institution.department') ? 'is-invalid' : '' }}"
+                                    type="text" placeholder="Enter Department" name="institution[department]"
+                                    id="institution.department" value="{{ old('institution.department') }}">
+                                @error('institution.department')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>
@@ -137,12 +152,12 @@
 
                             <div class="mb-3" width="100%">
                                 <input
-                                    class="form-control form-control-user {{ $errors->has('telephoneNumber') ? 'is-invalid' : '' }}"
-                                    type="tel" id="telephoneNumber" placeholder="Enter Phone Number"
-                                    name="telephoneNumber" required>
-                                <div class="invalid-feedback" id="alert-error-telephoneNumber" style="display: none;">
+                                    class="form-control form-control-user {{ $errors->has('contact.phoneNumber') ? 'is-invalid' : '' }}"
+                                    type="tel" id="contact.phoneNumber" placeholder="Enter Phone Number"
+                                    name="contact[phoneNumber]" value="{{ old('contact.phoneNumber') }}">
+                                <div class="invalid-feedback" id="alert-error-phoneNumber" style="display: none;">
                                 </div>
-                                @error('telephoneNumber')
+                                @error('contact.phoneNumber')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>
@@ -151,12 +166,12 @@
 
                             <div class="mb-3" width="100%">
                                 <input
-                                    class="form-control form-control-user {{ $errors->has('faxNumber') ? 'is-invalid' : '' }}"
-                                    type="tel" id="faxNumber" placeholder="Enter Fax Number" name="faxNumber"
-                                    required>
+                                    class="form-control form-control-user {{ $errors->has('contact.faxNumber') ? 'is-invalid' : '' }}"
+                                    type="tel" id="contact.faxNumber" placeholder="Enter Fax Number"
+                                    name="contact[faxNumber]" value="{{ old('contact.faxNumber') }}">
                                 <div class="invalid-feedback" id="alert-error-faxNumber" style="display: none;">
                                 </div>
-                                @error('faxNumber')
+                                @error('contact.faxNumber')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>
@@ -169,10 +184,10 @@
 
                             <div class="mb-3">
                                 <input
-                                    class="form-control form-control-user {{ $errors->has('lineOne') ? 'is-invalid' : '' }}"
-                                    type="text" placeholder="Enter Address Line 1" name="lineOne" id="lineOne"
-                                    value="{{ old('lineOne') }}" required>
-                                @error('lineOne')
+                                    class="form-control form-control-user {{ $errors->has('address.lineOne') ? 'is-invalid' : '' }}"
+                                    type="text" placeholder="Enter Address Line 1" name="address[lineOne]"
+                                    id="address.lineOne" value="{{ old('address.lineOne') }}">
+                                @error('address.lineOne')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>
@@ -181,10 +196,10 @@
 
                             <div class="mb-3">
                                 <input
-                                    class="form-control form-control-user {{ $errors->has('lineTwo') ? 'is-invalid' : '' }}"
-                                    type="text" placeholder="Enter Address Line 2" name="lineTwo" id="lineTwo"
-                                    value="{{ old('lineTwo') }}" required>
-                                @error('lineTwo')
+                                    class="form-control form-control-user {{ $errors->has('address.lineTwo') ? 'is-invalid' : '' }}"
+                                    type="text" placeholder="Enter Address Line 2" name="address[lineTwo]"
+                                    id="address.lineTwo" value="{{ old('address.lineTwo') }}">
+                                @error('address.lineTwo')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>
@@ -193,10 +208,10 @@
 
                             <div class="mb-3">
                                 <input
-                                    class="form-control form-control-user {{ $errors->has('lineThree') ? 'is-invalid' : '' }}"
-                                    type="text" placeholder="Enter Address Line 3" name="lineThree" id="lineThree"
-                                    value="{{ old('lineThree') }}">
-                                @error('lineThree')
+                                    class="form-control form-control-user {{ $errors->has('address.lineThree') ? 'is-invalid' : '' }}"
+                                    type="text" placeholder="Enter Address Line 3" name="address[lineThree]"
+                                    id="address.lineThree" value="{{ old('address.lineThree') }}">
+                                @error('address.lineThree')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>
@@ -206,10 +221,10 @@
                             <div class="row mb-3">
                                 <div class="col">
                                     <input
-                                        class="form-control form-control-user {{ $errors->has('city') ? 'is-invalid' : '' }}"
-                                        type="text" placeholder="Enter City" name="city" id="city"
-                                        value="{{ old('city') }}">
-                                    @error('city')
+                                        class="form-control form-control-user {{ $errors->has('address.city') ? 'is-invalid' : '' }}"
+                                        type="text" placeholder="Enter City" name="address[city]" id="address.city"
+                                        value="{{ old('address.city') }}">
+                                    @error('address.city')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
@@ -217,10 +232,10 @@
                                 </div>
                                 <div class="col">
                                     <input
-                                        class="form-control form-control-user {{ $errors->has('postcode') ? 'is-invalid' : '' }}"
-                                        type="text" placeholder="Enter Postcode" name="postcode" id="postcode"
-                                        value="{{ old('postcode') }}">
-                                    @error('postcode')
+                                        class="form-control form-control-user {{ $errors->has('address.postcode') ? 'is-invalid' : '' }}"
+                                        type="text" placeholder="Enter Postcode" name="address[postcode]"
+                                        id="address.postcode" value="{{ old('address.postcode') }}">
+                                    @error('address.postcode')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
@@ -231,12 +246,12 @@
                             <div class="row mb-3">
                                 <div class="col">
                                     <input
-                                        class="form-control form-control-user {{ $errors->has('state') ? 'is-invalid' : '' }}"
-                                        type="text" placeholder="Enter State" name="state" id="state"
-                                        value="{{ old('state') }}" list="stateList">
+                                        class="form-control form-control-user {{ $errors->has('address.state') ? 'is-invalid' : '' }}"
+                                        type="text" placeholder="Enter State" name="address[state]"
+                                        id="address.state" value="{{ old('address.state') }}" list="stateList">
                                     <datalist id="stateList">
                                     </datalist>
-                                    @error('city')
+                                    @error('address.state')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
@@ -244,12 +259,12 @@
                                 </div>
                                 <div class="col">
                                     <input
-                                        class="form-control form-control-user {{ $errors->has('country') ? 'is-invalid' : '' }}"
-                                        type="text" placeholder="Enter Country" name="country" id="country"
-                                        value="{{ old('country') }}" list="countryList">
+                                        class="form-control form-control-user {{ $errors->has('address.country') ? 'is-invalid' : '' }}"
+                                        type="text" placeholder="Enter Country" name="address[country]"
+                                        id="address.country" value="{{ old('address.country') }}" list="countryList">
                                     <datalist id="countryList">
                                     </datalist>
-                                    @error('country')
+                                    @error('address.country')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>

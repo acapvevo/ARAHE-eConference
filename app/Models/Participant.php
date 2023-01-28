@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -53,6 +54,19 @@ class Participant extends Authenticatable
         return isset($this->image) ? route('participant.user.picture.show') : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png';
     }
 
+    public function generateNewRegistrationID()
+    {
+        $currentYearParticipants = DB::table('participants')->where('registration_id', 'LIKE', '%ARAHE-' . Carbon::now()->year . '-%')->get();
+
+        if ($currentYearParticipants->isEmpty()) {
+            $latestIndex = 0;
+        } else {
+            $latestIndex = (int) explode('-', $currentYearParticipants->last()->registration_id)[2];
+        }
+
+        $this->registration_id = 'ARAHE-' . Carbon::now()->year . '-' . ($latestIndex + 1);
+    }
+
     /**
      * Get the Address for the Participant.
      */
@@ -100,7 +114,7 @@ class Participant extends Authenticatable
 
     public function getImageSrc()
     {
-        if(isset($this->image)){
+        if (isset($this->image)) {
             $image = Storage::get('profile_picture/participant/' . $this->image);
             $type = pathinfo('profile_picture/participant/' . $this->image, PATHINFO_EXTENSION);
             return 'data:image/' . $type . ';base64,' . base64_encode($image);
