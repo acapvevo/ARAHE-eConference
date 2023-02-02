@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
-class Category extends Model
+class Duration extends Model
 {
     use HasFactory;
 
@@ -16,7 +17,8 @@ class Category extends Model
      */
     protected $fillable = [
         'name',
-        'needProof'
+        'start',
+        'end',
     ];
 
     /**
@@ -24,7 +26,10 @@ class Category extends Model
      *
      * @var array
      */
-    protected $casts = [];
+    protected $casts = [
+        'start' => 'date',
+        'end' => 'date'
+    ];
 
     /**
      * Get the Form that owns the Session.

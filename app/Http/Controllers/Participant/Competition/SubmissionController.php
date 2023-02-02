@@ -6,7 +6,9 @@ use App\Traits\FormTrait;
 use App\Models\Submission;
 use Illuminate\Http\Request;
 use App\Traits\SubmissionTrait;
+use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
 
 class SubmissionController extends Controller
@@ -33,53 +35,63 @@ class SubmissionController extends Controller
     public function view($form_id)
     {
         $participant = Auth::guard('participant')->user();
-        if (Submission::where('form_id', $form_id)->where('participant_id', $participant->id)->exists()) {
-            $submission = Submission::where('form_id', $form_id)->where('participant_id', $participant->id)->first();
+        $submissionQuery = Submission::where('form_id', $form_id)->where('participant_id', $participant->id);
+
+        if ($submissionQuery->exists()) {
+            $submission = $submissionQuery->first();
         } else {
-            $submission = Submission::create([
+            $submission = new Submission([
                 'form_id' => $form_id,
                 'participant_id' => $participant->id,
-                'status_code' => 'N',
+                'status_code' => 'NR',
             ]);
-        }
 
-        session(['submission_id' => $submission->id]);
+            $submission->generateNewRegistrationID();
+        }
 
         return view('participant.competition.submissions.view')->with([
             'submission' => $submission,
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function register(Request $request)
     {
         $request->validate([
-            'abstract' => 'required|string',
-            'title' => 'required|string',
-            'paper' => [
-                'required',
+            'form_id' => 'required|integer|exists:Form,id',
+            'participant_id' => 'required|string|exists:Participant,id',
+            'registration_id' => 'required|string',
+            'register_as' => 'required|string',
+            'category_id' => 'required|string|exists:Category,id',
+            'proof' => [
+                'sometimes',
+                Rule::requiredIf(function () {
+                    $category = Category::find(request('category_id'));
+
+                    return $category->needProof;
+                }),
                 'file',
-                'mimes:pdf',
+                'mimes:jpg,png,jpeg,pdf',
                 'max:4096',
             ]
         ]);
 
-        $submission = Submission::find($id);
+        $submission = new Submission;
 
-        $submission->title = $request->title;
-        $submission->abstract = $request->abstract;
+        $submission->form_id = $request->form_id;
+        $submission->participant_id = $request->participant_id;
+        $submission->registration_id = $request->registration_id;
+        $submission->register_as = $request->register_as;
+        $submission->category_id = $request->category_id;
 
-        if($request->has('paper')){
-            $submission->uploadPaper('paper', $request);
+        // safe proof if available
+        if ($request->file('proof')) {
+            $fileName = preg_replace('/\s+/', '_', $submission->participant_id . $request->file('proof')->extension());
+            $registration_id_filename = str_replace('-', '_', $submission->registration_id);
+            $request->file('proof')->storeAs('ARAHE' . $submission->form->session->year . '/' . $registration_id_filename, $fileName);
+            $submission->proof = $fileName;
         }
 
-        if($submission->status_code === 'N'){
-            $submission->status_code = 'P';
-        } else if($submission->status_code === 'C'){
-            $submission->status_code = 'IR';
-            $submission->deletePaper('correction');
-            $submission->totalMark = 0;
-            $submission->comment = null;
-        }
+        $submission->status = 'N';
 
         $submission->save();
 

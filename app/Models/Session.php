@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class Session extends Model
 {
@@ -19,7 +20,8 @@ class Session extends Model
         'form_id',
         'year',
         'submission',
-        'review',
+        'registration',
+        'congress',
     ];
 
     /**
@@ -29,7 +31,8 @@ class Session extends Model
      */
     protected $casts = [
         'submission' => AsCollection::class,
-        'review' => AsCollection::class,
+        'registration' => AsCollection::class,
+        'congress' => AsCollection::class,
     ];
 
     /**
@@ -38,5 +41,10 @@ class Session extends Model
     public function form()
     {
         return $this->belongsTo(Form::class);
+    }
+
+    public function returnDateString($attribute, $point)
+    {
+        return Carbon::parse($this->{$attribute}[$point])->translatedFormat('j F Y');
     }
 }

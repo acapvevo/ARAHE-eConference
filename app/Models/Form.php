@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -49,12 +50,21 @@ class Form extends Model
     }
 
     /**
-     * Get the Category associated with the Form.
+     * Get the Categories associated with the Form.
      */
-    public function category()
+    public function categories()
     {
-        return $this->hasOne(Category::class);
+        return $this->hasMany(Category::class);
     }
+
+    /**
+     * Get the Durations associated with the Form.
+     */
+    public function Durations()
+    {
+        return $this->hasMany(Duration::class);
+    }
+
 
     public function calculateFullMark()
     {

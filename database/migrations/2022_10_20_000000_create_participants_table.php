@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::create('participants', function (Blueprint $table) {
             $table->id();
-            $table->string('registration_id')->unique();
 
             $table->string('name');
             $table->string('email')->unique();

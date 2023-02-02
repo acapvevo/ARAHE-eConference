@@ -78,7 +78,6 @@ class RegisteredUserController extends Controller
             'login_at' => Carbon::now(),
         ]);
 
-        $participant->generateNewRegistrationID();
         $participant->save();
 
         $participant->contact()->save(new Contact([

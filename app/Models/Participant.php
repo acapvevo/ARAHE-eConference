@@ -24,8 +24,7 @@ class Participant extends Authenticatable
         'email',
         'image',
         'password',
-        'login_at',
-        'registration_id'
+        'login_at'
     ];
 
     /**
@@ -52,19 +51,6 @@ class Participant extends Authenticatable
     public function getImageURL()
     {
         return isset($this->image) ? route('participant.user.picture.show') : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png';
-    }
-
-    public function generateNewRegistrationID()
-    {
-        $currentYearParticipants = DB::table('participants')->where('registration_id', 'LIKE', '%ARAHE-' . Carbon::now()->year . '-%')->get();
-
-        if ($currentYearParticipants->isEmpty()) {
-            $latestIndex = 0;
-        } else {
-            $latestIndex = (int) explode('-', $currentYearParticipants->last()->registration_id)[2];
-        }
-
-        $this->registration_id = 'ARAHE-' . Carbon::now()->year . '-' . ($latestIndex + 1);
     }
 
     /**

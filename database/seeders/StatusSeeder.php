@@ -16,6 +16,12 @@ class StatusSeeder extends Seeder
     public function run()
     {
         DB::table('status')->insertTs([
+            'label' => 'Not Registered Yet',
+            'code' => 'NR',
+            'description' => 'Participant did not registered for this conference. Please register first',
+        ]);
+
+        DB::table('status')->insertTs([
             'label' => 'No Submission',
             'code' => 'N',
             'description' => 'Waiting Participant to submit their paper',

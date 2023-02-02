@@ -13,14 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('sessions', function (Blueprint $table) {
+        Schema::create('durations', function (Blueprint $table) {
             $table->id();
 
             $table->integer('form_id');
-            $table->year('year');
-            $table->json('congress');
-            $table->json('registration');
-            $table->json('submission');
+            $table->string('name');
+            $table->date('start');
+            $table->date('end');
 
             $table->timestamps();
         });
@@ -33,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sessions');
+        Schema::dropIfExists('durations');
     }
 };

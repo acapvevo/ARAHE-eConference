@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Category extends Model
+class Fee extends Model
 {
     use HasFactory;
 
@@ -15,8 +15,9 @@ class Category extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'needProof'
+        'category_id',
+        'duration_id',
+        'amount',
     ];
 
     /**
@@ -27,10 +28,18 @@ class Category extends Model
     protected $casts = [];
 
     /**
-     * Get the Form that owns the Session.
+     * Get the Category that owns the Session.
      */
-    public function form()
+    public function category()
     {
-        return $this->belongsTo(Form::class);
+        return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * Get the Duration that owns the Session.
+     */
+    public function duration()
+    {
+        return $this->belongsTo(Duration::class);
     }
 }

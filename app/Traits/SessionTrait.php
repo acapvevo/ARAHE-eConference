@@ -12,14 +12,9 @@ trait SessionTrait
         return Session::create([
             'form_id' => $form_id,
             'year' => (int) $session['year'],
-            'submission' => [
-                'start' => null,
-                'end' => null
-            ],
-            'review' => [
-                'start' => null,
-                'end' => null
-            ],
+            'submission' =>  $session['submission'],
+            'registration' => $session['registration'],
+            'congress' => $session['congress'],
         ]);
     }
 

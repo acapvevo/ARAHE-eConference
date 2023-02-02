@@ -101,28 +101,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::get('', [PictureController::class, 'show'])->name('show');
             });
         });
-
-        Route::prefix('member')->name('member.')->group(function () {
-            Route::prefix('participant')->name('participant.')->group(function () {
-                Route::get('', [ParticipantController::class, 'list'])->name('list');
-                Route::get('/{id}', [ParticipantController::class, 'view'])->name('view');
-                Route::patch('/{id}', [ParticipantController::class, 'update'])->name('update');
-                Route::post('/download', [ParticipantController::class, 'download'])->name('download');
-            });
-
-            Route::prefix('reviewer')->name('reviewer.')->group(function () {
-                Route::get('', [ReviewerController::class, 'list'])->name('list');
-                Route::get('/{id}', [ReviewerController::class, 'view'])->name('view');
-                Route::patch('/{id}', [ReviewerController::class, 'update'])->name('update');
-            });
-        });
-
         Route::prefix('competition')->name('competition.')->group(function () {
             Route::prefix('form')->name('form.')->group(function () {
                 Route::get('', [FormController::class, 'list'])->name('list');
                 Route::post('', [FormController::class, 'create'])->name('create');
                 Route::get('/{id}', [FormController::class, 'view'])->name('view');
                 Route::patch('/{id}', [FormController::class, 'update'])->name('update');
+                Route::patch('/modify/{id}', [FormController::class, 'modify'])->name('modify');
             });
 
             Route::prefix('rubric')->name('rubric.')->group(function () {
@@ -147,6 +132,22 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::post('/download', [PaperController::class, 'download'])->name('download');
             });
         });
+
+        Route::prefix('member')->name('member.')->group(function () {
+            Route::prefix('participant')->name('participant.')->group(function () {
+                Route::get('', [ParticipantController::class, 'list'])->name('list');
+                Route::get('/{id}', [ParticipantController::class, 'view'])->name('view');
+                Route::patch('/{id}', [ParticipantController::class, 'update'])->name('update');
+                Route::post('/download', [ParticipantController::class, 'download'])->name('download');
+            });
+
+            Route::prefix('reviewer')->name('reviewer.')->group(function () {
+                Route::get('', [ReviewerController::class, 'list'])->name('list');
+                Route::get('/{id}', [ReviewerController::class, 'view'])->name('view');
+                Route::patch('/{id}', [ReviewerController::class, 'update'])->name('update');
+            });
+        });
+
 
         Route::prefix('payment')->name('payment.')->group(function () {
             Route::prefix('category')->name('category.')->group(function () {

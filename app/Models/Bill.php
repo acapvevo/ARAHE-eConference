@@ -17,7 +17,7 @@ class Bill extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'submission_id',
+        'registration_id',
         'amount',
         'code',
         'pay_attempt_at',
@@ -34,11 +34,11 @@ class Bill extends Model
     protected $casts = [];
 
     /**
-     * Get the Submission that owns the Bill.
+     * Get the Registration that owns the Bill.
      */
-    public function submission()
+    public function registration()
     {
-        return $this->belongsTo(Submission::class);
+        return $this->belongsTo(Registration::class);
     }
 
     public function getPayAttemptAt()
