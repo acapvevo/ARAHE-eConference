@@ -19,14 +19,30 @@ class Submission extends Model
      */
     protected $fillable = [
         'registration_id',
-        'abstract',
         'title',
+        'author',
+        'coAuthor',
+        'presenter',
+        'abstract',
+        'abstractFile',
+        'keywords',
         'paper',
         'reviewer_id',
         'totalMark',
         'comment',
         'correction',
+        'status_code',
     ];
+
+    public function getStatusLabel()
+    {
+        return DB::table('status')->where('code', $this->status_code)->first()->label;
+    }
+
+    public function getStatusDescription()
+    {
+        return DB::table('status')->where('code', $this->status_code)->first()->description;
+    }
 
     /**
      * The attributes that should be cast.

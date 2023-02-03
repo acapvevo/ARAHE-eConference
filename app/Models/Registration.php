@@ -35,15 +35,15 @@ class Registration extends Model
 
     public function generateCode()
     {
-        $currentYearSubmissions = DB::table('submissions')->where('registration_id', 'LIKE', '%ARAHE-' . Carbon::now()->year . '-%')->get();
+        $currentYearSubmissions = DB::table('registrations')->where('code', 'LIKE', '%ARAHE-' . Carbon::now()->year . '-%')->get();
 
         if ($currentYearSubmissions->isEmpty()) {
             $latestIndex = 0;
         } else {
-            $latestIndex = (int) explode('-', $currentYearSubmissions->last()->registration_id)[2];
+            $latestIndex = (int) explode('-', $currentYearSubmissions->last()->code)[2];
         }
 
-        $this->registration_id = 'ARAHE-' . Carbon::now()->year . '-' . ($latestIndex + 1);
+        $this->code = 'ARAHE-' . Carbon::now()->year . '-' . ($latestIndex + 1);
     }
 
     public function getStatusLabel()
@@ -57,7 +57,7 @@ class Registration extends Model
     }
 
     /**
-     * Get the Form that use by the Submission.
+     * Get the Form that use by the Registration.
      */
     public function form()
     {
@@ -65,7 +65,7 @@ class Registration extends Model
     }
 
     /**
-     * Get the Participant that owns the Submission.
+     * Get the Participant that owns the Registration.
      */
     public function participant()
     {
@@ -73,7 +73,15 @@ class Registration extends Model
     }
 
     /**
-     * Get the Bill associated with the Submission.
+     * Get the Category associated with the Registration.
+     */
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * Get the Bill associated with the Registration.
      */
     public function bill()
     {

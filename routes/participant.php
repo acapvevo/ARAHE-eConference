@@ -102,6 +102,8 @@ Route::prefix('participant')->name('participant.')->group(function () {
             Route::prefix('registration')->name('registration.')->group(function () {
                 Route::get('', [RegistrationController::class, 'list'])->name('list');
                 Route::get('/{form_id}', [RegistrationController::class, 'view'])->name('view');
+                Route::post('', [RegistrationController::class, 'create'])->name('create');
+                Route::get('/category/{id}', [RegistrationController::class, 'category'])->name('category');
                 Route::patch('', [RegistrationController::class, 'update'])->name('update');
                 Route::post('/download', [RegistrationController::class, 'download'])->name('download');
             });

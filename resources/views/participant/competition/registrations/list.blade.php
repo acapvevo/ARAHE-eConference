@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-    <h3 class="text-dark mb-1">Submission - Form List</h3>
+    <h3 class="text-dark mb-1">Registration - Form List</h3>
 
     <div class="card">
         <div class="card-body">
@@ -20,8 +20,8 @@
                     <tbody>
                         @foreach ($forms as $form)
                             <tr>
-                                <td><a href="{{route('participant.competition.submission.view', ['form_id' => $form->id])}}">{{ $form->session->year }}</a></td>
-                                <td>{{isset($form->registration) ? $form->registration->getStatusLabel() : 'No Submission'}}</td>
+                                <td><a href="{{route('participant.competition.registration.view', ['form_id' => $form->id])}}">{{ $form->session->year }}</a></td>
+                                <td>{{isset($form->registration) ? $form->registration->getStatusLabel() : 'Not Registered Yet'}}</td>
                             </tr>
                         @endforeach
                     </tbody>

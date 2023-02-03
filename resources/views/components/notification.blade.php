@@ -57,11 +57,19 @@
         @endphp
     @endif
 
-    function confirmation(question, then){
+    function confirmation(question, then) {
         Swal.fire(
             'Confirmation',
             question,
             'question'
         ).then(then);
+    }
+
+    function apiError() {
+        Swal.fire(
+            'API Error',
+            "Please Try Again Later",
+            'error'
+        );
     }
 </script>
