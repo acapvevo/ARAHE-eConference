@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Participant\Auth;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Participant\Auth\LoginRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\Participant\Auth\LoginRequest;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -30,6 +31,10 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+
+        $user = Auth::guard('participant')->user();
+        $user->login_at = Carbon::now();
+        $user->save();
 
         return redirect(route('participant.dashboard'));
     }

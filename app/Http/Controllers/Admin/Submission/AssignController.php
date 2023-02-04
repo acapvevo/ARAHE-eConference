@@ -60,7 +60,7 @@ class AssignController extends Controller
 
         $submission->save();
 
-        return redirect(route('admin.submission.assign.list'))->with('success', 'Submission ' . $submission->registration->code . ' has successfully assigned to ' . $submission->reviewer->name);
+        return redirect(route('admin.submission.assign.list'))->with('success', 'Submission ' . $submission->registration->code . ' has successfully assigned to ' . $submission->reviewer->participant->name);
     }
 
     public function reject(Request $request, $id)
