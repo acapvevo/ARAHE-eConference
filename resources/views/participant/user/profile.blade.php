@@ -28,11 +28,6 @@
                         <th class="w-25">Email: </th>
                         <td>{{ $user->email }}</td>
                     </tr>
-                    <tr>
-                        <th class="w-25">Registration ID: </th>
-                        <td>{{ $user->registration_id }}</td>
-                    </tr>
-
 
                     <tr>
                         <th colspan="2" class="text-center"><strong>Institution</strong></th>
