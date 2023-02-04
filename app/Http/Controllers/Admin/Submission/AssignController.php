@@ -29,8 +29,7 @@ class AssignController extends Controller
     {
         $submission = $this->getSubmission($id);
         $reviewers = $this->getReviewers()->where('active', true)->reject(function ($reviewer) use ($submission) {
-            if(isset($submission->reviewer))
-                return $submission->reviewer->id === $reviewer->id;
+            return $submission->registration->participant->id === $reviewer->participant->id;
         });
 
         return view('admin.submission.assign.view')->with([
@@ -53,7 +52,7 @@ class AssignController extends Controller
             $submission->comment = 'rejected by Admin';
             $submission->save();
 
-            return redirect(route('admin.submission.assign.list'))->with('success', 'Submission from ' . $submission->participant->name . 'has been successfully rejected.');
+            return redirect(route('admin.submission.assign.list'))->with('success', 'Submission ' . $submission->registration->code . ' has been successfully rejected.');
         }
 
         $submission->reviewer_id = $request->reviewer_id;
@@ -61,7 +60,7 @@ class AssignController extends Controller
 
         $submission->save();
 
-        return redirect(route('admin.submission.assign.list'))->with('success', 'Submission for ' . $submission->participant->name . ' has successfully assigned to ' . $submission->reviewer->name);
+        return redirect(route('admin.submission.assign.list'))->with('success', 'Submission ' . $submission->registration->code . ' has successfully assigned to ' . $submission->reviewer->name);
     }
 
     public function reject(Request $request, $id)
@@ -80,9 +79,15 @@ class AssignController extends Controller
         return redirect(route('admin.submission.assign.list', ['id' => $submission->id]))->with('success', 'Submission for ' . $submission->participant->name . ' has successfully rejected');
     }
 
-    public function download($filename)
+    public function download(Request $request)
     {
-        $submission = $this->getSubmission(session('submission_id'));
-        return $this->getPaper('paper',$filename, $submission);
+        $request->validate([
+            'submission_id' => 'required|integer|exists:App\Models\Submission,id',
+            'type' => 'required|string|in:paperFile,correctionFile,abstractFile',
+            'filename' => 'required|string'
+        ]);
+
+        $submission = $this->getSubmission($request->submission_id);
+        return $this->getPaper($request->filename, $submission);
     }
 }

@@ -15,6 +15,7 @@ class Institution extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'participant_id',
         'name',
         'faculty',
         'department'

@@ -15,6 +15,7 @@ class Address extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'participant_id',
         'lineOne',
         'lineTwo',
         'lineThree',

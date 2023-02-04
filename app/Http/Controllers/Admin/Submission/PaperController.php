@@ -13,7 +13,9 @@ class PaperController extends Controller
 
     public function list()
     {
-        $submissions = Submission::with(['form', 'participant', 'reviewer', 'reviewer.participant'])->get();
+        $submissions = Submission::with(['registration.form', 'registration.participant', 'reviewer', 'reviewer.participant'])->get()->sortByDesc(function($submission){
+            return $submission->submitDate;
+        });
 
         return view('admin.submission.paper.list')->with([
             'submissions' => $submissions
@@ -33,11 +35,11 @@ class PaperController extends Controller
     {
         $request->validate([
             'submission_id' => 'required|integer|exists:App\Models\Submission,id',
-            'type' => 'required|string|in:paper,correction',
-            'filename' => 'required|required'
+            'type' => 'required|string|in:paperFile,correctionFile,abstractFile',
+            'filename' => 'required|string'
         ]);
 
-        $submission = Submission::find($request->submission_id);
-        return $this->getPaper($request->type, $request->filename, $submission);
+        $submission = $this->getSubmission($request->submission_id);
+        return $this->getPaper($request->filename, $submission);
     }
 }

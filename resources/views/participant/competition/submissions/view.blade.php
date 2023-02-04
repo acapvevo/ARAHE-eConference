@@ -373,6 +373,51 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="updateSubmissionModal" tabindex="-1" aria-labelledby="updateSubmissionModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title fs-5" id="updateSubmissionModalLabel">Update Submission</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('participant.competition.submission.update', ['id' => $submission->id]) }}" method="post"
+                        id="updateSubmission" enctype="multipart/form-data">
+                        @csrf
+                        @method('PATCH')
+
+                        <div class="mb-3">
+                            <label for="code" class="form-label">Registration ID</label>
+                            <input type="text" readonly class="form-control-plaintext" name="code"
+                                id="code"
+                                value="{{ old('code', $submission->registration->code) }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="paperFileCorrection" class="form-label">Paper with Correction File<small class="text-muted">(PDF or DOCX
+                                    only, Max:
+                                    4MB)</small></label>
+                            <input type="file"
+                                class="form-control {{ $errors->has('paperFileCorrection') ? 'is-invalid' : '' }}" name="paperFileCorrection"
+                                id="paperFileCorrection">
+                            @error('paperFileCorrection')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" form="updateSubmission">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
@@ -451,6 +496,10 @@
         @if ($errors->has('registration_id') || $errors->has('title') || $errors->has('authors.*') || $errors->has('coAuthors.*') || $errors->has('presenter') || $errors->has('abstract') || $errors->has('abstractFile') || $errors->has('paperFile') || $errors->has('keywords'))
             const createSubmissionModal = new bootstrap.Modal('#createSubmissionModal');
             createSubmissionModal.show();
+        @endif
+        @if ($errors->has('paperFileCorrection'))
+            const updateSubmissionModal = new bootstrap.Modal('#updateSubmissionModal');
+            updateSubmissionModal.show();
         @endif
     </script>
 @endsection

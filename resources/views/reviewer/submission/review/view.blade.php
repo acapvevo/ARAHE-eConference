@@ -10,8 +10,14 @@
     <div class="card">
         <div class="card-body">
             <div class="row pt-3 pb-3">
-                <div class="col d-flex justify-content-end">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#giveReviewModal">
+                <div class="col d-grid gap-2 d-md-flex justify-content-md-end">
+
+                    <button type="submit" class="btn btn-danger" form="giveReview" name="submit"
+                    value="reject" @disabled($submission->status_code !== 'IR')>
+                        Reject Submission
+                    </button>
+
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#giveReviewModal" @disabled($submission->status_code !== 'IR')>
                         Give Review
                     </button>
                 </div>
@@ -20,18 +26,124 @@
                 <table class="table table-bordered">
                     <tbody>
                         <tr>
+                            <th class='w-25'>Registration ID</th>
+                            <td colspan="2">{{ $submission->registration->code }}</td>
+                        </tr>
+                        <tr>
                             <th class='w-25'>Title</th>
-                            <td>{{ $submission->title }}</td>
+                            <td colspan="2">{{ $submission->title }}</td>
+                        </tr>
+                        @forelse ($submission->authors ?? [] as $index => $author)
+                            <tr>
+                                @if ($index == 0)
+                                    <th class='w-25' rowspan="{{ $submission->authors->count() }}">Authors</th>
+                                @endif
+                                <td>{{ $author['name'] }}</td>
+                                <td>{{ $author['email'] }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <th class='w-25'>Authors</th>
+                                <td colspan="2"></td>
+                            </tr>
+                        @endforelse
+                        @forelse ($submission->coAuthors ?? [] as $index => $coAuthor)
+                            <tr>
+                                @if ($index == 0)
+                                    <th class='w-25' rowspan="{{ $submission->coAuthors->count() }}">Co-Authors</th>
+                                @endif
+                                <td>{{ $coAuthor['name'] }}</td>
+                                <td>{{ $coAuthor['email'] }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <th class='w-25'>Co-Authors</th>
+                                <td colspan="2"></td>
+                            </tr>
+                        @endforelse
+                        <tr>
+                            <th class='w-25'>Presenter</th>
+                            <td colspan="2">{{ $submission->presenter }}</td>
                         </tr>
                         <tr>
                             <th class='w-25'>Abstract</th>
-                            <td>{{ $submission->abstract }}</td>
+                            <td colspan="2">{{ $submission->abstract }}</td>
                         </tr>
                         <tr>
-                            <th class='w-25'>Paper</th>
-                            <td><a target="_blank"
-                                    href="{{ route('reviewer.submission.review.download', ['filename' => $submission->paper]) }}">{{ $submission->paper }}</a>
+                            <th class='w-25'>Abstract File</th>
+                            @if (isset($submission->abstractFile))
+                                <td colspan="2">
+                                    <form action="{{ route('reviewer.submission.review.download') }}" method="post"
+                                        target="_blank">
+                                        @csrf
+                                        <input type="hidden" name="type" value="abstractFile">
+                                        <input type="hidden" name="filename" value="{{ $submission->abstractFile }}">
+                                        <button type="submit" class="btn btn-link" name="submission_id"
+                                            value="{{ $submission->id }}">{{ $submission->abstractFile }}</button>
+                                    </form>
+                                </td>
+                            @else
+                                <td colspan="2"></td>
+                            @endif
+                        </tr>
+                        <tr>
+                            <th class='w-25'>Keywords</th>
+                            <td colspan="2">{{ $submission->keywords }}</td>
+                        </tr>
+                        <tr>
+                            <th class='w-25'>Paper File</th>
+                            @if (isset($submission->paperFile))
+                                <td colspan="2">
+                                    <form action="{{ route('reviewer.submission.review.download') }}" method="post"
+                                        target="_blank">
+                                        @csrf
+                                        <input type="hidden" name="type" value="paperFile">
+                                        <input type="hidden" name="filename" value="{{ $submission->paperFile }}">
+                                        <button type="submit" class="btn btn-link" name="submission_id"
+                                            value="{{ $submission->id }}">{{ $submission->paperFile }}</button>
+                                    </form>
+                                </td>
+                            @else
+                                <td colspan="2"></td>
+                            @endif
+                        </tr>
+                        <tr>
+                            <th class='w-25'>Status</th>
+                            <td colspan="2">{{ $submission->getStatusDescription() }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-center table-primary" colspan='3'>Review</th>
+                        </tr>
+                        <tr>
+                            <th class='w-25'>Reviewer</th>
+                            <td colspan="2">{{ $submission->reviewer->participant->name ?? '' }}</td>
+                        </tr>
+                        <tr>
+                            <th class='w-25'>Total Mark</th>
+                            <td colspan="2">
+                                {{ $submission->calculatePercentage() === 0 ? '' : number_format($submission->calculatePercentage(), 2) . '%' }}
                             </td>
+                        </tr>
+                        <tr>
+                            <th class='w-25'>Comment</th>
+                            <td colspan="2">{!! $submission->comment ?? '' !!}</td>
+                        </tr>
+                        <tr>
+                            <th class='w-25'>Paper with Correction</th>
+                            @if (isset($submission->correctionFile))
+                                <td colspan="2">
+                                    <form action="{{ route('reviewer.submission.review.download') }}" method="post"
+                                        target="_blank">
+                                        @csrf
+                                        <input type="hidden" name="type" value="correctionFile">
+                                        <input type="hidden" name="filename" value="{{ $submission->correctionFile }}">
+                                        <button type="submit" class="btn btn-link" name="submission_id"
+                                            value="{{ $submission->id }}">{{ $submission->correctionFile }}</button>
+                                    </form>
+                                </td>
+                            @else
+                                <td colspan="2"></td>
+                            @endif
                         </tr>
                     </tbody>
                 </table>
@@ -111,7 +223,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($submission->form->rubrics as $rubric)
+                                            @foreach ($submission->registration->form->rubrics as $rubric)
                                                 <tr>
                                                     <td>{{ $rubric->description }}</td>
                                                     @foreach ($scales as $scale)

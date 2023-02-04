@@ -14,22 +14,19 @@
                     <thead class="table-primary">
                         <tr>
                             <th style="width:5%">Year</th>
-                            <th>Title</th>
+                            <th>Registration ID</th>
                             <th>Participant</th>
-                            <th>Reviewer</th>
                             <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($submissions as $submission)
                             <tr>
-                                <td>{{$submission->form->session->year}}</td>
+                                <td>{{$submission->registration->form->session->year}}</td>
                                 <td style="width:30%"><a
-                                        href="{{ route('admin.submission.paper.view', ['id' => $submission->id]) }}">{{ $submission->title }}</a>
+                                        href="{{ route('admin.submission.paper.view', ['id' => $submission->id]) }}">{{ $submission->registration->code }}</a>
                                 </td>
-                                <td>{{ $submission->participant->name }}</td>
-                                <td>{{ isset($submission->reviewer) ? $submission->reviewer->participant->name : 'No Assigned Reviewer' }}
-                                </td>
+                                <td>{{ $submission->registration->participant->name }}</td>
                                 <td>{{ $submission->getStatusLabel() }}</td>
                             </tr>
                         @endforeach

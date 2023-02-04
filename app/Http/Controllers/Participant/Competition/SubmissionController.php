@@ -84,6 +84,25 @@ class SubmissionController extends Controller
         return redirect(route('participant.competition.submission.view', ['registration_id' => $submission->registration->id]))->with('success', 'This Submission has successfully created');
     }
 
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'paperFileCorrection' => 'required|file|mimes:pdf,docx,doc|max:4096',
+        ]);
+
+        $submission = Submission::find($id);
+
+        $submission->saveFile('Submission_With_Correction', 'paperFile', $request->file('paperFileCorrection'));
+        $submission->totalMark = 0;
+        $submission->comment = null;
+        $submission->deleteFile('correctionFile');
+        $submission->status_code = 'IR';
+
+        $submission->save();
+
+        return redirect(route('participant.competition.submission.view', ['registration_id' => $submission->registration->id]))->with('success', 'This Submission has successfully updated');
+    }
+
     public function download(Request $request)
     {
         $request->validate([

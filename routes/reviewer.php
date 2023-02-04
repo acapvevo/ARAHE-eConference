@@ -100,7 +100,7 @@ Route::prefix('reviewer')->name('reviewer.')->group(function () {
                 Route::get('', [ReviewController::class, 'list'])->name('list');
                 Route::get('/{id}', [ReviewController::class, 'view'])->name('view');
                 Route::patch('/{id}', [ReviewController::class, 'update'])->name('update');
-                Route::get('/download/{filename}', [ReviewController::class, 'download'])->name('download');
+                Route::post('/download', [ReviewController::class, 'download'])->name('download');
             });
         });
 
