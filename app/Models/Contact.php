@@ -15,6 +15,7 @@ class Contact extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'participant_id',
         'phoneNumber',
         'faxNumber'
     ];

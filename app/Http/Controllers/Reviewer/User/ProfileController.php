@@ -21,30 +21,89 @@ class ProfileController extends Controller
         $user = Auth::guard('reviewer')->user();
 
         $request->validate([
-            'name' => [
+            'account.name' => [
                 'required',
                 'string',
-                Rule::unique('participants')->ignore($user->id),
+                Rule::unique('participants', 'name')->ignore($user->id),
             ],
-            'email' => [
+            'account.email' => [
                 'required',
                 'email',
                 'string',
-                Rule::unique('reviewers')->ignore($user->id),
+                Rule::unique('participants', 'email')->ignore($user->id),
             ],
-            'telephoneNumber' => [
+            'institution.university' => [
                 'required',
                 'string',
-                Rule::unique('participants')->ignore($user->id),
-            ]
+                'max:255'
+            ],
+            'institution.faculty' => 'required|string|max:255',
+            'institution.department' => 'nullable|string|max:255',
+            'contact.phoneNumber' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('contacts', 'phoneNumber')->ignore($user->contact->id),
+            ],
+            'contact.faxNumber' => [
+                'nullable',
+                'string',
+                'max:255',
+                Rule::unique('contacts', 'faxNumber')->ignore($user->contact->id),
+            ],
+            'address.lineOne' => 'required|string|max:255',
+            'address.lineTwo' => 'required|string|max:255',
+            'address.lineThree' => 'nullable|string|max:255',
+            'address.city' => 'required|string|max:255',
+            'address.postcode' => 'required|string|max:255',
+            'address.state' => [
+                'required',
+                'string',
+                'max:255'
+            ],
+            'address.country' => [
+                'required',
+                'string',
+                'max:255'
+            ],
         ]);
 
-        $user->participant->name = $request->name;
-        $user->email = $user->participant->email = $request->email;
-        $user->participant->telephoneNumber = $request->telephoneNumber;
-
+        $user->email = $request->account['email'];
         $user->save();
-        $user->participant->save();
+
+        $participant = $user->participant;
+
+        $participant->name = $request->name;
+        $participant->email = $request->account['email'];
+
+        $participant->save();
+
+        $institution = $user->participant->institution;
+
+        $institution->name = $request->institution['university'];
+        $institution->faculty = $request->institution['faculty'];
+        $institution->department = $request->institution['department'] ?? null;
+
+        $institution->save();
+
+        $contact = $user->participant->contact;
+
+        $contact->phoneNumber = $request->contact['phoneNumber'];
+        $contact->faxNumber = $request->contact['faxNumber'] ?? null;
+
+        $contact->save();
+
+        $address = $user->participant->address;
+
+        $address->lineOne = $request->address['lineOne'];
+        $address->lineTwo = $request->address['lineTwo'];
+        $address->lineThree = $request->address['lineThree'] ?? null;
+        $address->city = $request->address['city'];
+        $address->postcode = $request->address['postcode'];
+        $address->state = $request->address['state'];
+        $address->country = $request->address['country'];
+
+        $address->save();
 
         return redirect(route('reviewer.user.profile.view'))->with('success', 'Your User Profile Successfully updated');
     }

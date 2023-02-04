@@ -103,25 +103,18 @@ class Submission extends Model
         return ($this->totalMark / $this->registration->form->calculateFullMark()) * 100;
     }
 
-    public function uploadPaper($type, $request)
-    {
-        $fileName = preg_replace('/\s+/', '_', '[' . strtoupper($type) . '] ' . $this->title . '.' . $request->file($type)->getClientOriginalExtension());
-        $request->file($type)->storeAs('ARAHE' . $this->form->session->year . '/' . $type, $fileName);
-
-        $this->{$type} = $fileName;
-    }
-
     public function saveFile($type, $attribute, $file)
     {
         $fileName = preg_replace('/\s+/', '_', '[' . strtoupper($type) . '] ' . $this->title . '.' . $file->getClientOriginalExtension());
-        $file->storeAs('ARAHE' . $this->registration->form->session->year . '/paper/' . str_replace('-', '_', $this->registration->code), $fileName);
+        $file->storeAs('ARAHE' . $this->registration->form->session->year . '/submission/' . str_replace('-', '_', $this->registration->code), $fileName);
 
         $this->{$attribute} = $fileName;
     }
 
-    public function deletePaper($type)
+    public function deleteFile($attribute)
     {
-        Storage::delete('ARAHE' . $this->form->session->year . '/' . $type . '/' . $this->{$type});
-        $this->correction = null;
+        Storage::delete('ARAHE' . $this->registration->form->session->year . '/submission/' . str_replace('-', '_', $this->registration->code) . '/' . $this->{$attribute});
+
+        $this->{$attribute} = null;
     }
 }

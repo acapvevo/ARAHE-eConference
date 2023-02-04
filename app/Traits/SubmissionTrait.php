@@ -14,7 +14,7 @@ trait SubmissionTrait
 
     public function getPaper($fileName, $submission)
     {
-        $filePath = 'ARAHE' . $submission->registration->form->session->year . '/paper/' . str_replace('-', '_', $submission->registration->code) . '/' . $fileName;
+        $filePath = 'ARAHE' . $submission->registration->form->session->year . '/submission/' . str_replace('-', '_', $submission->registration->code) . '/' . $fileName;
         $fileExtension = pathinfo(storage_path($filePath), PATHINFO_EXTENSION);
 
         switch ($fileExtension) {
@@ -32,5 +32,10 @@ trait SubmissionTrait
     public function getSubmission($id)
     {
         return Submission::find($id);
+    }
+
+    public function getSubmissionByReviewerID($reviewer_id)
+    {
+        return Submission::where('reviewer_id', $reviewer_id)->get();
     }
 }
