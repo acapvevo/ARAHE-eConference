@@ -16,14 +16,16 @@
                             <th>Year</th>
                             <th>Title</th>
                             <th>Status</th>
+                            <th>Date Accepted</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($forms as $form)
+                        @foreach ($registrations as $registration)
                             <tr>
-                                <td><a href="{{route('participant.competition.submission.view', ['form_id' => $form->id])}}">{{ $form->session->year }}</a></td>
-                                <td>{{isset($form->submission->title) ? $form->submission->title : 'No Submission'}}</td>
-                                <td>{{isset($form->submission->status_code) ? $form->submission->getStatusLabel() : 'No Submission'}}</td>
+                                <td><a href="{{route('participant.competition.submission.view', ['registration_id' => $registration->id])}}">{{ $registration->form->session->year }}</a></td>
+                                <td>{{isset($registration->submission->title) ? $registration->submission->title : 'No Submission'}}</td>
+                                <td>{{isset($registration->submission->status_code) ? $registration->submission->getStatusLabel() : 'No Submission'}}</td>
+                                <td>{{isset($registration->submission->acceptedDate) ? $registration->submission->acceptedDate->translatedFormat('j F Y') : ''}}</td>
                             </tr>
                         @endforeach
                     </tbody>

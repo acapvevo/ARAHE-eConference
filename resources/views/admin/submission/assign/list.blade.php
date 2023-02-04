@@ -4,31 +4,29 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
 @endsection
 
-@php
-    $submissions = $form->submissions->where('status_code', 'P');
-@endphp
-
 @section('content')
     <h3 class="text-dark mb-1">Assign Reviewer - Submission List</h3>
 
     <div class="card">
-        <h4 class="card-header text-center">Submission for Year {{ $form->session->year }}</h4>
+        <h4 class="card-header text-center">Submission for ARAHE{{ $form->session->year }}</h4>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered" id="table_id">
                     <thead class="table-primary">
                         <tr>
+                            <th>Registration ID</th>
                             <th>Name</th>
                             <th>Title</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($submissions as $submission)
+                        @foreach ($registrations as $registration)
                             <tr>
-                                <td style="width:30%"><a
-                                        href="{{ route('admin.submission.assign.view', ['id' => $submission->id]) }}">{{ $submission->participant->name }}</a>
+                                <td style="width:50%"><a
+                                        href="{{ route('admin.submission.assign.view', ['id' => $registration->submission->id]) }}">{{ $registration->participant->name }}</a>
                                 </td>
-                                <td>{{$submission->title}}</td>
+                                <td>{{$registration->code}}</td>
+                                <td>{{$registration->submission->title}}</td>
                             </tr>
                         @endforeach
                     </tbody>

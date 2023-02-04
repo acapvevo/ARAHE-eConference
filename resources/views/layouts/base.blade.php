@@ -17,7 +17,6 @@
 @yield('root')
     </div>
     <script src="{{asset('lib/jquery/jquery.min.js')}}"></script>
-    <script src="{{asset('lib/chart.js/chart.min.js')}}"></script>
     <script src="{{asset('lib/sweetalert2/sweetalert2.min.js')}}"></script>
     <script src="{{asset('assets/bootstrap/js/bootstrap.min.js')}}"></script>
     <script src="{{asset('js/theme.js')}}"></script>

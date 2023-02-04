@@ -495,7 +495,7 @@
                                             </td>
                                         </tr>`;
 
-            $("#tableCategory").append(stringHtmlScaleElements);
+            $("#tableCategory tbody").append(stringHtmlScaleElements);
 
             iC++;
         });

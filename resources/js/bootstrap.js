@@ -30,3 +30,6 @@ window.Echo = new Echo({
     forceTLS: true
 });
 
+// Ensure the Chart class is loaded in the global context
+import Chart from 'chart.js/auto';
+window.Chart = Chart

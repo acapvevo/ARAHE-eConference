@@ -12,9 +12,9 @@ trait SubmissionTrait
         return preg_replace('/\s+/', '_', $fileName);
     }
 
-    public function getPaper($type, $fileName, $submission)
+    public function getPaper($fileName, $submission)
     {
-        $filePath = 'ARAHE' . $submission->form->session->year . '/' . $type . '/' . $fileName;
+        $filePath = 'ARAHE' . $submission->registration->form->session->year . '/paper/' . str_replace('-', '_', $submission->registration->code) . '/' . $fileName;
         $fileExtension = pathinfo(storage_path($filePath), PATHINFO_EXTENSION);
 
         switch ($fileExtension) {

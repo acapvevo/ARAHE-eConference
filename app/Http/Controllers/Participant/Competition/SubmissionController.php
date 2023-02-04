@@ -2,51 +2,42 @@
 
 namespace App\Http\Controllers\Participant\Competition;
 
-use App\Traits\FormTrait;
+use App\Models\Category;
 use App\Models\Submission;
 use Illuminate\Http\Request;
 use App\Traits\SubmissionTrait;
 use Illuminate\Validation\Rule;
+use App\Traits\RegistrationTrait;
 use App\Http\Controllers\Controller;
-use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
 
 class SubmissionController extends Controller
 {
-    use FormTrait, SubmissionTrait;
+    use RegistrationTrait, SubmissionTrait;
 
     public function list()
     {
-        $forms = $this->getForms()->sortByDesc('year');
         $participant = Auth::guard('participant')->user();
-
-        foreach ($forms as $form) {
-            if (Submission::where('form_id', $form->id)->where('participant_id', $participant->id)->exists()) {
-                $submission = Submission::where('form_id', $form->id)->where('participant_id', $participant->id)->first();
-                $form->setAttribute('submission', $submission);
-            }
-        }
+        $registrations = $this->getRegistrationByParticipantID($participant->id)->sortByDesc(function($registration){
+            return $registration->form->session->year;
+        });
 
         return view('participant.competition.submissions.list')->with([
-            'forms' => $forms,
+            'registrations' => $registrations,
         ]);
     }
 
-    public function view($form_id)
+    public function view($registration_id)
     {
-        $participant = Auth::guard('participant')->user();
-        $submissionQuery = Submission::where('form_id', $form_id)->where('participant_id', $participant->id);
+        $registration = $this->getRegistration($registration_id);
 
-        if ($submissionQuery->exists()) {
-            $submission = $submissionQuery->first();
+        if (isset($registration->submission)) {
+            $submission = $registration->submission;
         } else {
             $submission = new Submission([
-                'form_id' => $form_id,
-                'participant_id' => $participant->id,
-                'status_code' => 'NR',
+                'registration_id' => $registration_id,
+                'status_code' => 'N',
             ]);
-
-            $submission->generateNewRegistrationID();
         }
 
         return view('participant.competition.submissions.view')->with([
@@ -54,59 +45,54 @@ class SubmissionController extends Controller
         ]);
     }
 
-    public function register(Request $request)
+    public function create(Request $request)
     {
         $request->validate([
-            'form_id' => 'required|integer|exists:Form,id',
-            'participant_id' => 'required|string|exists:Participant,id',
-            'registration_id' => 'required|string',
-            'register_as' => 'required|string',
-            'category_id' => 'required|string|exists:Category,id',
-            'proof' => [
-                'sometimes',
-                Rule::requiredIf(function () {
-                    $category = Category::find(request('category_id'));
-
-                    return $category->needProof;
-                }),
-                'file',
-                'mimes:jpg,png,jpeg,pdf',
-                'max:4096',
-            ]
+            'registration_id' => 'required|string|exists:App\Models\Registration,id',
+            'title' => 'required|string|unique:App\Models\Submission,title',
+            'authors' => 'required|array',
+            'authors.*.name' => 'required|string|distinct',
+            'authors.*.email' => 'required|string|distinct',
+            'coAuthors' => 'required|array',
+            'coAuthors.*.name' => 'required|string|distinct',
+            'coAuthors.*.email' => 'required|string|distinct',
+            'keywords' => 'required|string',
+            'presenter' => 'required|string',
+            'abstract' => 'required|string',
+            'abstractFile' => 'required|file|mimes:pdf,docx,doc|max:4096',
+            'paperFile' => 'required|file|mimes:pdf,docx,doc|max:4096',
         ]);
 
         $submission = new Submission;
 
-        $submission->form_id = $request->form_id;
-        $submission->participant_id = $request->participant_id;
         $submission->registration_id = $request->registration_id;
-        $submission->register_as = $request->register_as;
-        $submission->category_id = $request->category_id;
+        $submission->title = $request->title;
+        $submission->authors = $request->authors;
+        $submission->coAuthors = $request->coAuthors;
+        $submission->presenter = $request->presenter;
+        $submission->abstract = $request->abstract;
+        $submission->keywords = $request->keywords;
 
-        // safe proof if available
-        if ($request->file('proof')) {
-            $fileName = preg_replace('/\s+/', '_', $submission->participant_id . $request->file('proof')->extension());
-            $registration_id_filename = str_replace('-', '_', $submission->registration_id);
-            $request->file('proof')->storeAs('ARAHE' . $submission->form->session->year . '/' . $registration_id_filename, $fileName);
-            $submission->proof = $fileName;
-        }
+        $submission->saveFile('Submission', 'abstractFile', $request->file('abstractFile'));
+        $submission->saveFile('Submission', 'paperFile', $request->file('paperFile'));
 
-        $submission->status = 'N';
+        $submission->status_code = 'P';
+        $submission->setSubmitDate();
 
         $submission->save();
 
-        return redirect(route('participant.competition.submission.view', ['form_id' => $submission->form->id]))->with('success', 'This Submission has successfully updated');
+        return redirect(route('participant.competition.submission.view', ['registration_id' => $submission->registration->id]))->with('success', 'This Submission has successfully created');
     }
 
     public function download(Request $request)
     {
         $request->validate([
             'submission_id' => 'required|integer|exists:App\Models\Submission,id',
-            'type' => 'required|string|in:paper,correction',
-            'filename' => 'required|required'
+            'type' => 'required|string|in:paperFile,correctionFile,abstractFile',
+            'filename' => 'required|string'
         ]);
 
         $submission = Submission::find($request->submission_id);
-        return $this->getPaper($request->type, $request->filename, $submission);
+        return $this->getPaper($request->filename, $submission);
     }
 }

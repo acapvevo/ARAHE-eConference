@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
@@ -20,18 +21,32 @@ class Submission extends Model
     protected $fillable = [
         'registration_id',
         'title',
-        'author',
-        'coAuthor',
+        'authors',
+        'coAuthors',
         'presenter',
         'abstract',
         'abstractFile',
         'keywords',
-        'paper',
+        'paperFile',
         'reviewer_id',
         'totalMark',
         'comment',
-        'correction',
+        'correctionFile',
         'status_code',
+        'submitDate',
+        'acceptedDate',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'submitDate' => 'date',
+        'acceptedDate' => 'date',
+        'authors' => AsCollection::class,
+        'coAuthors' => AsCollection::class,
     ];
 
     public function getStatusLabel()
@@ -45,11 +60,12 @@ class Submission extends Model
     }
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array
+     * Get the Registration that review the Submission.
      */
-    protected $casts = [];
+    public function registration()
+    {
+        return $this->belongsTo(Registration::class);
+    }
 
     /**
      * Get the Reviewer that review the Submission.
@@ -67,6 +83,16 @@ class Submission extends Model
         return $this->hasMany(Mark::class);
     }
 
+    public function setSubmitDate()
+    {
+        $this->submitDate = Carbon::now();
+    }
+
+    public function setAcceptedDate()
+    {
+        $this->acceptedDate = Carbon::now();
+    }
+
     public function checkEnableSubmit()
     {
         return $this->status_code === 'N' || $this->status_code === 'C';
@@ -74,15 +100,23 @@ class Submission extends Model
 
     public function calculatePercentage()
     {
-        return ($this->totalMark / $this->form->calculateFullMark()) * 100;
+        return ($this->totalMark / $this->registration->form->calculateFullMark()) * 100;
     }
 
     public function uploadPaper($type, $request)
     {
-        $fileName = preg_replace('/\s+/', '_', '[' . strtoupper($type) . '] ' . $this->title);
+        $fileName = preg_replace('/\s+/', '_', '[' . strtoupper($type) . '] ' . $this->title . '.' . $request->file($type)->getClientOriginalExtension());
         $request->file($type)->storeAs('ARAHE' . $this->form->session->year . '/' . $type, $fileName);
 
         $this->{$type} = $fileName;
+    }
+
+    public function saveFile($type, $attribute, $file)
+    {
+        $fileName = preg_replace('/\s+/', '_', '[' . strtoupper($type) . '] ' . $this->title . '.' . $file->getClientOriginalExtension());
+        $file->storeAs('ARAHE' . $this->registration->form->session->year . '/paper/' . str_replace('-', '_', $this->registration->code), $fileName);
+
+        $this->{$attribute} = $fileName;
     }
 
     public function deletePaper($type)
