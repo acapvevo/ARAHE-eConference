@@ -8,7 +8,7 @@ trait ReviewerTrait
 {
     public function getReviewers()
     {
-        return Reviewer::all();
+        return Reviewer::with(['participant', 'submissions'])->get();
     }
 
     public function upgradeToReviewer($participant)

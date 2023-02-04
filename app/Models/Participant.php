@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -22,9 +23,8 @@ class Participant extends Authenticatable
         'name',
         'email',
         'image',
-        'telephoneNumber',
         'password',
-        'login_at',
+        'login_at'
     ];
 
     /**
@@ -54,6 +54,30 @@ class Participant extends Authenticatable
     }
 
     /**
+     * Get the Address for the Participant.
+     */
+    public function address()
+    {
+        return $this->hasOne(Address::class);
+    }
+
+    /**
+     * Get the Institution for the Participant.
+     */
+    public function institution()
+    {
+        return $this->hasOne(Institution::class);
+    }
+
+    /**
+     * Get the Contact for the Participant.
+     */
+    public function contact()
+    {
+        return $this->hasOne(Contact::class);
+    }
+
+    /**
      * Get the Submissions for the Participant.
      */
     public function submissions()
@@ -76,7 +100,7 @@ class Participant extends Authenticatable
 
     public function getImageSrc()
     {
-        if(isset($this->image)){
+        if (isset($this->image)) {
             $image = Storage::get('profile_picture/participant/' . $this->image);
             $type = pathinfo('profile_picture/participant/' . $this->image, PATHINFO_EXTENSION);
             return 'data:image/' . $type . ';base64,' . base64_encode($image);

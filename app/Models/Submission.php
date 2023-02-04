@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -17,17 +18,31 @@ class Submission extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'form_id',
-        'participant_id',
-        'abstract',
+        'registration_id',
         'title',
+        'author',
+        'coAuthor',
+        'presenter',
+        'abstract',
+        'abstractFile',
+        'keywords',
         'paper',
-        'status_code',
         'reviewer_id',
         'totalMark',
         'comment',
         'correction',
+        'status_code',
     ];
+
+    public function getStatusLabel()
+    {
+        return DB::table('status')->where('code', $this->status_code)->first()->label;
+    }
+
+    public function getStatusDescription()
+    {
+        return DB::table('status')->where('code', $this->status_code)->first()->description;
+    }
 
     /**
      * The attributes that should be cast.
@@ -35,22 +50,6 @@ class Submission extends Model
      * @var array
      */
     protected $casts = [];
-
-    /**
-     * Get the Form that use by the Submission.
-     */
-    public function form()
-    {
-        return $this->belongsTo(Form::class);
-    }
-
-    /**
-     * Get the Participant that owns the Submission.
-     */
-    public function participant()
-    {
-        return $this->belongsTo(Participant::class);
-    }
 
     /**
      * Get the Reviewer that review the Submission.
@@ -66,24 +65,6 @@ class Submission extends Model
     public function marks()
     {
         return $this->hasMany(Mark::class);
-    }
-
-    /**
-     * Get the Bill associated with the Submission.
-     */
-    public function bill()
-    {
-        return $this->hasOne(Bill::class);
-    }
-
-    public function getStatusLabel()
-    {
-        return DB::table('status')->where('code', $this->status_code)->first()->label;
-    }
-
-    public function getStatusDescription()
-    {
-        return DB::table('status')->where('code', $this->status_code)->first()->description;
     }
 
     public function checkEnableSubmit()

@@ -16,13 +16,11 @@ return new class extends Migration
         Schema::create('submissions', function (Blueprint $table) {
             $table->id();
 
-            $table->integer('form_id');
-            $table->integer('participant_id');
+            $table->integer('reviewer_id')->nullable();
+
             $table->text('abstract')->nullable();
             $table->string('title')->nullable()->unique();
             $table->string('paper')->nullable();
-            $table->string('status_code');
-            $table->integer('reviewer_id')->nullable();
             $table->integer('totalMark')->default(0);
             $table->text('comment')->nullable();
             $table->string('correction')->nullable();

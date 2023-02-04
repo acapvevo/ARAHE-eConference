@@ -20,14 +20,24 @@
                 <table class="table table-bordered" id="table_id">
                     <thead class="table-primary">
                         <tr>
-                            <th>Year</th>
+                            <th style="width: 30%">Year</th>
+                            <th>Submission</th>
+                            <th>Registration</th>
+                            <th>Congress</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($forms as $form)
                             <tr>
-                                <td><a href="{{route('admin.competition.form.view', ['id' => $form->id])}}">{{ $form->session->year }}</a></td>
-                            </tr>
+                                <td class="text-center"><a
+                                        href="{{ route('admin.competition.form.view', ['id' => $form->id]) }}">{{ $form->session->year }}</a>
+                                </td>
+                                <td>{{ $form->session->returnDateString('submission', 'start') }} -
+                                    {{ $form->session->returnDateString('submission', 'end') }}</td>
+                                <td>{{ $form->session->returnDateString('registration', 'start') }} -
+                                    {{ $form->session->returnDateString('registration', 'end') }}</td>
+                                <td>{{ $form->session->returnDateString('congress', 'start') }} -
+                                    {{ $form->session->returnDateString('congress', 'end') }}</td>
                         @endforeach
                     </tbody>
                 </table>
@@ -43,7 +53,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{route('admin.competition.form.create')}}" method="post" id="addForm">
+                    <form action="{{ route('admin.competition.form.create') }}" method="post" id="addForm">
                         @csrf
 
                         <hr>
@@ -56,7 +66,9 @@
                                 id="sessionYear" name="session[year]">
                                 <option selected disabled>Select Year</option>
                                 @foreach ($yearsAvailable as $year)
-                                <option value={{$year}} {{ old('session.year') == $year ? 'selected' : '' }}>{{$year}}</option>
+                                    <option value={{ $year }}
+                                        {{ old('session.year') == $year ? 'selected' : '' }}>
+                                        {{ $year }}</option>
                                 @endforeach
                             </select>
                             @error('session.year')
@@ -64,6 +76,90 @@
                                     {{ $message }}
                                 </div>
                             @enderror
+                        </div>
+
+                        <label for="sessionSubmission" class="form-label"><strong>Submission</strong></label>
+                        <div class="row mb-3" id="sessionSubmission">
+                            <div class="col">
+                                <label for="session.submission.start" class="form-label">Start</label>
+                                <input type="date"
+                                    class="form-control {{ $errors->has('session.submission.start') ? 'is-invalid' : '' }}"
+                                    id="session.submission.start" name="session[submission][start]"
+                                    value="{{ old('session.submission.start') }}">
+                                @error('session.submission.start')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                            <div class="col">
+                                <label for="session.submission.end" class="form-label">End</label>
+                                <input type="date"
+                                    class="form-control {{ $errors->has('session.submission.end') ? 'is-invalid' : '' }}"
+                                    id="session.submission.end" name="session[submission][end]"
+                                    value="{{ old('session.submission.end') }}">
+                                @error('session.submission.end')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <label for="sessionRegistration" class="form-label"><strong>Registration</strong></label>
+                        <div class="row mb-3" id="sessionRegistration">
+                            <div class="col">
+                                <label for="session.registration.start" class="form-label">Start</label>
+                                <input type="date"
+                                    class="form-control {{ $errors->has('session.registration.start') ? 'is-invalid' : '' }}"
+                                    id="session.registration.start" name="session[registration][start]"
+                                    value="{{ old('session.registration.start') }}">
+                                @error('session.registration.start')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                            <div class="col">
+                                <label for="session.registration.end" class="form-label">End</label>
+                                <input type="date"
+                                    class="form-control {{ $errors->has('session.registration.end') ? 'is-invalid' : '' }}"
+                                    id="session.registration.end" name="session[registration][end]"
+                                    value="{{ old('session.registration.end') }}">
+                                @error('session.registration.end')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <label for="sessionCongress" class="form-label"><strong>Congress</strong></label>
+                        <div class="row mb-3" id="sessionCongress">
+                            <div class="col">
+                                <label for="session.congress.start" class="form-label">Start</label>
+                                <input type="date"
+                                    class="form-control {{ $errors->has('session.congress.start') ? 'is-invalid' : '' }}"
+                                    id="session.congress.start" name="session[congress][start]"
+                                    value="{{ old('session.congress.start') }}">
+                                @error('session.congress.start')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                            <div class="col">
+                                <label for="session.congress.end" class="form-label">End</label>
+                                <input type="date"
+                                    class="form-control {{ $errors->has('session.congress.end') ? 'is-invalid' : '' }}"
+                                    id="session.congress.end" name="session[congress][end]"
+                                    value="{{ old('session.congress.end') }}">
+                                @error('session.congress.end')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
                         </div>
 
                         <div class="mb-3">
@@ -82,7 +178,9 @@
                                 name="oldForm">
                                 <option selected disabled>Select Year</option>
                                 @foreach ($forms as $form)
-                                <option value="{{$form->id}}" {{ old('oldForm') == $form->id ? 'selected' : '' }}>{{$form->session->year}}</option>
+                                    <option value="{{ $form->id }}"
+                                        {{ old('oldForm') == $form->id ? 'selected' : '' }}>{{ $form->session->year }}
+                                    </option>
                                 @endforeach
                             </select>
                             @error('oldForm')
@@ -116,7 +214,7 @@
         const copyOldFormEl = document.getElementById('copyOldForm');
         const selectOldFormEl = document.getElementById('selectOldForm');
 
-        copyOldFormEl.addEventListener('change', function(){
+        copyOldFormEl.addEventListener('change', function() {
             checkInputCopyOldForm()
         })
 

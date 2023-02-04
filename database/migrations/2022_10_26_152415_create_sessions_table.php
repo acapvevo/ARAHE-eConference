@@ -18,8 +18,9 @@ return new class extends Migration
 
             $table->integer('form_id');
             $table->year('year');
+            $table->json('congress');
+            $table->json('registration');
             $table->json('submission');
-            $table->json('review');
 
             $table->timestamps();
         });

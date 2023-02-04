@@ -17,6 +17,7 @@
                             <th>Title</th>
                             <th>Participant</th>
                             <th>Reviewer</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -29,6 +30,7 @@
                                 <td>{{ $submission->participant->name }}</td>
                                 <td>{{ isset($submission->reviewer) ? $submission->reviewer->participant->name : 'No Assigned Reviewer' }}
                                 </td>
+                                <td>{{ $submission->getStatusLabel() }}</td>
                             </tr>
                         @endforeach
                     </tbody>

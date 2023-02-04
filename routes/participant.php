@@ -15,6 +15,7 @@ use App\Http\Controllers\Participant\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Participant\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Participant\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Participant\Auth\EmailVerificationNotificationController;
+use App\Http\Controllers\Participant\Competition\RegistrationController;
 use App\Http\Controllers\Participant\Competition\SubmissionController;
 use App\Http\Controllers\Participant\Payment\PayController;
 use App\Http\Controllers\Participant\Payment\RecordController;
@@ -98,6 +99,15 @@ Route::prefix('participant')->name('participant.')->group(function () {
         });
 
         Route::prefix('competition')->name('competition.')->group(function () {
+            Route::prefix('registration')->name('registration.')->group(function () {
+                Route::get('', [RegistrationController::class, 'list'])->name('list');
+                Route::get('/{form_id}', [RegistrationController::class, 'view'])->name('view');
+                Route::post('', [RegistrationController::class, 'create'])->name('create');
+                Route::get('/category/{id}', [RegistrationController::class, 'category'])->name('category');
+                Route::patch('', [RegistrationController::class, 'update'])->name('update');
+                Route::post('/download', [RegistrationController::class, 'download'])->name('download');
+            });
+
             Route::prefix('submission')->name('submission.')->group(function () {
                 Route::get('', [SubmissionController::class, 'list'])->name('list');
                 Route::get('/{form_id}', [SubmissionController::class, 'view'])->name('view');

@@ -16,6 +16,24 @@ class StatusSeeder extends Seeder
     public function run()
     {
         DB::table('status')->insertTs([
+            'label' => 'Not Registered',
+            'code' => 'NR',
+            'description' => 'You did not registered for this congress. Please do the registration first',
+        ]);
+
+        DB::table('status')->insertTs([
+            'label' => 'Registered',
+            'code' => 'WR',
+            'description' => 'Your registration is currently waiting for approval from our admins',
+        ]);
+
+        DB::table('status')->insertTs([
+            'label' => 'Registered',
+            'code' => 'DR',
+            'description' => 'Your registration has been approved. You has been registered for this congress as ',
+        ]);
+
+        DB::table('status')->insertTs([
             'label' => 'No Submission',
             'code' => 'N',
             'description' => 'Waiting Participant to submit their paper',
@@ -24,7 +42,7 @@ class StatusSeeder extends Seeder
         DB::table('status')->insertTs([
             'label' => 'Pending',
             'code' => 'P',
-            'description' => 'Your submission curently pending to be appointed to Reviewer by Admin',
+            'description' => 'Your submission currently pending to be appointed to Reviewer by Admin',
         ]);
 
         DB::table('status')->insertTs([

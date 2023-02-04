@@ -10,7 +10,7 @@ class ReviewerController extends Controller
 {
     public function list()
     {
-        $reviewers = Reviewer::all();
+        $reviewers = Reviewer::with(['submissions', 'participant'])->get();
 
         return view('admin.member.reviewer.list')->with([
             'reviewers' => $reviewers,

@@ -18,9 +18,7 @@ return new class extends Migration
 
             $table->integer('form_id');
             $table->string('name');
-            $table->text('description');
-            $table->string('code');
-            $table->double('standardAmount')->default(0);
+            $table->boolean('needProof');
 
             $table->timestamps();
         });

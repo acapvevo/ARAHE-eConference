@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 use Faker\Generator;
+use App\Models\Address;
+use App\Models\Contact;
+use App\Models\Institution;
 use App\Models\Participant;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -19,18 +22,56 @@ class ParticipantSeeder extends Seeder
     {
         $faker = app(Generator::class);
 
-        Participant::create([
+        $participant = Participant::create([
             'name' => 'reviewer1',
             'email' => 'reviewer1@gmail.com',
             'password' => Hash::make('reviewer1'),
-            'telephoneNumber' => $faker->mobileNumber(),
         ]);
+
+        $participant->contact()->save(new Contact([
+            'phoneNumber' => $faker->mobileNumber(),
+        ]));
+
+        $participant->institution()->save(new Institution([
+            'name' => 'Univeriti Teknologi Malaysia',
+            'faculty' => 'Computing',
+            'department' => 'Software Engineering',
+        ]));
+
+        $participant->address()->save(new Address([
+            'lineOne' => $faker->buildingNumber(),
+            'lineTwo' => $faker->streetName(),
+            'lineThree' => $faker->township(),
+            'city' => $faker->city(),
+            'postcode' => $faker->postcode(),
+            'state' => $faker->state(),
+            'country' => $faker->country(),
+        ]));
 
         Participant::create([
             'name' => 'participant1',
             'email' => 'participant1@gmail.com',
             'password' => Hash::make('participant1'),
-            'telephoneNumber' => $faker->mobileNumber(),
         ]);
+
+        $participant->contact()->save(new Contact([
+            'phoneNumber' => $faker->mobileNumber(),
+            'faxNumber' => $faker->fixedLineNumber(),
+        ]));
+
+        $participant->institution()->save(new Institution([
+            'name' => 'Univeriti Teknologi Petronas',
+            'faculty' => 'Engineering',
+            'department' => 'Chemical Engineering',
+        ]));
+
+        $participant->address()->save(new Address([
+            'lineOne' => $faker->buildingNumber(),
+            'lineTwo' => $faker->streetName(),
+            'city' => $faker->city(),
+            'postcode' => $faker->postcode(),
+            'state' => $faker->state(),
+            'country' => $faker->country(),
+        ]));
     }
 }

@@ -10,10 +10,14 @@
     <div class="card">
         <div class="card-body">
             <div class="row pt-3 pb-3">
-                <div class="col">
-                    <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal"
+                <div class="col d-flex justify-content-end">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                         data-bs-target="#assignReviewerModal">
                         Assign Reviewer
+                    </button>
+                    &nbsp;&nbsp;&nbsp;
+                    <button type="submit" class="btn btn-danger" form="assignReviewer" value="reject" name="submit">
+                        Reject Submission
                     </button>
                 </div>
             </div>
@@ -105,7 +109,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" form="assignReviewer">Assign</button>
+                    <button type="submit" class="btn btn-primary" form="assignReviewer" name="submit"
+                        value="assign">Assign</button>
                 </div>
             </div>
         </div>

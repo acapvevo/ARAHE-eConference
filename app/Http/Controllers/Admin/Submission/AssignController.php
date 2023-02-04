@@ -40,17 +40,26 @@ class AssignController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'reviewer_id' => 'required|integer|exists:App\Models\Reviewer,id',
+            'submit' => 'required|in:assign,reject',
+            'reviewer_id' => 'required_if:submit,assign|integer|exists:App\Models\Reviewer,id',
         ]);
 
         $submission = $this->getSubmission($id);
+
+        if($request->submit === 'reject'){
+            $submission->status_code = 'R';
+            $submission->comment = 'rejected by Admin';
+            $submission->save();
+
+            return redirect(route('admin.submission.assign.list'))->with('success', 'Submission from ' . $submission->participant->name . 'has been successfully rejected.');
+        }
 
         $submission->reviewer_id = $request->reviewer_id;
         $submission->status_code = 'IR';
 
         $submission->save();
 
-        return redirect(route('admin.submission.assign.list', ['id' => $submission->id]))->with('success', 'Submission for ' . $submission->participant->name . ' has successfully assigned to ' . $submission->reviewer->name);
+        return redirect(route('admin.submission.assign.list'))->with('success', 'Submission for ' . $submission->participant->name . ' has successfully assigned to ' . $submission->reviewer->name);
     }
 
     public function reject(Request $request, $id)

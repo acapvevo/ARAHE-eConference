@@ -2,16 +2,22 @@
 
 namespace App\Http\Controllers\Participant\Auth;
 
-use App\Http\Controllers\Controller;
+use App\Models\Address;
+use App\Models\Contact;
+use App\Rules\CheckState;
+use App\Models\Institution;
 use App\Models\Participant;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Auth\Notifications\VerifyEmail;
+use App\Rules\CheckCountry;
 use Illuminate\Http\Request;
+use App\Rules\CheckUniversity;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Auth\Notifications\VerifyEmail;
 
 class RegisteredUserController extends Controller
 {
@@ -36,19 +42,66 @@ class RegisteredUserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:participants',
-            'telephoneNumber' => 'required|string|max:255|unique:App\Models\Participant,telephoneNumber',
-            'password' => 'required|string|confirmed|min:8',
+            'account.name' => 'required|string|max:255',
+            'account.email' => 'required|string|email|max:255|unique:participants,email',
+            'account.password' => 'required|string|confirmed|min:8',
+            'institution.university' => [
+                'string',
+                'required',
+                'max:255'
+            ],
+            'institution.faculty' => 'required|string|max:255',
+            'institution.department' => 'nullable|string|max:255',
+            'contact.phoneNumber' => 'required|string|max:255|unique:App\Models\Contact,phoneNumber',
+            'contact.faxNumber' => 'nullable|string|max:255|unique:App\Models\Contact,faxNumber',
+            'address.lineOne' => 'required|string|max:255',
+            'address.lineTwo' => 'required|string|max:255',
+            'address.lineThree' => 'nullable|string|max:255',
+            'address.city' => 'required|string|max:255',
+            'address.postcode' => 'required|string|max:255',
+            'address.state' => [
+                'string',
+                'required',
+                'max:255'
+            ],
+            'address.country' => [
+                'string',
+                'required',
+                'max:255'
+            ],
         ]);
 
-        Auth::guard('participant')->login($participant = Participant::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'telephoneNumber' => $request->telephoneNumber,
-            'password' => Hash::make($request->password),
-            'login_at' =>Carbon::now(),
+        $participant = new Participant([
+            'name' => $request->account['name'],
+            'email' => $request->account['email'],
+            'password' => Hash::make($request->account['password']),
+            'login_at' => Carbon::now(),
+        ]);
+
+        $participant->save();
+
+        $participant->contact()->save(new Contact([
+            'phoneNumber' => $request->contact['phoneNumber'],
+            'faxNumber' => $request->contact['faxNumber'] ?? null,
         ]));
+
+        $participant->institution()->save(new Institution([
+            'name' => $request->institution['university'],
+            'faculty' => $request->institution['faculty'],
+            'department' => $request->institution['department'] ?? null,
+        ]));
+
+        $participant->address()->save(new Address([
+            'lineOne' => $request->address['lineOne'],
+            'lineTwo' => $request->address['lineTwo'],
+            'lineThree' => $request->address['lineThree'] ?? null,
+            'city' => $request->address['city'],
+            'postcode' => $request->address['postcode'],
+            'state' => $request->address['state'],
+            'country' => $request->address['country'],
+        ]));
+
+        Auth::guard('participant')->login($participant);
 
         VerifyEmail::createUrlUsing(function ($notifiable) {
             return URL::temporarySignedRoute(

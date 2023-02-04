@@ -15,11 +15,8 @@ class Category extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'form_id',
         'name',
-        'description',
-        'code',
-        'standardAmount',
+        'needProof'
     ];
 
     /**

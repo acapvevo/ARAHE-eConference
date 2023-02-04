@@ -14,10 +14,6 @@
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#giveReviewModal">
                         Give Review
                     </button>
-                    &nbsp;&nbsp;&nbsp;
-                    <button type="submit" class="btn btn-danger" form="giveReview" value="reject" name="submit">
-                        Reject Submission
-                    </button>
                 </div>
             </div>
             <div class="table-responsive">
