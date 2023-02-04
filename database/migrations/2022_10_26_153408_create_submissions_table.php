@@ -16,14 +16,27 @@ return new class extends Migration
         Schema::create('submissions', function (Blueprint $table) {
             $table->id();
 
+            $table->integer('registration_id');
             $table->integer('reviewer_id')->nullable();
 
-            $table->text('abstract')->nullable();
-            $table->string('title')->nullable()->unique();
-            $table->string('paper')->nullable();
+            $table->string('title')->unique();
+            $table->text('abstract');
+            $table->string('keywords');
+            $table->string('abstractFile');
+            $table->string('paperFile');
+
+            $table->json('authors');
+            $table->json('coAuthors');
+            $table->string('presenter');
+
+            $table->date('acceptedDate')->nullable();
+            $table->date('submitDate');
+
             $table->integer('totalMark')->default(0);
             $table->text('comment')->nullable();
-            $table->string('correction')->nullable();
+            $table->string('correctionFile')->nullable();
+
+            $table->string('status_code');
 
             $table->timestamps();
         });

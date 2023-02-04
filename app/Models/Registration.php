@@ -31,7 +31,9 @@ class Registration extends Model
      *
      * @var array
      */
-    protected $casts = [];
+    protected $casts = [
+        'created_at' => 'date'
+    ];
 
     public function generateCode()
     {
@@ -78,6 +80,14 @@ class Registration extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * Get the Submission associated with the Registration.
+     */
+    public function submission()
+    {
+        return $this->hasOne(Submission::class);
     }
 
     /**

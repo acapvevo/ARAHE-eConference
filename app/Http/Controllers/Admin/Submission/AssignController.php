@@ -15,9 +15,13 @@ class AssignController extends Controller
     public function list()
     {
         $currentForm = $this->getCurrentForm();
+        $registrations = $currentForm->registrations->filter(function($registration){
+            return $registration->submission->status_code === "P";
+        });
 
         return view('admin.submission.assign.list')->with([
             'form' => $currentForm,
+            'registrations' => $registrations,
         ]);
     }
 
@@ -28,8 +32,6 @@ class AssignController extends Controller
             if(isset($submission->reviewer))
                 return $submission->reviewer->id === $reviewer->id;
         });
-
-        session(['submission_id' => $submission->id]);
 
         return view('admin.submission.assign.view')->with([
             'submission' => $submission,

@@ -15,6 +15,7 @@
                         <tr>
                             <th>Year</th>
                             <th>Status</th>
+                            <th>Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -22,6 +23,7 @@
                             <tr>
                                 <td><a href="{{route('participant.competition.registration.view', ['form_id' => $form->id])}}">{{ $form->session->year }}</a></td>
                                 <td>{{isset($form->registration) ? $form->registration->getStatusLabel() : 'Not Registered Yet'}}</td>
+                                <td>{{isset($form->registration) ? $form->registration->created_at->translatedFormat('j F Y') : ''}}</td>
                             </tr>
                         @endforeach
                     </tbody>

@@ -42,11 +42,11 @@ class Form extends Model
     }
 
     /**
-     * Get the Submissions that use the Form.
+     * Get the Registrations that use the Form.
      */
-    public function submissions()
+    public function registrations()
     {
-        return $this->hasMany(Submission::class);
+        return $this->hasMany(Registration::class);
     }
 
     /**
