@@ -32,7 +32,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        $user = Auth::guard('participant')->user();
+        $user = Auth::guard('reviewer')->user();
         $user->login_at = Carbon::now();
         $user->save();
 
