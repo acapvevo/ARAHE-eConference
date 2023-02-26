@@ -79,7 +79,7 @@ function process(event) {
         faxError.style.display = "block";
         faxError.innerHTML = `Invalid fax number.`;
         faxInputField.classList.add("is-invalid");
-    } else if (emergencyPhoneNumber && !faxInemergencyPhoneInputput.isValidNumber()) {
+    } else if (emergencyPhoneNumber && !emergencyPhoneInput.isValidNumber()) {
         emergencyPhoneError.style.display = "block";
         emergencyPhoneError.innerHTML = `Invalid fax number.`;
         emergencyPhoneInputField.classList.add("is-invalid");
@@ -91,3 +91,9 @@ function process(event) {
         document.getElementById("myForm").submit();
     }
 }
+
+flatpickr(document.getElementById('account.date_of_birth'), {
+    altInput: true,
+    altFormat: "j F Y",
+    dateFormat: "Y-m-d",
+});

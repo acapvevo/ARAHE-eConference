@@ -61,6 +61,18 @@
                         </div>
 
                         <div class="mb-3">
+                            <input
+                                class="form-control form-control-user {{ $errors->has('account.date_of_birth') ? 'is-invalid' : '' }}"
+                                type="text" placeholder="Enter Your Date of Birth" name="account[date_of_birth]"
+                                id="account.date_of_birth" value="{{ old('account.date_of_birth') }}">
+                            @error('account.date_of_birth')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
                             @php
                                 $participant_types = DB::table('participant_type')->get();
                             @endphp
@@ -96,8 +108,8 @@
                         <div class="mb-3">
                             <input
                                 class="form-control form-control-user {{ $errors->has('account.password') ? 'is-invalid' : '' }}"
-                                type="password" placeholder="Enter Password" name="account[password]"
-                                id="account.password" autocomplete="current-password">
+                                type="password" placeholder="Enter Password" name="account[password]" id="account.password"
+                                autocomplete="current-password">
                             @error('account.password')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -269,8 +281,8 @@
                             <div class="col">
                                 <input
                                     class="form-control form-control-user {{ $errors->has('address.state') ? 'is-invalid' : '' }}"
-                                    type="text" placeholder="Enter State" name="address[state]"
-                                    id="address.state" value="{{ old('address.state') }}" list="stateList">
+                                    type="text" placeholder="Enter State" name="address[state]" id="address.state"
+                                    value="{{ old('address.state') }}" list="stateList">
                                 <datalist id="stateList">
                                 </datalist>
                                 @error('address.state')
@@ -304,8 +316,8 @@
                         <div class="mb-3">
                             <input
                                 class="form-control form-control-user {{ $errors->has('emergency.name') ? 'is-invalid' : '' }}"
-                                type="text" placeholder="Enter Emergency Person Full Name" name="emergency[name]" id="emergency.name"
-                                value="{{ old('emergency.name') }}" autofocus>
+                                type="text" placeholder="Enter Emergency Person Full Name" name="emergency[name]"
+                                id="emergency.name" value="{{ old('emergency.name') }}" autofocus>
                             @error('emergency.name')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -328,8 +340,9 @@
                         <div class="mb-3" width="100%">
                             <input
                                 class="form-control form-control-user {{ $errors->has('emergency.phoneNumber') ? 'is-invalid' : '' }}"
-                                type="tel" id="emergency.phoneNumber" placeholder="Enter Emergency Person Phone Number"
-                                name="emergency[phoneNumber]" value="{{ old('emergency.phoneNumber') }}">
+                                type="tel" id="emergency.phoneNumber"
+                                placeholder="Enter Emergency Person Phone Number" name="emergency[phoneNumber]"
+                                value="{{ old('emergency.phoneNumber') }}">
                             <div class="invalid-feedback" id="alert-error-emergency-phoneNumber" style="display: none;">
                             </div>
                             @error('emergency.phoneNumber')

@@ -11,6 +11,7 @@ use App\Models\Participant;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Support\Carbon;
 
 class ParticipantSeeder extends Seeder
 {
@@ -27,6 +28,7 @@ class ParticipantSeeder extends Seeder
             'name' => 'reviewer1',
             'title' => 'dr',
             'type' => 'P',
+            'date_of_birth' => Carbon::parse($faker->date()),
             'email' => 'reviewer1@gmail.com',
             'password' => Hash::make('reviewer1'),
         ]);
@@ -61,6 +63,7 @@ class ParticipantSeeder extends Seeder
             'name' => 'participant1',
             'title' => 'mr',
             'type' => 'SS',
+            'date_of_birth' => Carbon::parse($faker->date()),
             'email' => 'participant1@gmail.com',
             'password' => Hash::make('participant1'),
         ]);

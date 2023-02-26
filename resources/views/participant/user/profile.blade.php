@@ -29,6 +29,10 @@
                         <td>{{ $user->name }}</td>
                     </tr>
                     <tr>
+                        <th class="w-25">Date of Birth: </th>
+                        <td>{{ $user->date_of_birth->format('j F Y') }}</td>
+                    </tr>
+                    <tr>
                         <th class="w-25">Type of Participation: </th>
                         <td>{{ $user->getType() }}</td>
                     </tr>
@@ -209,6 +213,19 @@
                                             </div>
                                         @enderror
                                     </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="account.date_of_birth" class="form-label">Date of Birth</label>
+                                    <input
+                                        class="form-control {{ $errors->has('account.date_of_birth') ? 'is-invalid' : '' }}"
+                                        type="text" placeholder="Enter Your Date of Birth" name="account[date_of_birth]"
+                                        id="account.date_of_birth" value="{{ old('account.date_of_birth', $user->date_of_birth) }}">
+                                    @error('account.date_of_birth')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
                                 </div>
 
                                 <div class="mb-3">

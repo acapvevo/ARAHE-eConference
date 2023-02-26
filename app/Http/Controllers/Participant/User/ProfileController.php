@@ -36,6 +36,7 @@ class ProfileController extends Controller
                 Rule::unique('participants', 'email')->ignore($user->id),
             ],
             'account.title' => 'required|string|exists:participant_title,code',
+            'account.date_of_birth' => 'required|date',
             'account.type' => 'required|string|exists:participant_type,code',
             'institution.university' => [
                 'required',
@@ -77,6 +78,9 @@ class ProfileController extends Controller
         ]);
 
         $user->name = $request->account['name'];
+        $user->title = $request->account['title'];
+        $user->date_of_birth = $request->account['date_of_birth'];
+        $user->type = $request->account['type'];
         $user->email = $request->account['email'];
 
         $institution = $user->institution;
