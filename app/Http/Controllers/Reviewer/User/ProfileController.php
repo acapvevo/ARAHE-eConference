@@ -24,15 +24,16 @@ class ProfileController extends Controller
             'account.name' => [
                 'required',
                 'string',
-                Rule::unique('participants', 'name')->ignore($user->id),
+                Rule::unique('participants', 'name')->ignore($user->participant->id),
             ],
             'account.email' => [
                 'required',
                 'email',
                 'string',
-                Rule::unique('participants', 'email')->ignore($user->id),
+                Rule::unique('participants', 'email')->ignore($user->participant->id),
             ],
             'account.title' => 'required|string|exists:participant_title,code',
+            'account.date_of_birth' => 'required|date',
             'account.type' => 'required|string|exists:participant_type,code',
             'institution.university' => [
                 'required',
@@ -45,13 +46,13 @@ class ProfileController extends Controller
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('contacts', 'phoneNumber')->ignore($user->contact->id),
+                Rule::unique('contacts', 'phoneNumber')->ignore($user->participant->contact->id),
             ],
             'contact.faxNumber' => [
                 'nullable',
                 'string',
                 'max:255',
-                Rule::unique('contacts', 'faxNumber')->ignore($user->contact->id),
+                Rule::unique('contacts', 'faxNumber')->ignore($user->participant->contact->id),
             ],
             'address.lineOne' => 'required|string|max:255',
             'address.lineTwo' => 'required|string|max:255',
@@ -78,7 +79,10 @@ class ProfileController extends Controller
 
         $participant = $user->participant;
 
-        $participant->name = $request->name;
+        $participant->name = $request->account['name'];
+        $participant->title = $request->account['title'];
+        $participant->date_of_birth = $request->account['date_of_birth'];
+        $participant->type = $request->account['type'];
         $participant->email = $request->account['email'];
 
         $participant->save();
@@ -110,7 +114,7 @@ class ProfileController extends Controller
 
         $address->save();
 
-        $emergency = $user->emergency;
+        $emergency = $user->participant->emergency;
 
         $emergency->name = $request->emergency['name'];
         $emergency->email = $request->emergency['email'];
