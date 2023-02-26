@@ -18,7 +18,8 @@ class Category extends Model
         'name',
         'code',
         'locality',
-        'needProof'
+        'needProof',
+        'needLink'
     ];
 
     /**

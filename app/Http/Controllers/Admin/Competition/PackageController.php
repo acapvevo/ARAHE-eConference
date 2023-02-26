@@ -31,6 +31,7 @@ class PackageController extends Controller
             'categories.*.code' => 'required|alpha',
             'categories.*.locality' => 'required|string|exists:locality,code',
             'categories.*.needProof' => 'sometimes|nullable|boolean',
+            'categories.*.needLink' => 'sometimes|nullable|boolean',
             'durations' => 'array|required',
             'durations.*.name' => 'required|string',
             'durations.*.locality' => 'required|string|exists:locality,code',
@@ -55,6 +56,7 @@ class PackageController extends Controller
                 $category->code = $request['categories'][$i]['code'];
                 $category->locality = $request['categories'][$i]['locality'];
                 $category->needProof = $request['categories'][$i]['needProof'] ?? false;
+                $category->needLink = $request['categories'][$i]['needLink'] ?? false;
 
                 $category->save();
             }
@@ -67,6 +69,7 @@ class PackageController extends Controller
                 $category->code = $request['categories'][$i]['code'];
                 $category->locality = $request['categories'][$i]['locality'];
                 $category->needProof = $request['categories'][$i]['needProof'] ?? false;
+                $category->needLink = $request['categories'][$i]['needLink'] ?? false;
 
                 $category->save();
             }

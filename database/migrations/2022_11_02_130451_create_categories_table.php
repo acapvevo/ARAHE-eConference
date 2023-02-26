@@ -17,10 +17,11 @@ return new class extends Migration
             $table->id();
 
             $table->integer('form_id');
+            $table->string('name');
             $table->string('code');
             $table->string('locality');
-            $table->string('name');
             $table->boolean('needProof');
+            $table->boolean('needLink');
 
             $table->timestamps();
         });

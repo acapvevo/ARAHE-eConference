@@ -64,7 +64,7 @@
                     <tbody>
                         <tr>
                             <th class='w-25'>Year</th>
-                            <td class="text-center" colspan="4">{{ $form->session->year }}</td>
+                            <td class="text-center" colspan="5">{{ $form->session->year }}</td>
                         </tr>
                         @if ($form->categories->count())
                             @php
@@ -85,7 +85,9 @@
                                     <td class="text-center" colspan="2">{{ $category->name }} ({{ $category->code }})
                                     </td>
                                     <td class="text-center">
-                                        {{ $category->needProof ? 'Need Proof' : 'No Need Proof' }}</td>
+                                        {{ $category->needProof ? 'NEED Proof for Registration' : 'DO NOT NEED Proof for Registration' }}</td>
+                                    <td class="text-center">
+                                        {{ $category->needLink ? 'CAN Register with other Participant' : 'CANNOT Register with other Participant' }}</td>
                                 </tr>
                             @empty
                                 <tr>
@@ -96,7 +98,7 @@
                                         @endphp
                                     @endif
                                     <th>International</th>
-                                    <td class="text-center" colspan="3">No Category Added For International</td>
+                                    <td class="text-center" colspan="5">No Category Added For International</td>
                                 </tr>
                             @endforelse
                             @forelse ($categoriesLocal->values() as $index => $category)
@@ -114,7 +116,9 @@
                                     <td class="text-center" colspan="2">{{ $category->name }} ({{ $category->code }})
                                     </td>
                                     <td class="text-center">
-                                        {{ $category->needProof ? 'Need Proof' : 'No Need Proof' }}</td>
+                                        {{ $category->needProof ? 'NEED Proof for Registration' : 'DO NOT NEED Proof for Registration' }}</td>
+                                    <td class="text-center">
+                                        {{ $category->needLink ? 'CAN Register with other Participant' : 'CANNOT Register with other Participant' }}</td>
                                 </tr>
                             @empty
                                 <tr>
@@ -125,13 +129,13 @@
                                         @endphp
                                     @endif
                                     <th>Local</th>
-                                    <td class="text-center" colspan="3">No Category Added For Local</td>
+                                    <td class="text-center" colspan="5">No Category Added For Local</td>
                                 </tr>
                             @endforelse
                         @else
                             <tr>
                                 <th>Categories</th>
-                                <td colspan="4">No Category Added Yet</td>
+                                <td colspan="5">No Category Added Yet</td>
                             </tr>
                         @endif
 
@@ -152,7 +156,7 @@
                                         </th>
                                     @endif
                                     <td class="text-center">{{ $duration->name }}</td>
-                                    <td class="text-center" colspan="2">
+                                    <td class="text-center" colspan="3">
                                         {{ $duration->start->translatedFormat('j F Y') }} -
                                         {{ $duration->end->translatedFormat('j F Y') }}</td>
                                 </tr>
@@ -165,7 +169,7 @@
                                         @endphp
                                     @endif
                                     <th>International</th>
-                                    <td class="text-center" colspan="3">No Duration Added For International</td>
+                                    <td class="text-center" colspan="5">No Duration Added For International</td>
                                 </tr>
                             @endforelse
                             @forelse ($durationsLocalWihtoutOnsite->values() as $index => $duration)
@@ -181,7 +185,7 @@
                                         </th>
                                     @endif
                                     <td class="text-center">{{ $duration->name }}</td>
-                                    <td class="text-center" colspan="2">
+                                    <td class="text-center" colspan="3">
                                         {{ $duration->start->translatedFormat('j F Y') }} -
                                         {{ $duration->end->translatedFormat('j F Y') }}</td>
                                 </tr>
@@ -194,13 +198,13 @@
                                         @endphp
                                     @endif
                                     <th>Local</th>
-                                    <td class="text-center" colspan="3">No Duration Added For Local</td>
+                                    <td class="text-center" colspan="5">No Duration Added For Local</td>
                                 </tr>
                             @endforelse
                         @else
                             <tr>
                                 <th>Durations</th>
-                                <td colspan="4">No Duration Added Yet</td>
+                                <td colspan="5">No Duration Added Yet</td>
                             </tr>
                         @endif
                     </tbody>
@@ -829,6 +833,7 @@
                                         <th style="width: 50%">Category Name</th>
                                         <th style="width: 20%">Code</th>
                                         <th>Need Proof?</th>
+                                        <th>Need Link?</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -888,6 +893,15 @@
                                                         name="categories[{{ $index }}][needProof]"
                                                         id="categories.{{ $index }}.needProof" value=1
                                                         @checked($category['needProof'] ?? false)>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div
+                                                    class="form-check form-switch form-switch-lg d-flex justify-content-center">
+                                                    <input class="form-check-input" type="checkbox" role="switch"
+                                                        name="categories[{{ $index }}][needLink]"
+                                                        id="categories.{{ $index }}.needLink" value=1
+                                                        @checked($category['needLink'] ?? false)>
                                                 </div>
                                             </td>
                                         </tr>
@@ -1990,6 +2004,13 @@
                                                     <input class="form-check-input" type="checkbox" role="switch" name="categories[` +
                 iC + `][needProof]"
                                                         id="categories.` + iC + `.needProof" value=1>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-check form-switch form-switch-lg d-flex justify-content-center">
+                                                    <input class="form-check-input" type="checkbox" role="switch" name="categories[` +
+                iC + `][needLink]"
+                                                        id="categories.` + iC + `.needLink" value=1>
                                                 </div>
                                             </td>
                                         </tr>`;
