@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Participant\Auth;
 
 use App\Models\Address;
 use App\Models\Contact;
+use App\Models\Emergency;
 use App\Rules\CheckState;
 use App\Models\Institution;
 use App\Models\Participant;
@@ -43,6 +44,8 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'account.name' => 'required|string|max:255',
+            'account.title' => 'required|string|exists:participant_title,code',
+            'account.type' => 'required|string|exists:participant_type,code',
             'account.email' => 'required|string|email|max:255|unique:participants,email',
             'account.password' => 'required|string|confirmed|min:8',
             'institution.university' => [
@@ -69,6 +72,9 @@ class RegisteredUserController extends Controller
                 'required',
                 'max:255'
             ],
+            'emergency.name' => 'required|string|max:255',
+            'emergency.email' => 'required|string|email|max:255',
+            'emergency.phoneNumber' => 'required|string|max:255',
         ]);
 
         $participant = new Participant([
@@ -99,6 +105,12 @@ class RegisteredUserController extends Controller
             'postcode' => $request->address['postcode'],
             'state' => $request->address['state'],
             'country' => $request->address['country'],
+        ]));
+
+        $participant->emergency()->save(new Emergency([
+            'name' => $request->emergency['name'],
+            'email' => $request->emergency['email'],
+            'phoneNumber' => $request->emergency['phoneNumber'],
         ]));
 
         Auth::guard('participant')->login($participant);

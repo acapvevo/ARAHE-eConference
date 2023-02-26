@@ -78,6 +78,14 @@ class Participant extends Authenticatable
     }
 
     /**
+     * Get the Emergency for the Participant.
+     */
+    public function emergency()
+    {
+        return $this->hasOne(Emergency::class);
+    }
+
+    /**
      * Get the Submissions for the Participant.
      */
     public function submissions()
@@ -107,5 +115,15 @@ class Participant extends Authenticatable
         }
 
         return 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png';
+    }
+
+    public function getTitle()
+    {
+        return DB::table('participant_title')->where('code', $this->title)->first()->name;
+    }
+
+    public function getType()
+    {
+        return DB::table('participant_type')->where('code', $this->type)->first()->name;
     }
 }

@@ -32,6 +32,8 @@ class ProfileController extends Controller
                 'string',
                 Rule::unique('participants', 'email')->ignore($user->id),
             ],
+            'account.title' => 'required|string|exists:participant_title,code',
+            'account.type' => 'required|string|exists:participant_type,code',
             'institution.university' => [
                 'required',
                 'string',
@@ -66,6 +68,9 @@ class ProfileController extends Controller
                 'string',
                 'max:255'
             ],
+            'emergency.name' => 'required|string|max:255',
+            'emergency.email' => 'required|string|email|max:255',
+            'emergency.phoneNumber' => 'required|string|max:255',
         ]);
 
         $user->email = $request->account['email'];
@@ -104,6 +109,14 @@ class ProfileController extends Controller
         $address->country = $request->address['country'];
 
         $address->save();
+
+        $emergency = $user->emergency;
+
+        $emergency->name = $request->emergency['name'];
+        $emergency->email = $request->emergency['email'];
+        $emergency->phoneNumber = $request->emergency['phoneNumber'];
+
+        $emergency->save();
 
         return redirect(route('reviewer.user.profile.view'))->with('success', 'Your User Profile Successfully updated');
     }
