@@ -13,14 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('packages', function (Blueprint $table) {
             $table->id();
 
-            $table->integer('form_id');
+            $table->integer('category_id');
             $table->string('code');
-            $table->string('locality');
-            $table->string('name');
-            $table->boolean('needProof');
+            $table->string('description');
+            $table->boolean('fullPackage');
 
             $table->timestamps();
         });
@@ -33,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('packages');
     }
 };

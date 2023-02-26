@@ -20,24 +20,29 @@
                 <table class="table table-bordered" id="table_id">
                     <thead class="table-primary">
                         <tr>
-                            <th style="width: 30%">Year</th>
+                            <th style="width: 10%">Year</th>
                             <th>Submission</th>
                             <th>Registration</th>
                             <th>Congress</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($forms as $form)
                             <tr>
-                                <td class="text-center"><a
-                                        href="{{ route('admin.competition.form.view', ['id' => $form->id]) }}">{{ $form->session->year }}</a>
-                                </td>
+                                <td class="text-center">{{ $form->session->year }}</td>
                                 <td>{{ $form->session->returnDateString('submission', 'start') }} -
                                     {{ $form->session->returnDateString('submission', 'end') }}</td>
                                 <td>{{ $form->session->returnDateString('registration', 'start') }} -
                                     {{ $form->session->returnDateString('registration', 'end') }}</td>
                                 <td>{{ $form->session->returnDateString('congress', 'start') }} -
                                     {{ $form->session->returnDateString('congress', 'end') }}</td>
+                                <td class="text-center">
+                                    <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
+                                        <a class="btn btn-primary" href="{{route('admin.competition.form.view', ['id' => $form->id])}}" role="button">Form Details</a>
+                                        <a class="btn btn-primary" href="{{route('admin.competition.package.view', ['form_id' => $form->id])}}" role="button">Package and Hotel Details</a>
+                                    </div>
+                                </td>
                         @endforeach
                     </tbody>
                 </table>
@@ -66,8 +71,7 @@
                                 id="sessionYear" name="session[year]">
                                 <option selected disabled>Select Year</option>
                                 @foreach ($yearsAvailable as $year)
-                                    <option value={{ $year }}
-                                        {{ old('session.year') == $year ? 'selected' : '' }}>
+                                    <option value={{ $year }} {{ old('session.year') == $year ? 'selected' : '' }}>
                                         {{ $year }}</option>
                                 @endforeach
                             </select>
@@ -76,34 +80,6 @@
                                     {{ $message }}
                                 </div>
                             @enderror
-                        </div>
-
-                        <label for="sessionSubmission" class="form-label"><strong>Submission</strong></label>
-                        <div class="row mb-3" id="sessionSubmission">
-                            <div class="col">
-                                <label for="session.submission.start" class="form-label">Start</label>
-                                <input type="date"
-                                    class="form-control {{ $errors->has('session.submission.start') ? 'is-invalid' : '' }}"
-                                    id="session.submission.start" name="session[submission][start]"
-                                    value="{{ old('session.submission.start') }}">
-                                @error('session.submission.start')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
-                            </div>
-                            <div class="col">
-                                <label for="session.submission.end" class="form-label">End</label>
-                                <input type="date"
-                                    class="form-control {{ $errors->has('session.submission.end') ? 'is-invalid' : '' }}"
-                                    id="session.submission.end" name="session[submission][end]"
-                                    value="{{ old('session.submission.end') }}">
-                                @error('session.submission.end')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
-                            </div>
                         </div>
 
                         <label for="sessionRegistration" class="form-label"><strong>Registration</strong></label>
@@ -127,6 +103,34 @@
                                     id="session.registration.end" name="session[registration][end]"
                                     value="{{ old('session.registration.end') }}">
                                 @error('session.registration.end')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <label for="sessionSubmission" class="form-label"><strong>Submission</strong></label>
+                        <div class="row mb-3" id="sessionSubmission">
+                            <div class="col">
+                                <label for="session.submission.start" class="form-label">Start</label>
+                                <input type="date"
+                                    class="form-control {{ $errors->has('session.submission.start') ? 'is-invalid' : '' }}"
+                                    id="session.submission.start" name="session[submission][start]"
+                                    value="{{ old('session.submission.start') }}">
+                                @error('session.submission.start')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                            <div class="col">
+                                <label for="session.submission.end" class="form-label">End</label>
+                                <input type="date"
+                                    class="form-control {{ $errors->has('session.submission.end') ? 'is-invalid' : '' }}"
+                                    id="session.submission.end" name="session[submission][end]"
+                                    value="{{ old('session.submission.end') }}">
+                                @error('session.submission.end')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>
@@ -227,5 +231,16 @@
                 selectOldFormEl.style.display = "none";
             }
         }
+
+        const sessionRegistrationStart = document.getElementById('session.registration.start');
+        const sessionSubmissionStart = document.getElementById('session.submission.start');
+
+        sessionRegistrationStart.addEventListener('change', function() {
+            sessionSubmissionStart.value = sessionRegistrationStart.value;
+        });
+
+        sessionSubmissionStart.addEventListener('change', function() {
+            sessionRegistrationStart.value = sessionSubmissionStart.value;
+        });
     </script>
 @endsection

@@ -2,27 +2,32 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\Payment\BillController;
 use App\Http\Controllers\Admin\User\PictureController;
 use App\Http\Controllers\Admin\User\ProfileController;
 use App\Http\Controllers\Admin\User\SettingController;
 use App\Http\Controllers\Admin\System\ManualController;
 use App\Http\Controllers\Admin\User\PasswordController;
+use App\Http\Controllers\Admin\Competition\FeeController;
+use App\Http\Controllers\Admin\Member\ReviewerController;
 use App\Http\Controllers\Admin\Auth\NewPasswordController;
 use App\Http\Controllers\Admin\Auth\VerifyEmailController;
 use App\Http\Controllers\Admin\Competition\FormController;
+use App\Http\Controllers\Admin\Payment\CategoryController;
+use App\Http\Controllers\Admin\Submission\PaperController;
+use App\Http\Controllers\Admin\Submission\AssignController;
+use App\Http\Controllers\Admin\Competition\RubricController;
+use App\Http\Controllers\Admin\Member\ParticipantController;
 use App\Http\Controllers\Admin\Auth\RegisteredUserController;
+use App\Http\Controllers\Admin\Competition\PackageController;
 use App\Http\Controllers\Admin\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Admin\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Admin\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Admin\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Admin\Auth\EmailVerificationNotificationController;
-use App\Http\Controllers\Admin\Competition\RubricController;
-use App\Http\Controllers\Admin\Member\ParticipantController;
-use App\Http\Controllers\Admin\Member\ReviewerController;
-use App\Http\Controllers\Admin\Payment\BillController;
-use App\Http\Controllers\Admin\Payment\CategoryController;
-use App\Http\Controllers\Admin\Submission\AssignController;
-use App\Http\Controllers\Admin\Submission\PaperController;
+use App\Http\Controllers\Admin\Competition\ExtraController;
+use App\Http\Controllers\Admin\Competition\HotelController;
+use App\Http\Controllers\Admin\Competition\RateController;
 
 Route::prefix('admin')->name('admin.')->group(function () {
 
@@ -115,6 +120,32 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::get('/{id}', [RubricController::class, 'view'])->name('view');
                 Route::patch('/{id}', [RubricController::class, 'update'])->name('update');
                 Route::delete('', [RubricController::class, 'delete'])->name('delete');
+            });
+
+            Route::prefix('package')->name('package.')->group(function () {
+                Route::get('/{form_id}', [PackageController::class, 'view'])->name('view');
+                Route::patch('', [PackageController::class, 'update'])->name('update');
+                Route::patch('/modify', [PackageController::class, 'modify'])->name('modify');
+            });
+
+            Route::prefix('fee')->name('fee.')->group(function () {
+                Route::patch('/update', [FeeController::class, 'update'])->name('update');
+                Route::patch('/modify', [FeeController::class, 'modify'])->name('modify');
+            });
+
+            Route::prefix('extra')->name('extra.')->group(function () {
+                Route::post('', [ExtraController::class, 'create'])->name('create');
+                Route::get('/{id}', [ExtraController::class, 'view'])->name('view');
+                Route::patch('/{id}', [ExtraController::class, 'update'])->name('update');
+                Route::delete('', [ExtraController::class, 'delete'])->name('delete');
+            });
+
+            Route::prefix('hotel')->name('hotel.')->group(function () {
+                Route::patch('', [HotelController::class, 'update'])->name('update');
+            });
+
+            Route::prefix('rate')->name('rate.')->group(function () {
+                Route::patch('', [RateController::class, 'update'])->name('update');
             });
         });
 

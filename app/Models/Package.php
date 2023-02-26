@@ -4,9 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
 
-class Duration extends Model
+class Package extends Model
 {
     use HasFactory;
 
@@ -16,10 +15,10 @@ class Duration extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'locality',
-        'start',
-        'end',
+        'category_id',
+        'code',
+        'description',
+        'fullPackage',
     ];
 
     /**
@@ -28,24 +27,21 @@ class Duration extends Model
      * @var array
      */
     protected $casts = [
-        'start' => 'date',
-        'end' => 'date'
     ];
 
     /**
-     * Get the Form that owns the Duration.
+     * Get the Category that owns the Package.
      */
-    public function form()
+    public function category()
     {
-        return $this->belongsTo(Form::class);
+        return $this->belongsTo(Category::class);
     }
 
     /**
-     * Get the Fees associated with the Duration.
+     * Get all of the Package's fees.
      */
     public function fees()
     {
-        return $this->hasMany(Fee::class);
+        return $this->morphMany(Fee::class, 'parent');
     }
-
 }

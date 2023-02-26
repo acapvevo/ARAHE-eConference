@@ -43,8 +43,18 @@ class Session extends Model
         return $this->belongsTo(Form::class);
     }
 
+    public function returnDateObj($attribute, $point)
+    {
+        return Carbon::parse($this->{$attribute}[$point]);
+    }
+
     public function returnDateString($attribute, $point)
     {
-        return Carbon::parse($this->{$attribute}[$point])->translatedFormat('j F Y');
+        return $this->returnDateObj($attribute, $point)->translatedFormat('j F Y');
+    }
+
+    public function returnDateInputValue($attribute, $point)
+    {
+        return $this->returnDateObj($attribute, $point)->format('Y-m-d');
     }
 }

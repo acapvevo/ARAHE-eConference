@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
 
-class Duration extends Model
+class Extra extends Model
 {
     use HasFactory;
 
@@ -16,10 +16,11 @@ class Duration extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'locality',
-        'start',
-        'end',
+        'form_id',
+        'code',
+        'description',
+        'date',
+        'options',
     ];
 
     /**
@@ -28,12 +29,12 @@ class Duration extends Model
      * @var array
      */
     protected $casts = [
-        'start' => 'date',
-        'end' => 'date'
+        'date' => 'date',
+        'options' => AsCollection::class,
     ];
 
     /**
-     * Get the Form that owns the Duration.
+     * Get the Form that owns the Extra.
      */
     public function form()
     {
@@ -41,11 +42,10 @@ class Duration extends Model
     }
 
     /**
-     * Get the Fees associated with the Duration.
+     * Get all of the Extra's fees.
      */
     public function fees()
     {
-        return $this->hasMany(Fee::class);
+        return $this->morphMany(Fee::class, 'parent');
     }
-
 }

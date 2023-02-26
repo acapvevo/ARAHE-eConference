@@ -16,7 +16,9 @@ return new class extends Migration
         Schema::create('fees', function (Blueprint $table) {
             $table->id();
 
-            $table->integer('category_id');
+            $table->integer('parent_id');
+            $table->string('parent_type');
+
             $table->integer('duration_id');
             $table->double('amount');
 

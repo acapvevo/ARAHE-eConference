@@ -18,6 +18,7 @@ return new class extends Migration
 
             $table->integer('form_id');
             $table->string('name');
+            $table->string('locality');
             $table->date('start');
             $table->date('end');
 

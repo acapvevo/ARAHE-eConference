@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             StatusSeeder::class,
             ScaleSeeder::class,
             StatusPaymentSeeder::class,
+            LocalitySeeder::class
         ]);
     }
 }

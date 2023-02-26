@@ -16,6 +16,8 @@ class Category extends Model
      */
     protected $fillable = [
         'name',
+        'code',
+        'locality',
         'needProof'
     ];
 
@@ -27,10 +29,26 @@ class Category extends Model
     protected $casts = [];
 
     /**
-     * Get the Form that owns the Session.
+     * Get the Form that owns the Category.
      */
     public function form()
     {
         return $this->belongsTo(Form::class);
+    }
+
+    /**
+     * Get the Packages associated with the Category.
+     */
+    public function packages()
+    {
+        return $this->hasMany(Package::class);
+    }
+
+    /**
+     * Get the Extras associated with the Category.
+     */
+    public function extras()
+    {
+        return $this->hasMany(Extra::class);
     }
 }
