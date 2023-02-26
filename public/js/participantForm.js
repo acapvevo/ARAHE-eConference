@@ -34,6 +34,7 @@ $.ajax({
 
 const phoneInputField = document.getElementById("contact.phoneNumber");
 const faxInputField = document.getElementById("contact.faxNumber");
+const emergencyPhoneInputField = document.getElementById("emergency.phoneNumber");
 
 const phoneInput = window.intlTelInput(phoneInputField, {
     initialCountry: "my",
@@ -45,23 +46,30 @@ const faxInput = window.intlTelInput(faxInputField, {
     preferredCountries: ["my"],
     utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
 });
+const emergencyPhoneInput = window.intlTelInput(emergencyPhoneInputField, {
+    initialCountry: "my",
+    preferredCountries: ["my"],
+    utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+});
 
 const phoneError = document.querySelector("#alert-error-phoneNumber");
 const faxError = document.querySelector("#alert-error-faxNumber");
+const emergencyPhoneError = document.querySelector("#alert-error-emergency-phoneNumber");
 
 function process(event) {
     event.preventDefault();
 
     const phoneNumber = phoneInput.getNumber();
     const faxNumber = faxInput.getNumber();
+    const emergencyPhoneNumber = emergencyPhoneInput.getNumber();
 
     phoneError.style.display = "none";
     faxError.style.display = "none";
+    emergencyPhoneError.style.display = "none";
 
     phoneInputField.classList.remove("is-invalid");
     faxInputField.classList.remove("is-invalid");
-
-    console.log(!faxNumber);
+    emergencyPhoneInputField.classList.remove("is-invalid");
 
     if (phoneNumber && !phoneInput.isValidNumber()) {
         phoneError.style.display = "block";
@@ -71,9 +79,14 @@ function process(event) {
         faxError.style.display = "block";
         faxError.innerHTML = `Invalid fax number.`;
         faxInputField.classList.add("is-invalid");
+    } else if (emergencyPhoneNumber && !faxInemergencyPhoneInputput.isValidNumber()) {
+        emergencyPhoneError.style.display = "block";
+        emergencyPhoneError.innerHTML = `Invalid fax number.`;
+        emergencyPhoneInputField.classList.add("is-invalid");
     } else {
         phoneInputField.value = phoneNumber;
         faxInputField.value = faxNumber;
+        emergencyPhoneInputField.value = emergencyPhoneNumber;
 
         document.getElementById("myForm").submit();
     }

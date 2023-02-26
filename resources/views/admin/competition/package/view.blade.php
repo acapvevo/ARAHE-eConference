@@ -745,7 +745,7 @@
                                     <td>{{ $hotel->code }}</td>
                                     @foreach ($occupanciesInternational as $occupancy)
                                         <td>
-                                            USD${{ DB::table('rates')->where('hotel_id', $hotel->id)->where('occupancy_id', $occupancy->id)->first()->amount ?? 0 }}
+                                            USD${{ DB::table('rates')->where('hotel_id', $hotel->id)->where('occupancy_id', $occupancy->id)->first()->amount ?? 0 }}{{$occupancy->number > 1 ? '/pax' : ''}}
                                         </td>
                                     @endforeach
                                 </tr>
@@ -778,7 +778,7 @@
                                     <td>{{ $hotel->code }}</td>
                                     @foreach ($occupanciesLocal as $occupancy)
                                         <td>
-                                            RM{{ DB::table('rates')->where('hotel_id', $hotel->id)->where('occupancy_id', $occupancy->id)->first()->amount ?? 0 }}
+                                            RM{{ DB::table('rates')->where('hotel_id', $hotel->id)->where('occupancy_id', $occupancy->id)->first()->amount ?? 0 }}{{$occupancy->number > 1 ? '/pax' : ''}}
                                         </td>
                                     @endforeach
                                 </tr>
@@ -1861,6 +1861,7 @@
                                                             class="form-control {{ $errors->has('rates.' . $rateIndex . '.amount') }}"
                                                             name="rates[{{ $rateIndex }}][amount]"
                                                             value="{{ old('rates.' . $rateIndex . '.amount',DB::table('rates')->where('hotel_id', $hotel->id)->where('occupancy_id', $occupancy->id)->first()->amount ?? 0) }}">
+                                                            {!!$occupancy->number > 1 ? '<span class="input-group-text">/pax</span>' : ''!!}
                                                     </div>
                                                     @error('rates.' . $rateIndex . '.amount')
                                                         <div class="invalid-feedback">
@@ -1913,6 +1914,7 @@
                                                             class="form-control {{ $errors->has('rates.' . $rateIndex . '.amount') }}"
                                                             name="rates[{{ $rateIndex }}][amount]"
                                                             value="{{ old('rates.' . $rateIndex . '.amount',DB::table('rates')->where('hotel_id', $hotel->id)->where('occupancy_id', $occupancy->id)->first()->amount ?? 0) }}">
+                                                            {!!$occupancy->number > 1 ? '<span class="input-group-text">/pax</span>' : ''!!}
                                                     </div>
                                                     @error('rates.' . $rateIndex . '.amount')
                                                         <div class="invalid-feedback">

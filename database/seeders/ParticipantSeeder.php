@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Faker\Generator;
 use App\Models\Address;
 use App\Models\Contact;
+use App\Models\Emergency;
 use App\Models\Institution;
 use App\Models\Participant;
 use Illuminate\Database\Seeder;
@@ -24,6 +25,8 @@ class ParticipantSeeder extends Seeder
 
         $participant = Participant::create([
             'name' => 'reviewer1',
+            'title' => 'dr',
+            'type' => 'P',
             'email' => 'reviewer1@gmail.com',
             'password' => Hash::make('reviewer1'),
         ]);
@@ -48,8 +51,16 @@ class ParticipantSeeder extends Seeder
             'country' => $faker->country(),
         ]));
 
-        Participant::create([
+        $participant->emergency()->save(new Emergency([
+            'name' => $faker->name(),
+            'email' => $faker->safeEmail(),
+            'phoneNumber' => $faker->mobileNumber(),
+        ]));
+
+        $participant = Participant::create([
             'name' => 'participant1',
+            'title' => 'mr',
+            'type' => 'SS',
             'email' => 'participant1@gmail.com',
             'password' => Hash::make('participant1'),
         ]);
@@ -72,6 +83,12 @@ class ParticipantSeeder extends Seeder
             'postcode' => $faker->postcode(),
             'state' => $faker->state(),
             'country' => $faker->country(),
+        ]));
+
+        $participant->emergency()->save(new Emergency([
+            'name' => $faker->name(),
+            'email' => $faker->safeEmail(),
+            'phoneNumber' => $faker->mobileNumber(),
         ]));
     }
 }
