@@ -4,9 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
 
-class Duration extends Model
+class Occupancy extends Model
 {
     use HasFactory;
 
@@ -16,10 +15,11 @@ class Duration extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'form_id',
         'locality',
-        'start',
-        'end',
+        'type',
+        'number',
+        'bookBefore',
     ];
 
     /**
@@ -28,12 +28,11 @@ class Duration extends Model
      * @var array
      */
     protected $casts = [
-        'start' => 'date',
-        'end' => 'date'
+        'bookBefore' => 'date',
     ];
 
     /**
-     * Get the Form that owns the Duration.
+     * Get the Form that owns the Occupancy.
      */
     public function form()
     {
@@ -41,11 +40,10 @@ class Duration extends Model
     }
 
     /**
-     * Get the Fees associated with the Duration.
+     * Get the Rates associated with the Occupancy.
      */
-    public function fees()
+    public function Rate()
     {
-        return $this->hasMany(Fee::class);
+        return $this->hasMany(Rate::class);
     }
-
 }

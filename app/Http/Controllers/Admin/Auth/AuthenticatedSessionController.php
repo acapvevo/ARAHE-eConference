@@ -30,9 +30,9 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
-        $request->session()->regenerate();
+        // $request->session()->regenerate();
 
-        $user = Auth::guard('participant')->user();
+        $user = Auth::guard('admin')->user();
         $user->login_at = Carbon::now();
         $user->save();
 

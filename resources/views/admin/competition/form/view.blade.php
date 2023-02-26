@@ -2,14 +2,29 @@
 
 @section('styles')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
-    <style>
-        .form-switch.form-switch-lg .form-check-input {
-            height: 2rem;
-            width: calc(3rem + 0.75rem);
-            border-radius: 4rem;
-        }
-    </style>
 @endsection
+
+@php
+    $durationsLocal = $form->durations->where('locality', 'L');
+    $durationsInternational = $form->durations->where('locality', 'I');
+
+    $durationsInternationalWihtoutOnsite = $durationsInternational->reject(function ($duration) {
+        return $duration->name === 'On-site';
+    });
+    $durationsLocalWihtoutOnsite = $durationsLocal->reject(function ($duration) {
+        return $duration->name === 'On-site';
+    });
+
+    $OnSiteDurationInternational = $durationsInternational->first(function ($duration) {
+        return $duration->name === 'On-site';
+    });
+    $OnSiteDurationLocal = $durationsLocal->first(function ($duration) {
+        return $duration->name === 'On-site';
+    });
+
+    $categoriesLocal = $form->categories->where('locality', 'L');
+    $categoriesInternational = $form->categories->where('locality', 'I');
+@endphp
 
 @section('content')
     <h3 class="text-dark mb-1">Form Management - Form Detail and Rubrics</h3>
@@ -21,7 +36,7 @@
                 <div class="col-12">
                     <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal"
                         data-bs-target="#updateFormModal">
-                        Update Form
+                        Update Form Details
                     </button>
                 </div>
             </div>
@@ -56,93 +71,9 @@
                             <th>End</th>
                             <td class="text-center">{{ $form->session->returnDateString('congress', 'end') }}</td>
                         </tr>
-                        @forelse ($form->categories as $index => $category)
-                            <tr>
-                                @if ($index == 0)
-                                    <th rowspan="{{ $form->categories->count() }}">Categories</th>
-                                @endif
-                                <td class="text-center" colspan="2">{{ $category->name }}</td>
-                                <td class="text-center" colspan="2">
-                                    {{ $category->needProof ? 'Need Proof' : 'No Need Proof' }}</td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <th>Categories</th>
-                                <td colspan="4">No Category Added Yet</td>
-                            </tr>
-                        @endforelse
-                        @forelse ($form->durations as $index => $duration)
-                            <tr>
-                                @if ($index == 0)
-                                    <th rowspan="{{ $form->durations->count() }}">Durations</th>
-                                @endif
-                                <td class="text-center" colspan="1">{{ $duration->name }}</td>
-                                <td class="text-center" colspan="3">{{ $duration->start->translatedFormat('j F Y') }} -
-                                    {{ $duration->end->translatedFormat('j F Y') }}</td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <th>Duration</th>
-                                <td colspan="4">No Duration Added Yet</td>
-                            </tr>
-                        @endforelse
                     </tbody>
                 </table>
             </div>
-        </div>
-    </div>
-
-    <div class="pt-3 pb-3"></div>
-
-    <div class="card">
-        <h4 class="card-header text-center">Fee Structure</h4>
-        <div class="card-body">
-            <div class="row pt-3 pb-3">
-                <div class="col-12">
-                    <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal"
-                        data-bs-target="#modifyFeeModal">
-                        Modify Fee Stucture
-                    </button>
-                </div>
-            </div>
-
-            <div class="table-responsive">
-                <table class="table table-bordered text-center">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            @foreach ($form->durations as $duration)
-                                <th>
-                                    {{ $duration->name }}
-                                    <br>
-                                    {{ $duration->start->translatedFormat('j/m/Y') }} -
-                                    {{ $duration->end->translatedFormat('j/m/Y') }}
-                                </th>
-                            @endforeach
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php
-                            $feeIndex = 0;
-                        @endphp
-                        @foreach ($form->categories as $category)
-                            <tr>
-                                <td>{{ $category->name }}</td>
-                                @foreach ($form->durations as $duration)
-                                    <td>
-                                        {{ DB::table('fees')->where('category_id', $category->id)->where('duration_id', $duration->id)->first()->amount ?? 0 }}
-                                        USD
-                                    </td>
-                                    @php
-                                        $feeIndex++;
-                                    @endphp
-                                @endforeach
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-
         </div>
     </div>
 
@@ -184,8 +115,8 @@
                             @foreach ($form->rubrics as $rubric)
                                 <tr>
                                     <td>
-                                        <div class="checkbox"><input class="checkboxTick" type="checkbox" name="rubric_id[]"
-                                                value="{{ $rubric->id }}"></div>
+                                        <div class="checkbox"><input class="checkboxTick" type="checkbox"
+                                                name="rubric_id[]" value="{{ $rubric->id }}"></div>
                                     </td>
                                     <td><a
                                             href="{{ route('admin.competition.rubric.view', ['id' => $rubric->id]) }}">{{ $rubric->description }}</a>
@@ -201,7 +132,8 @@
 
     <div class="pt-3 pb-3"></div>
 
-    <div class="modal fade" id="updateFormModal" tabindex="-1" aria-labelledby="updateFormModalLabel" aria-hidden="true">
+    <div class="modal fade" id="updateFormModal" tabindex="-1" aria-labelledby="updateFormModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
@@ -214,117 +146,91 @@
                         @csrf
                         @method('PATCH')
 
-                        <label for="categories" class="form-label"><strong>Categories</strong></label>
-                        <div class="table-responsive">
-                            <table class="table table-bordered align-middle" id="tableCategory">
-                                <thead class="table-primary">
-                                    <tr>
-                                        <th class="w-75">Category Name</th>
-                                        <th>Need Proof?</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (old('categories', $form->categories) as $index => $category)
-                                        <tr>
-                                            <td>
-                                                <input type="text"
-                                                    class="form-control {{ $errors->has('categories.' . $index . '.name') ? 'is-invalid' : '' }}"
-                                                    name="categories[{{ $index }}][name]"
-                                                    id="categories.{{ $index }}.name"
-                                                    placeholder="Enter Category {{ $index + 1 }} Name"
-                                                    value="{{ $category['name'] }}">
-                                                @error('categories.' . $index . '.name')
-                                                    <div class="invalid-feedback">
-                                                        {{ $message }}
-                                                    </div>
-                                                @enderror
-                                            </td>
-                                            <td>
-                                                <div
-                                                    class="form-check form-switch form-switch-lg d-flex justify-content-center">
-                                                    <input class="form-check-input" type="checkbox" role="switch"
-                                                        name="categories[{{ $index }}][needProof]"
-                                                        id="categories.{{ $index }}.needProof" value=1
-                                                        @checked($category['needProof'] ?? false)>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                            <div class="d-flex justify-content-end">
-                                <div class="btn-group pt-3 pb-3" role="group" aria-label="Basic example">
-                                    <button type="button" id="addCategory" class="btn btn-success"><i
-                                            class="fa-solid fa-plus"></i></button>
-                                    <button type="button" id="removeCategory" class="btn btn-danger"><i
-                                            class="fa-solid fa-minus"></i></button>
-                                </div>
+                        <hr>
+                        <h5 class="text-center">Session</h5>
+                        <hr>
+
+                        <label for="sessionRegistration" class="form-label"><strong>Registration</strong></label>
+                        <div class="row mb-3" id="sessionRegistration">
+                            <div class="col">
+                                <label for="session.registration.start" class="form-label">Start</label>
+                                <input type="date"
+                                    class="form-control {{ $errors->has('session.registration.start') ? 'is-invalid' : '' }}"
+                                    id="session.registration.start" name="session[registration][start]"
+                                    value="{{ old('session.registration.start', $form->session->returnDateInputValue('registration', 'start')) }}">
+                                @error('session.registration.start')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                            <div class="col">
+                                <label for="session.registration.end" class="form-label">End</label>
+                                <input type="date"
+                                    class="form-control {{ $errors->has('session.registration.end') ? 'is-invalid' : '' }}"
+                                    id="session.registration.end" name="session[registration][end]"
+                                    value="{{ old('session.registration.end', $form->session->returnDateInputValue('registration', 'end')) }}">
+                                @error('session.registration.end')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
                         </div>
 
-                        <div class="p-3"></div>
+                        <label for="sessionSubmission" class="form-label"><strong>Submission</strong></label>
+                        <div class="row mb-3" id="sessionSubmission">
+                            <div class="col">
+                                <label for="session.submission.start" class="form-label">Start</label>
+                                <input type="date"
+                                    class="form-control {{ $errors->has('session.submission.start') ? 'is-invalid' : '' }}"
+                                    id="session.submission.start" name="session[submission][start]"
+                                    value="{{ old('session.submission.start', $form->session->returnDateInputValue('submission', 'start')) }}">
+                                @error('session.submission.start')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                            <div class="col">
+                                <label for="session.submission.end" class="form-label">End</label>
+                                <input type="date"
+                                    class="form-control {{ $errors->has('session.submission.end') ? 'is-invalid' : '' }}"
+                                    id="session.submission.end" name="session[submission][end]"
+                                    value="{{ old('session.submission.end', $form->session->returnDateInputValue('submission', 'end')) }}">
+                                @error('session.submission.end')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                        </div>
 
-                        <label for="durations" class="form-label"><strong>Registration Durations</strong></label>
-                        <div class="table-responsive">
-                            <table class="table table-bordered align-middle" id="tableDuration">
-                                <thead class="table-primary">
-                                    <tr>
-                                        <th class="w-50">Duration Name</th>
-                                        <th>Start</th>
-                                        <th>End</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (old('durations', $form->durations) as $index => $duration)
-                                        <tr>
-                                            <td>
-                                                <input type="text"
-                                                    class="form-control {{ $errors->has('durations.' . $index . '.name') ? 'is-invalid' : '' }}"
-                                                    name="durations[{{ $index }}][name]"
-                                                    id="durations.{{ $index }}.name"
-                                                    placeholder="Enter Duration {{ $index + 1 }} Name"
-                                                    value="{{ $duration['name'] }}">
-                                                @error('durations.' . $index . '.name')
-                                                    <div class="invalid-feedback">
-                                                        {{ $message }}
-                                                    </div>
-                                                @enderror
-                                            </td>
-                                            <td>
-                                                <input type="date"
-                                                    class="form-control {{ $errors->has('durations.' . $index . '.start') ? 'is-invalid' : '' }}"
-                                                    name="durations[{{ $index }}][start]"
-                                                    id="durations.{{ $index }}.start"
-                                                    value="{{ $duration['start'] }}">
-                                                @error('durations.' . $index . '.start')
-                                                    <div class="invalid-feedback">
-                                                        {{ $message }}
-                                                    </div>
-                                                @enderror
-                                            </td>
-                                            <td>
-                                                <input type="date"
-                                                    class="form-control {{ $errors->has('durations.' . $index . '.end') ? 'is-invalid' : '' }}"
-                                                    name="durations[{{ $index }}][end]"
-                                                    id="durations.{{ $index }}.end"
-                                                    value="{{ $duration['end'] }}">
-                                                @error('durations.' . $index . '.end')
-                                                    <div class="invalid-feedback">
-                                                        {{ $message }}
-                                                    </div>
-                                                @enderror
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                            <div class="d-flex justify-content-end">
-                                <div class="btn-group pt-3 pb-3" role="group" aria-label="Basic example">
-                                    <button type="button" id="addDuration" class="btn btn-success"><i
-                                            class="fa-solid fa-plus"></i></button>
-                                    <button type="button" id="removeDuration" class="btn btn-danger"><i
-                                            class="fa-solid fa-minus"></i></button>
-                                </div>
+                        <label for="sessionCongress" class="form-label"><strong>Congress</strong></label>
+                        <div class="row mb-3" id="sessionCongress">
+                            <div class="col">
+                                <label for="session.congress.start" class="form-label">Start</label>
+                                <input type="date"
+                                    class="form-control {{ $errors->has('session.congress.start') ? 'is-invalid' : '' }}"
+                                    id="session.congress.start" name="session[congress][start]"
+                                    value="{{ old('session.congress.start', $form->session->returnDateInputValue('congress', 'start')) }}">
+                                @error('session.congress.start')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                            <div class="col">
+                                <label for="session.congress.end" class="form-label">End</label>
+                                <input type="date"
+                                    class="form-control {{ $errors->has('session.congress.end') ? 'is-invalid' : '' }}"
+                                    id="session.congress.end" name="session[congress][end]"
+                                    value="{{ old('session.congress.end', $form->session->returnDateInputValue('congress', 'end')) }}">
+                                @error('session.congress.end')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
                         </div>
 
@@ -333,81 +239,6 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary" form="updateForm">Save</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modifyFeeModal" tabindex="-1" aria-labelledby="modifyFeeModalLabel" aria-hidden=true>
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title fs-5" id="modifyFeeModalLabel">Modify Fee Structure</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{ route('admin.competition.form.modify', ['id' => $form->id]) }}" method="post"
-                        id="modifyFee">
-                        @csrf
-                        @method('PATCH')
-
-                        <div class="table-responsive">
-                            <table class="table table-bordered text-center">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        @foreach ($form->durations as $duration)
-                                            <th>
-                                                {{ $duration->name }}
-                                                <br>
-                                                {{ $duration->start->translatedFormat('j/m/Y') }} -
-                                                {{ $duration->end->translatedFormat('j/m/Y') }}
-                                            </th>
-                                        @endforeach
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @php
-                                        $feeIndex = 0;
-                                    @endphp
-                                    @foreach ($form->categories as $category)
-                                        <tr>
-                                            <td>{{ $category->name }}</td>
-                                            @foreach ($form->durations as $duration)
-                                                <td>
-                                                    <input type="hidden" name="fee[{{ $feeIndex }}][duration_id]"
-                                                        value="{{ $duration->id }}">
-                                                    <input type="hidden" name="fee[{{ $feeIndex }}][category_id]"
-                                                        value="{{ $category->id }}">
-                                                    <div class="input-group mb-3">
-                                                        <span class="input-group-text">$</span>
-                                                        <input type="number"
-                                                            class="form-control {{ $errors->has('fee.' . $feeIndex . '.amount') }}"
-                                                            name="fee[{{ $feeIndex }}][amount]"
-                                                            value="{{ old('fee.' . $feeIndex . '.amount',DB::table('fees')->where('category_id', $category->id)->where('duration_id', $duration->id)->first()->amount ?? 0) }}">
-                                                        <span class="input-group-text">USD</span>
-                                                    </div>
-                                                    @error('fee.' . $feeIndex . '.amount')
-                                                        <div class="invalid-feedback">
-                                                            {{ $message }}
-                                                        </div>
-                                                    @enderror
-                                                </td>
-                                                @php
-                                                    $feeIndex++;
-                                                @endphp
-                                            @endforeach
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" form="modifyFee">Save</button>
                 </div>
             </div>
         </div>
@@ -468,96 +299,6 @@
                 });
             });
         });
-
-        //Category
-        const addCategoryButton = document.getElementById('addCategory');
-        const currentIndexCategory =
-            {{ count(old('categories', $form->categories)) }};
-
-        let iC = currentIndexCategory;
-        addCategoryButton.addEventListener('click', function() {
-
-            var stringHtmlScaleElements = `<tr>
-                                            <td>
-                                                <input type="text"
-                                                    class="form-control"
-                                                    name="categories[` + iC + `][name]"
-                                                    id="categories.` + iC + `.name"
-                                                    placeholder="Enter Category ` + (iC + 1) + ` Name">
-                                            </td>
-                                            <td>
-                                                <div class="form-check form-switch form-switch-lg d-flex justify-content-center">
-                                                <input class="form-check-input" type="checkbox" role="switch"
-                                                    name="categories[` + iC + `][needProof]"
-                                                    id="categories.` + iC + `.needProof"
-                                                    value=1>
-                                                </div>
-                                            </td>
-                                        </tr>`;
-
-            $("#tableCategory tbody").append(stringHtmlScaleElements);
-
-            iC++;
-        });
-
-        $("#removeCategory").on("click", function() {
-            if (iC != 0) {
-                iC--
-                $('#tableCategory tr:last').remove();
-            }
-        });
-
-        //Duration
-        const addDurationButton = document.getElementById('addDuration');
-        const currentIndexDuration =
-            {{ count(old('durations', $form->durations)) }};
-
-        let iD = currentIndexDuration;
-        addDurationButton.addEventListener('click', function() {
-
-            var stringHtmlScaleElements = `<tr>
-                                            <td>
-                                                <input type="text"
-                                                    class="form-control"
-                                                    name="durations[` + iD + `][name]"
-                                                    id="durations.` + iD + `.name"
-                                                    placeholder="Enter Duration ` + (iD + 1) + ` Name">
-                                            </td>
-                                            <td>
-                                                <input type="date"
-                                                    class="form-control"
-                                                    name="durations[` + iD + `][start]"
-                                                    id="durations.` + iD + `.start">
-                                            </td>
-                                            <td>
-                                                <input type="date"
-                                                    class="form-control"
-                                                    name="durations[` + iD + `][end]"
-                                                    id="durations.` + iD + `.end">
-                                            </td>
-                                        </tr>`;
-
-            $("#tableDuration").append(stringHtmlScaleElements);
-
-            iD++;
-        });
-
-        $("#removeDuration").on("click", function() {
-            if (iD != 0) {
-                iD--
-                $('#tableDuration tr:last').remove();
-            }
-        });
-
-        @if ($errors->has('categories.*') || $errors->has('durations.*'))
-            const updateFormModal = new bootstrap.Modal('#updateFormModal');
-            updateFormModal.show();
-        @endif
-
-        @if ($errors->has('fee.*'))
-            const updateFormModal = new bootstrap.Modal('#modifyFeeModal');
-            updateFormModal.show();
-        @endif
 
         @if ($errors->has('description'))
             const updateFormModal = new bootstrap.Modal('#addRubricModal');

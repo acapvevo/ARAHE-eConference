@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Fee extends Model
+class Rate extends Model
 {
     use HasFactory;
 
@@ -15,8 +15,7 @@ class Fee extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'parent_id',
-        'parent_type',
+        'hotel_id',
         'duration_id',
         'amount',
     ];
@@ -29,19 +28,18 @@ class Fee extends Model
     protected $casts = [];
 
     /**
-     * Get the parent model (Extra or Package).
+     * Get the Hotel that owns the Rate.
      */
-    public function parent()
+    public function hotel()
     {
-        return $this->morphTo();
+        return $this->belongsTo(Hotel::class);
     }
 
-
     /**
-     * Get the Duration that owns the Fee.
+     * Get the Occupancy that owns the Rate.
      */
-    public function duration()
+    public function occupancy()
     {
-        return $this->belongsTo(Duration::class);
+        return $this->belongsTo(Occupancy::class);
     }
 }

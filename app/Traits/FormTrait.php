@@ -54,6 +54,10 @@ trait FormTrait
 
     public function getForm($id)
     {
-        return Form::find($id);
+        return Form::with([
+            'categories',
+            'durations',
+            'categories.packages',
+        ])->find($id);
     }
 }

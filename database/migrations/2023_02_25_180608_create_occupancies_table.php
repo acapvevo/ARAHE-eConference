@@ -13,14 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('occupancies', function (Blueprint $table) {
             $table->id();
 
             $table->integer('form_id');
-            $table->string('code');
             $table->string('locality');
-            $table->string('name');
-            $table->boolean('needProof');
+            $table->string('type');
+            $table->integer('number');
+            $table->date('bookBefore');
 
             $table->timestamps();
         });
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('occupancies');
     }
 };

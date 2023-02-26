@@ -60,11 +60,44 @@ class Form extends Model
     /**
      * Get the Durations associated with the Form.
      */
-    public function Durations()
+    public function durations()
     {
         return $this->hasMany(Duration::class);
     }
 
+    /**
+     * Get the Extras associated with the Form.
+     */
+    public function extras()
+    {
+        return $this->hasMany(Extra::class);
+    }
+
+    /**
+     * Get the Hotels associated with the Form.
+     */
+    public function hotels()
+    {
+        return $this->hasMany(Hotel::class);
+    }
+
+    /**
+     * Get the Occupancies associated with the Form.
+     */
+    public function Occupancies()
+    {
+        return $this->hasMany(Occupancy::class);
+    }
+
+    public function getPackages()
+    {
+        return Package::whereIn('category_id', $this->categories->pluck('id'))->get();
+    }
+
+    public function getRates()
+    {
+        return Rate::whereIn('hotel_id', $this->hotels->pluck('id'))->get();
+    }
 
     public function calculateFullMark()
     {
