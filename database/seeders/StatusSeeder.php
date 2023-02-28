@@ -35,6 +35,18 @@ class StatusSeeder extends Seeder
         ]);
 
         DB::table('status')->insertTs([
+            'label' => 'Registration Rejected',
+            'code' => 'RR',
+            'description' => 'Your registration has been rejected.',
+        ]);
+
+        DB::table('status')->insertTs([
+            'label' => 'Need to Upload Different Registration Proof',
+            'code' => 'UR',
+            'description' => 'Please reupload different proof for your registration',
+        ]);
+
+        DB::table('status')->insertTs([
             'label' => 'Waiting for Payment',
             'code' => 'PR',
             'description' => 'Your package has been locked and the total has been calculated. Please do the payment to proceed',

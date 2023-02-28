@@ -4,14 +4,12 @@ namespace App\Http\Controllers\Participant\Competition;
 
 use App\Models\Category;
 use App\Traits\FormTrait;
-use App\Models\Submission;
 use App\Models\Registration;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use App\Traits\ParticipantTrait;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 class RegistrationController extends Controller
 {
@@ -79,7 +77,9 @@ class RegistrationController extends Controller
             'term' => 'required'
         ]);
 
-        $participants = $this->searchParticipant($request->term);
+        $user = Auth::guard('participant')->user();
+
+        $participants = $this->searchParticipant($request->term, $user);
 
         return response()->json([
             "results" => $participants->items(),
@@ -200,12 +200,10 @@ class RegistrationController extends Controller
     {
         $request->validate([
             'registration_id' => 'required|exists:App\Models\Registration,id',
-            'filename' => 'required|exists:App\Models\Registration,proof'
         ]);
 
         $registration = Registration::find($request['registration_id']);
-        $filePath = 'ARAHE' . $registration->form->session->year . '/registration/' . $registration->proof;
 
-        return Storage::response($filePath);
+        return $registration->getProofFile();
     }
 }

@@ -26,8 +26,11 @@ trait SessionTrait
     public function getCurrentSession()
     {
         $currentYear = Carbon::now()->year;
+        $latestSession = Session::latest()->first();
 
-        if ($this->checkSession($currentYear))
+        if($latestSession->year === ($currentYear + 1))
+            return $latestSession;
+        else if ($this->checkSession($currentYear))
             return $this->getSessionByYear($currentYear);
 
         return Session::first();

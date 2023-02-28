@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Registration extends Model
@@ -100,6 +101,14 @@ class Registration extends Model
         return $this->hasOne(Bill::class);
     }
 
+    /**
+     * Get the Participant as Patner associated with the Registration.
+     */
+    public function linkParticipant()
+    {
+        return $this->hasOne(Participant::class, 'id', 'link');
+    }
+
     public function getDietary()
     {
         return DB::table('dietary_preference')->where('code', $this->dietary)->first();
@@ -108,5 +117,12 @@ class Registration extends Model
     public function getLink()
     {
         return Participant::find($this->link);
+    }
+
+    public function getProofFile()
+    {
+        $filePath = 'ARAHE' . $this->form->session->year . '/registration/' . $this->proof;
+
+        return Storage::response($filePath, $this->proof);
     }
 }

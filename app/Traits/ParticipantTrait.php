@@ -6,9 +6,9 @@ use App\Models\Participant;
 
 trait ParticipantTrait
 {
-    public function searchParticipant($searchTerm)
+    public function searchParticipant($searchTerm, $currentParticipant)
     {
-        return Participant::select('name AS text', 'id')->where('name', 'LIKE', '%' . $searchTerm . '%')
+        return Participant::select('name AS text', 'id')->whereNot('id', $currentParticipant->id)->where('name', 'LIKE', '%' . $searchTerm . '%')
             ->orderBy('name', 'asc')->paginate(10);
     }
 

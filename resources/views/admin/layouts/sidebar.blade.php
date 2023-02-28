@@ -11,6 +11,10 @@
                     href="{{ route('admin.competition.form.list') }}"><i class="fab fa-wpforms"></i><span>Form
                         Setting</span></a></li>
             <li class="nav-item"><a
+                    class="nav-link {{ request()->routeIs('admin.submission.registration.*') ? 'active' : '' }}"
+                    href="{{ route('admin.submission.registration.list') }}"><i
+                        class="fa-solid fa-user-group"></i><span>Registration Management</span></a></li>
+            <li class="nav-item"><a
                     class="nav-link {{ request()->routeIs('admin.submission.assign.*') ? 'active' : '' }}"
                     href="{{ route('admin.submission.assign.list') }}"><i class="fas fa-user-check"></i><span>Assign
                         Reviewer</span></a></li>
