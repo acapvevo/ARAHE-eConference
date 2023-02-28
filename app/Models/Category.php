@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Category extends Model
 {
@@ -51,5 +52,10 @@ class Category extends Model
     public function extras()
     {
         return $this->hasMany(Extra::class);
+    }
+
+    public function getLocality()
+    {
+        return DB::table('locality')->where('code', $this->locality)->first();
     }
 }

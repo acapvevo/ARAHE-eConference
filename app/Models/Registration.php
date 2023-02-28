@@ -23,7 +23,9 @@ class Registration extends Model
         'register_as',
         'category_id',
         'proof',
+        'link',
         'status_code',
+        'dietary',
     ];
 
     /**
@@ -96,5 +98,15 @@ class Registration extends Model
     public function bill()
     {
         return $this->hasOne(Bill::class);
+    }
+
+    public function getDietary()
+    {
+        return DB::table('dietary_preference')->where('code', $this->dietary)->first();
+    }
+
+    public function getLink()
+    {
+        return Participant::find($this->link);
     }
 }
