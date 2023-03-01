@@ -1,7 +1,6 @@
 @extends('admin.layouts.app')
 
 @section('styles')
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
 @endsection
 
 @section('content')
@@ -181,22 +180,4 @@
 @endsection
 
 @section('scripts')
-    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
-
-    <script>
-        $(document).ready(function() {
-            $('#table_id').DataTable({
-                "autoWidth": false,
-                "columns": [{
-                        "width": "5%"
-                    },
-                    null,
-                    {
-                        "width": "30%"
-                    }
-                ]
-            });
-        });
-    </script>
 @endsection

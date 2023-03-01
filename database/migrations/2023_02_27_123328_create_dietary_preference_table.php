@@ -13,20 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('registrations', function (Blueprint $table) {
+        Schema::create('dietary_preference', function (Blueprint $table) {
             $table->id();
 
-            $table->integer('form_id');
-            $table->integer('participant_id');
-            $table->integer('category_id');
-
             $table->string('code')->unique();
-            $table->string('register_as');
-            $table->string('proof')->nullable();
-            $table->integer('link')->nullable();
-            $table->string('dietary');
-
-            $table->string('status_code');
+            $table->string('name');
 
             $table->timestamps();
         });
@@ -39,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('registrations');
+        Schema::dropIfExists('dietary_preference');
     }
 };

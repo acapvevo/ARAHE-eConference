@@ -15,6 +15,7 @@ class StatusSeeder extends Seeder
      */
     public function run()
     {
+        //Registration Status
         DB::table('status')->insertTs([
             'label' => 'Not Registered',
             'code' => 'NR',
@@ -22,7 +23,7 @@ class StatusSeeder extends Seeder
         ]);
 
         DB::table('status')->insertTs([
-            'label' => 'Registered',
+            'label' => 'Waiting for Approval',
             'code' => 'WR',
             'description' => 'Your registration is currently waiting for approval from our admins',
         ]);
@@ -30,9 +31,35 @@ class StatusSeeder extends Seeder
         DB::table('status')->insertTs([
             'label' => 'Registered',
             'code' => 'DR',
-            'description' => 'Your registration has been approved. You has been registered for this congress as ',
+            'description' => 'Your registration has been approved. You can proceed to choose package',
         ]);
 
+        DB::table('status')->insertTs([
+            'label' => 'Registration Rejected',
+            'code' => 'RR',
+            'description' => 'Your registration has been rejected.',
+        ]);
+
+        DB::table('status')->insertTs([
+            'label' => 'Need to Upload Different Registration Proof',
+            'code' => 'UR',
+            'description' => 'Please reupload different proof for your registration',
+        ]);
+
+        DB::table('status')->insertTs([
+            'label' => 'Waiting for Payment',
+            'code' => 'PR',
+            'description' => 'Your package has been locked and the total has been calculated. Please do the payment to proceed',
+        ]);
+
+        DB::table('status')->insertTs([
+            'label' => 'Registration Complete',
+            'code' => 'AR',
+            'description' => 'Your Registration has been completed. See you at the conference',
+        ]);
+
+
+        // Paper Submission Status
         DB::table('status')->insertTs([
             'label' => 'No Submission',
             'code' => 'N',
@@ -58,12 +85,6 @@ class StatusSeeder extends Seeder
         ]);
 
         DB::table('status')->insertTs([
-            'label' => 'Waiting for Payment',
-            'code' => 'WP',
-            'description' => 'You need to settle the payment to join the main event',
-        ]);
-
-        DB::table('status')->insertTs([
             'label' => 'Rejected',
             'code' => 'R',
             'description' => 'Sorry, your submission has been rejected',
@@ -72,7 +93,7 @@ class StatusSeeder extends Seeder
         DB::table('status')->insertTs([
             'label' => 'Accepted',
             'code' => 'A',
-            'description' => 'Congratulation, your submission has been accepted to the main event',
+            'description' => 'Congratulation, your submission has been accepted to the conference',
         ]);
     }
 }

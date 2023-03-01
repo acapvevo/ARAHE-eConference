@@ -14,16 +14,34 @@
                     <thead class="table-primary">
                         <tr>
                             <th>Year</th>
+                            <th>Registration ID</th>
                             <th>Status</th>
-                            <th>Date</th>
+                            <th style="width: 30%">Regitration Period</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($forms as $form)
                             <tr>
-                                <td><a href="{{route('participant.competition.registration.view', ['form_id' => $form->id])}}">{{ $form->session->year }}</a></td>
-                                <td>{{isset($form->registration) ? $form->registration->getStatusLabel() : 'Not Registered Yet'}}</td>
-                                <td>{{isset($form->registration) ? $form->registration->created_at->translatedFormat('j F Y') : ''}}</td>
+                                <td>
+                                    @if (!$form->session->isRegistrationOpen() && !isset($form->registration))
+                                        {{ $form->session->year }}
+                                    @else
+                                        <a
+                                            href="{{ route('participant.competition.registration.view', ['form_id' => $form->id]) }}">{{ $form->session->year }}</a>
+                                    @endif
+                                </td>
+                                <td>{{ isset($form->registration) ? $form->registration->code : '' }}</td>
+                                <td>
+                                    @if ($form->session->isRegistrationOpen() && !isset($form->registration))
+                                        Not Registered Yet
+                                    @elseif (!$form->session->isRegistrationOpen() && !isset($form->registration))
+                                        Registration Closed
+                                    @else
+                                    {{ $form->registration->getStatusLabel() }}
+                                    @endif
+                                </td>
+                                <td>{{ $form->session->returnDateString('registration', 'start') }} -
+                                    {{ $form->session->returnDateString('registration', 'end') }}</td>
                             </tr>
                         @endforeach
                     </tbody>

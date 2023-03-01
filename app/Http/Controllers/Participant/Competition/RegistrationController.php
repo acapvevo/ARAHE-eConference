@@ -4,17 +4,16 @@ namespace App\Http\Controllers\Participant\Competition;
 
 use App\Models\Category;
 use App\Traits\FormTrait;
-use App\Models\Submission;
 use App\Models\Registration;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
+use App\Traits\ParticipantTrait;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 class RegistrationController extends Controller
 {
-    use FormTrait;
+    use FormTrait, ParticipantTrait;
 
     public function list()
     {
@@ -36,7 +35,7 @@ class RegistrationController extends Controller
     public function view($form_id)
     {
         $participant = Auth::guard('participant')->user();
-        $registrationQuery = Registration::where('form_id', $form_id)->where('participant_id', $participant->id);
+        $registrationQuery = Registration::with(['category.packages.fees', 'form.extras.fees'])->where('form_id', $form_id)->where('participant_id', $participant->id);
 
         if ($registrationQuery->exists()) {
             $registration = $registrationQuery->first();
@@ -60,39 +59,91 @@ class RegistrationController extends Controller
         return response()->json(Category::find($id));
     }
 
+    public function categories(Request $request)
+    {
+        $request->validate([
+            'form_id' => 'required|exists:App\Models\Form,id',
+            'locality_code' => 'required|exists:locality,code',
+        ]);
+
+        $categories = Category::where('locality', $request->locality_code)->where('form_id', $request->form_id)->get();
+
+        return response()->json($categories);
+    }
+
+    public function participants(Request $request)
+    {
+        $request->validate([
+            'term' => 'required'
+        ]);
+
+        $user = Auth::guard('participant')->user();
+
+        $participants = $this->searchParticipant($request->term, $user);
+
+        return response()->json([
+            "results" => $participants->items(),
+            "pagination" => [
+                "more" => $participants->hasMorePages()
+            ]
+        ]);
+    }
+
+    public function participant(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:App\Models\Participant,id',
+        ]);
+
+        $participant = $this->getParticipant($request->id);
+
+        return response()->json($participant);
+    }
+
     public function create(Request $request)
     {
         $request->validate([
             'form_id' => 'required|exists:App\Models\Form,id',
             'code' => 'required|unique:App\Models\Registration,code',
             'register_as' => 'required|in:presenter,participant',
-            'category_id' => 'required|exists:App\Models\Category,id',
+            'category' => 'required|exists:App\Models\Category,id',
             'proof' => [
-                '',
+                'sometimes',
                 'file',
                 'mimes:pdf,jpg,jpeg,png',
                 'max:2048',
                 Rule::requiredIf(function () use ($request) {
-                    $category = Category::find($request->category_id);
+                    $category = Category::find($request->category);
 
                     return $category->needProof;
                 })
             ],
+            'link' => 'sometimes|integer|exists:App\Models\Participant,id',
+            'dietary' => 'required|string|exists:dietary_preference,code'
         ]);
 
         $participant = Auth::guard('participant')->user();
-        $registration = new Registration($request->all());
+
+        $registration = new Registration;
+
         $registration->participant_id = $participant->id;
-        $registration->status_code = 'WR';
+        $registration->form_id = $request->form_id;
+        $registration->code = $request->code;
+        $registration->register_as = $request->register_as;
+        $registration->category_id = $request->category;
+        $registration->dietary = $request->dietary;
 
         if ($request->hasFile('proof')) {
             $fileName = str_replace('-', '_', $registration->code) . '.' . $request->file('proof')->getClientOriginalExtension();
-            $filePath = 'ARAHE' . $registration->form->session->year. '/registration';
+            $filePath = 'ARAHE' . $registration->form->session->year . '/registration';
 
             $request->file('proof')->storeAs($filePath, $fileName);
 
             $registration->proof = $fileName;
         }
+
+        $registration->link = $request->link ?? null;
+        $registration->status_code = 'WR';
 
         $registration->save();
 
@@ -101,16 +152,59 @@ class RegistrationController extends Controller
         ]);
     }
 
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'locality' => 'required|string|exists:locality,code',
+            'register_as' => 'required|in:presenter,participant',
+            'category' => 'required|exists:App\Models\Category,id',
+            'proof' => [
+                Rule::requiredIf(function () use ($request) {
+                    $category = Category::find($request->category);
+
+                    return $category->needProof;
+                }),
+                'file',
+                'mimes:pdf,jpg,jpeg,png',
+                'max:2048',
+            ],
+            'link' => 'sometimes|integer|exists:App\Models\Participant,id',
+            'dietary' => 'required|string|exists:dietary_preference,code'
+        ]);
+
+        $registration = Registration::find($id);
+
+        $registration->register_as = $request->register_as;
+        $registration->category_id = $request->category;
+
+        if ($request->hasFile('proof')) {
+            $fileName = str_replace('-', '_', $registration->code) . '.' . $request->file('proof')->getClientOriginalExtension();
+            $filePath = 'ARAHE' . $registration->form->session->year . '/registration';
+
+            $request->file('proof')->storeAs($filePath, $fileName);
+
+            $registration->proof = $fileName;
+        }
+
+        $registration->link = $request->link ?? null;
+        $registration->dietary = $request->dietary;
+        $registration->status_code = 'WR';
+
+        $registration->save();
+
+        return redirect()->route('participant.competition.registration.view', ['form_id' => $registration->form->id])->with([
+            'success' => 'Registration updated successfully.',
+        ]);
+    }
+
     public function download(Request $request)
     {
         $request->validate([
             'registration_id' => 'required|exists:App\Models\Registration,id',
-            'filename' => 'required|exists:App\Models\Registration,proof'
         ]);
 
         $registration = Registration::find($request['registration_id']);
-        $filePath = 'ARAHE' . $registration->form->session->year. '/registration/' . $registration->proof;
 
-        return Storage::response($filePath);
+        return $registration->getProofFile();
     }
 }

@@ -60,7 +60,7 @@ class Submission extends Model
     }
 
     /**
-     * Get the Registration that review the Submission.
+     * Get the Registration that owns the Submission.
      */
     public function registration()
     {

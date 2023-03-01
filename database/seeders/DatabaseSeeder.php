@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             LocalitySeeder::class,
             ParticipantTitleSeeder::class,
             ParticipantTypeSeeder::class,
+            DietaryPreferenceSeeder::class,
         ]);
     }
 }

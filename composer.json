@@ -27,21 +27,21 @@
         "spatie/laravel-validation-rules": "^3.2"
     },
     "require-dev": {
-        "fakerphp/faker": "^1.9.1",
-        "laravel/pint": "^1.0",
-        "laravel/sail": "^1.0.1",
-        "mockery/mockery": "^1.4.4",
-        "nunomaduro/collision": "^6.1",
-        "phpunit/phpunit": "^9.5.10",
-        "spatie/laravel-ignition": "^1.0",
         "barryvdh/laravel-debugbar": "^3.7",
         "barryvdh/laravel-ide-helper": "^2.12",
-        "beyondcode/laravel-query-detector": "^1.6",
+        "beyondcode/laravel-query-detector": "^1.7",
+        "fakerphp/faker": "^1.9.1",
         "kitloong/laravel-migrations-generator": "^6.4",
         "laravel-lang/attributes": "^2.0",
         "laravel-lang/lang": "^12.0",
         "laravel-lang/publisher": "^14.3",
-        "painlesscode/breeze-multiauth": "^3.1"
+        "laravel/pint": "^1.0",
+        "laravel/sail": "^1.0.1",
+        "mockery/mockery": "^1.4.4",
+        "nunomaduro/collision": "^6.1",
+        "painlesscode/breeze-multiauth": "^3.1",
+        "phpunit/phpunit": "^9.5.10",
+        "spatie/laravel-ignition": "^1.0"
     },
     "autoload": {
         "psr-4": {

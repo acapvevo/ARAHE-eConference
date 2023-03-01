@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Carbon;
 
 class Form extends Model
 {
@@ -84,7 +85,7 @@ class Form extends Model
     /**
      * Get the Occupancies associated with the Form.
      */
-    public function Occupancies()
+    public function occupancies()
     {
         return $this->hasMany(Occupancy::class);
     }
@@ -103,5 +104,24 @@ class Form extends Model
     {
         $countScale = DB::table('scale')->get()->count();
         return $this->rubrics->count() * $countScale;
+    }
+
+    public function getDurationBasedCurrentDate($locality_code)
+    {
+        $currentDate = Carbon::now();
+
+        return $this->durations->where('locality', $locality_code)->first(function($duration) use ($currentDate){
+            return $currentDate->between($duration->start, $duration->end);
+        });
+    }
+
+    public function getOccupanciesByLocality($locality_code)
+    {
+        return $this->occupancies->where('locality', $locality_code);
+    }
+
+    public function getHotelsByLocality($locality_code)
+    {
+        return $this->hotels->where('locality', $locality_code);
     }
 }

@@ -13,15 +13,17 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('summaries', function (Blueprint $table) {
             $table->id();
 
-            $table->integer('form_id');
-            $table->string('name');
-            $table->string('code');
+            $table->integer('registration_id');
+            $table->integer('duration_id')->nullable();
+            $table->integer('package_id');
+            $table->json('extras');
+            $table->integer('hotel_id');
+            $table->integer('occupancy_id');
+            $table->integer('total');
             $table->string('locality');
-            $table->boolean('needProof');
-            $table->boolean('needLink');
 
             $table->timestamps();
         });
@@ -34,6 +36,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('summaries');
     }
 };
