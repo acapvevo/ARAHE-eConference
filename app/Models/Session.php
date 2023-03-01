@@ -57,4 +57,11 @@ class Session extends Model
     {
         return $this->returnDateObj($attribute, $point)->format('Y-m-d');
     }
+
+    public function isRegistrationOpen()
+    {
+        $currentDate = Carbon::now();
+
+        return $currentDate->between($this->registration['start'], $this->registration['end']);
+    }
 }

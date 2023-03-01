@@ -38,29 +38,6 @@ class Registration extends Model
         'created_at' => 'date'
     ];
 
-    public function generateCode()
-    {
-        $currentYearSubmissions = DB::table('registrations')->where('code', 'LIKE', '%ARAHE-' . Carbon::now()->year . '-%')->get();
-
-        if ($currentYearSubmissions->isEmpty()) {
-            $latestIndex = 0;
-        } else {
-            $latestIndex = (int) explode('-', $currentYearSubmissions->last()->code)[2];
-        }
-
-        $this->code = 'ARAHE-' . Carbon::now()->year . '-' . ($latestIndex + 1);
-    }
-
-    public function getStatusLabel()
-    {
-        return DB::table('status')->where('code', $this->status_code)->first()->label;
-    }
-
-    public function getStatusDescription()
-    {
-        return DB::table('status')->where('code', $this->status_code)->first()->description;
-    }
-
     /**
      * Get the Form that use by the Registration.
      */
@@ -94,6 +71,14 @@ class Registration extends Model
     }
 
     /**
+     * Get the Summary associated with the Registration.
+     */
+    public function summary()
+    {
+        return $this->hasOne(Summary::class);
+    }
+
+    /**
      * Get the Bill associated with the Registration.
      */
     public function bill()
@@ -114,15 +99,33 @@ class Registration extends Model
         return DB::table('dietary_preference')->where('code', $this->dietary)->first();
     }
 
-    public function getLink()
-    {
-        return Participant::find($this->link);
-    }
-
     public function getProofFile()
     {
         $filePath = 'ARAHE' . $this->form->session->year . '/registration/' . $this->proof;
 
         return Storage::response($filePath, $this->proof);
+    }
+
+    public function generateCode()
+    {
+        $currentYearSubmissions = DB::table('registrations')->where('code', 'LIKE', '%ARAHE-' . Carbon::now()->year . '-%')->get();
+
+        if ($currentYearSubmissions->isEmpty()) {
+            $latestIndex = 0;
+        } else {
+            $latestIndex = (int) explode('-', $currentYearSubmissions->last()->code)[2];
+        }
+
+        $this->code = 'ARAHE-' . Carbon::now()->year . '-' . ($latestIndex + 1);
+    }
+
+    public function getStatusLabel()
+    {
+        return DB::table('status')->where('code', $this->status_code)->first()->label;
+    }
+
+    public function getStatusDescription()
+    {
+        return DB::table('status')->where('code', $this->status_code)->first()->description;
     }
 }

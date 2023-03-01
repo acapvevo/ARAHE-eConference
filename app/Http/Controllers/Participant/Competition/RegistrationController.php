@@ -35,7 +35,7 @@ class RegistrationController extends Controller
     public function view($form_id)
     {
         $participant = Auth::guard('participant')->user();
-        $registrationQuery = Registration::where('form_id', $form_id)->where('participant_id', $participant->id);
+        $registrationQuery = Registration::with(['category.packages.fees', 'form.extras.fees'])->where('form_id', $form_id)->where('participant_id', $participant->id);
 
         if ($registrationQuery->exists()) {
             $registration = $registrationQuery->first();
@@ -188,6 +188,7 @@ class RegistrationController extends Controller
 
         $registration->link = $request->link ?? null;
         $registration->dietary = $request->dietary;
+        $registration->status_code = 'WR';
 
         $registration->save();
 

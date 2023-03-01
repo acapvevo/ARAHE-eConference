@@ -24,7 +24,6 @@ class Summary extends Model
         'hotel_id',
         'occupancy_id',
         'total',
-        'locality',
     ];
 
     /**
@@ -56,7 +55,7 @@ class Summary extends Model
 
     public function getExtras()
     {
-        return Extra::find($this->extras->pluck(['id']));
+        return Extra::with('fees')->find($this->extras->pluck(['id']));
     }
 
     public function getHotel()
@@ -72,5 +71,30 @@ class Summary extends Model
     public function getLocality()
     {
         return DB::table('locality')->where('code', $this->locality)->first();
+    }
+
+    public function getPackageFee()
+    {
+        return $this->getPackage()->fees->firstWhere('duration_id', $this->getDuration()->id);
+    }
+
+    public function getExtraFees()
+    {
+        $fees = collect();
+
+        foreach ($this->extras as $extra) {
+            $extraObj = Extra::with(['fees', 'fees.parent', 'fees.duration'])->find($extra['id']);
+            $fee = $extraObj->fees->firstWhere('duration_id', $this->getDuration()->id);
+            $fee->setAttribute('optionIndex', $extra['option']);
+
+            $fees->push($fee);
+        }
+
+        return $fees;
+    }
+
+    public function getHotelRate()
+    {
+        return $this->getHotel()->rates->firstWhere('occupancy_id', $this->getOccupancy()->id);
     }
 }

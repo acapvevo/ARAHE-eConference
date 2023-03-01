@@ -15,6 +15,7 @@ use App\Http\Controllers\Participant\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Participant\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Participant\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Participant\Auth\EmailVerificationNotificationController;
+use App\Http\Controllers\Participant\Competition\PackageController;
 use App\Http\Controllers\Participant\Competition\RegistrationController;
 use App\Http\Controllers\Participant\Competition\SubmissionController;
 use App\Http\Controllers\Participant\Payment\PayController;
@@ -109,6 +110,12 @@ Route::prefix('participant')->name('participant.')->group(function () {
                 Route::post('/participant', [RegistrationController::class, 'participant'])->name('participant');
                 Route::patch('/{id}', [RegistrationController::class, 'update'])->name('update');
                 Route::post('/download', [RegistrationController::class, 'download'])->name('download');
+            });
+
+            Route::prefix('package')->name('package.')->group(function () {
+                Route::post('', [PackageController::class, 'create'])->name('create');
+                Route::post('/fee', [PackageController::class, 'fee'])->name('fee');
+                Route::patch('', [PackageController::class, 'update'])->name('update');
             });
 
             Route::prefix('submission')->name('submission.')->group(function () {

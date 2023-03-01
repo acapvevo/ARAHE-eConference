@@ -45,7 +45,7 @@ class Hotel extends Model
     /**
      * Get the Rates associated with the Hotel.
      */
-    public function Rate()
+    public function rates()
     {
         return $this->hasMany(Rate::class);
     }
