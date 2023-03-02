@@ -283,7 +283,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="reset" class="btn btn-secondary" form="giveReview">Reset</button>
                     <button type="submit" class="btn btn-primary" form="giveReview" name="submit"
                         value="save">Save</button>
                 </div>

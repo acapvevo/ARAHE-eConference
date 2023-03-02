@@ -35,7 +35,7 @@ class PackageController extends Controller
             'extra' => 'sometimes|array',
             'extra.*' => 'required|array',
             'extra.*.fee' => [
-                'required',
+                'sometimes',
                 'integer',
                 'exists:fees,id',
                 function ($attribute, $value, $fail) use ($request) {
@@ -43,13 +43,12 @@ class PackageController extends Controller
                     $fee = $this->getFee($value);
                     $option = $request->get('extra')[$index]['option'] ?? null;
 
-                    if($fee->parent->options->count()){
-                        if(!$option)
+                    if ($fee->parent->options->count()) {
+                        if (!$option)
                             $fail('Please choose an option if you interested to include this extra package');
-                        else if(!$fee->parent->options->has($option))
+                        else if (!$fee->parent->options->has($option))
                             $fail('Please choose the options again');
                     }
-
                 },
             ],
             'extra.*.option' => [
@@ -70,7 +69,7 @@ class PackageController extends Controller
         $summary->total += $packageFee->amount;
 
         $summary->extras = [];
-        foreach($request->extra as $extra){
+        foreach ($request->extra as $extra) {
             $extraFee = $this->getFee($extra['fee']);
             $summary->extras[] = [
                 'id' => $extraFee->parent->id,
@@ -106,7 +105,7 @@ class PackageController extends Controller
             'extra' => 'sometimes|array',
             'extra.*' => 'required|array',
             'extra.*.fee' => [
-                'required',
+                'sometimes',
                 'integer',
                 'exists:fees,id',
                 function ($attribute, $value, $fail) use ($request) {
@@ -114,13 +113,12 @@ class PackageController extends Controller
                     $fee = $this->getFee($value);
                     $option = $request->get('extra')[$index]['option'] ?? null;
 
-                    if($fee->parent->options->count()){
-                        if(!$option)
+                    if ($fee->parent->options->count()) {
+                        if (!$option)
                             $fail('Please choose an option if you interested to include this extra package');
-                        else if(!$fee->parent->options->has($option))
+                        else if (!$fee->parent->options->has($option))
                             $fail('Please choose the options again');
                     }
-
                 },
             ],
             'extra.*.option' => [
@@ -141,13 +139,16 @@ class PackageController extends Controller
         $summary->total += $packageFee->amount;
 
         $summary->extras = [];
-        foreach($request->extra as $extra){
-            $extraFee = $this->getFee($extra['fee']);
-            $summary->extras[] = [
-                'id' => $extraFee->parent->id,
-                'option' => isset($extra['option']) ? ($extra['option'] - 1) : null,
-            ];
-            $summary->total += $extraFee->amount;
+        foreach ($request->extra as $extra) {
+            $extraFee = $this->getFee($extra['fee'] ?? 0);
+
+            if ($extraFee) {
+                $summary->extras[] = [
+                    'id' => $extraFee->parent->id,
+                    'option' => isset($extra['option']) ? ($extra['option'] - 1) : null,
+                ];
+                $summary->total += $extraFee->amount;
+            }
         }
 
         $hotelRate = $this->getRate($request->hotel['rate']);

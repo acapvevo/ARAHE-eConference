@@ -367,7 +367,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="reset" class="btn btn-secondary" form="createSubmission">Reset</button>
                     <button type="submit" class="btn btn-primary" form="createSubmission">Save</button>
                 </div>
             </div>
@@ -412,7 +412,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="reset" class="btn btn-secondary" form="updateSubmission">Reset</button>
                     <button type="submit" class="btn btn-primary" form="updateSubmission">Save</button>
                 </div>
             </div>

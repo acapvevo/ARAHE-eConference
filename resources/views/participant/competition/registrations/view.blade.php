@@ -160,7 +160,7 @@
                                 </tr>
                             @endif
                             <tr>
-                                <td colspan="3"><strong class="float-end">TOTAL</strong></td>
+                                <td colspan="3"><strong class="float-end">TOTAL NEED TO PAY</strong></td>
                                 <td>{{ $registration->summary ? $registration->summary->getLocality()->currency : '' }}{{ $registration->summary ? $registration->summary->total : '' }}
                                 </td>
                             </tr>
@@ -275,7 +275,7 @@
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="reset" class="btn btn-secondary" form="registrationForm">Reset</button>
                         <button type="submit" class="btn btn-primary" form="registrationForm">Save</button>
                     </div>
                 </div>
@@ -291,6 +291,7 @@
                     <div class="modal-header">
                         <h4 class="modal-title text-center" id="chooseLocalityModalLabel">Please Choose your Locality for
                             Registration</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form id="chooseLocality">
@@ -313,9 +314,7 @@
                         </form>
                     </div>
                     <div class="modal-footer">
-                        @if ($registration->status_code !== 'NR')
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        @endif
+                        <button type="reset" class="btn btn-secondary" form="chooseLocality">Reset</button>
                         <button type="submit" class="btn btn-primary" form="chooseLocality">Submit</button>
                     </div>
                 </div>
@@ -572,7 +571,7 @@
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="reset" class="btn btn-secondary" form="choosePackageForm">Reset</button>
                         <button type="submit" class="btn btn-primary" form="choosePackageForm">Save</button>
                     </div>
                 </div>
