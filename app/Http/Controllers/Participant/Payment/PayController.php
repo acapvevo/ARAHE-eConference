@@ -2,101 +2,147 @@
 
 namespace App\Http\Controllers\Participant\Payment;
 
+use Stripe\Webhook;
 use App\Models\Bill;
+use App\Plugins\Stripes;
+use App\Traits\SummaryTrait;
 use Illuminate\Http\Request;
+use UnexpectedValueException;
 use Illuminate\Support\Carbon;
-use App\Traits\SubmissionTrait;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Traits\PaymentTrait;
+use App\Traits\BillTrait;
+use Stripe\Exception\SignatureVerificationException;
 
 class PayController extends Controller
 {
-    use SubmissionTrait, PaymentTrait;
+    use SummaryTrait, BillTrait;
 
     public function main(Request $request)
     {
         $request->validate([
-            'submission_id' => 'required|integer|exists:App\Models\Submission,id'
+            'summary_id' => 'required|numeric|exists:summaries,id',
+            'price_id' => 'required|array',
+            'price_id.*' => [
+                'required',
+                'string',
+                function ($attribute, $value, $fail) {
+                    if (!DB::table('fees')->where('price_id', $value)->exists() && !DB::table('rates')->where('price_id', $value)->exists())
+                        $fail('Please Try Again');
+                }
+            ]
         ]);
 
-        $submission = $this->getSubmission($request->submission_id);
+        $summary = $this->getSummary($request->summary_id);
 
-        if (isset($submission->bill))
-            $bill = $submission->bill;
-        else
-            $bill = Bill::make([
-                'submission_id' => $submission->id,
-                'amount' => $submission->form->category->standardAmount * 100,
-            ]);
+        $bill = new Bill([
+            'summary_id' => $summary->id,
+        ]);
 
-        if(!isset($bill->code)){
-            $response = $this->createBill($submission->form->category->code, (object)[
-                'billName' => 'ARAHE' . $submission->form->session->year . ' - ' . $submission->participant->name,
-                'billDescription' => 'Payment for ARAHE' . $submission->form->session->year . ' participation from ' . $submission->participant->name,
-                'billPriceSetting' => 1,
-                'billPayorInfo' => 1,
-                'billAmount' => $bill->amount,
-                'billExternalReferenceNo' => $bill->id,
-                'billTo' => $submission->participant->name,
-                'billEmail' => $submission->participant->email,
-                'billPhone' => $submission->participant->telephoneNumber,
-                'billReturnUrl' => route('participant.payment.pay.return'),
-                'billCallbackUrl' => route('participant.payment.pay.callback'),
-            ]);
-            $bill->code = $response->BillCode;
+        $line_items = [];
+        foreach ($request->price_id as $price_id) {
+            $line_items[] = [
+                'price' => $price_id,
+                'quantity' => 1
+            ];
         }
 
+        $checkoutSession = Stripes::createCheckoutSession($line_items, $summary);
+
+        $bill->checkoutSession_id = $checkoutSession->id;
         $bill->pay_attempt_at = Carbon::now();
-
         $bill->save();
 
-        return redirect()->away($this->billPaymentLink($bill->code));
+        return redirect()->away($checkoutSession->url);
     }
 
-    public function return(Request $request)
+    public function success(Request $request)
     {
         $request->validate([
-            'billcode' => 'required|string|exists:App\Models\Bill,code'
+            'session_id' => 'required|string|exists:bills,checkoutSession_id'
         ]);
 
-        $bill = Bill::where('code', $request->billcode)->first();
-
+        $bill = $this->getBillByCheckoutSessionId($request->session_id);
+        $bill->status = 1;
         $bill->pay_complete_at = Carbon::now();
-        $bill->status = $request->status_id;
-
         $bill->save();
 
-        if($bill->status == 1){
-            $bill->submission->status_code = 'A';
-            $bill->submission->save();
+        $registration = $bill->summary->registration;
+        $registration->status_code = 'AR';
+        $registration->save();
 
-            $message = 'Your Payment has been successfully completed';
-            $key = 'success';
-        } else if($bill->status == 2){
-            $message = 'Your Payment was still in pending';
-            $key = 'warning';
-        }
-        else{
-            $message = 'Your Payment was failed, please try again';
-            $key = 'error';
-        }
-
-        return redirect(route('participant.competition.submission.view', ['form_id' => $bill->submission->form->id]))->with($key, $message);
+        return redirect(route('participant.competition.registration.view', ['form_id' => $bill->summary->registration->form->id]))->with('success', 'Your payment successfully completed. Please wait until we send email for payment confirmation');
     }
 
-    public function callback(Request $request)
+    public function cancel(Request $request)
     {
         $request->validate([
-            'billcode' => 'required|string|exists:App\Models\Bill,code'
+            'session_id' => 'required|string|exists:bills,checkoutSession_id'
         ]);
 
-        $bill = Bill::where('code', $request->billcode)->first();
-
-        $bill->pay_complete_at = $request->transaction_time;
-        $bill->status = $request->status;
-
+        $bill = $this->getBillByCheckoutSessionId($request->session_id);
+        $bill->status = 4;
         $bill->save();
 
-        return response()->noContent();
+        return redirect(route('participant.competition.registration.view', ['form_id' => $bill->summary->registration->form->id]))->with('error', 'Your payment has been cancelled');
+    }
+
+    public function webhook()
+    {
+        $endpoint_secret = env('STRIPE_WEBHOOK_SECRET');
+
+        $payload = @file_get_contents('php://input');
+        $sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'];
+        $event = null;
+
+        try {
+            $event = Webhook::constructEvent(
+                $payload,
+                $sig_header,
+                $endpoint_secret
+            );
+        } catch (UnexpectedValueException $e) {
+            // Invalid payload
+            return response()->noContent(400);
+        } catch (SignatureVerificationException $e) {
+            // Invalid signature
+            return response()->noContent(400);
+        }
+
+        // Handle the event
+        switch ($event->type) {
+            case 'checkout.session.completed':
+                $session = $event->data->object;
+
+                $bill = $this->getBillByCheckoutSessionId($session->id);
+                if ($bill) {
+                    $bill->status = 5;
+                    $bill->pay_confirm_at = Carbon::now();
+                    $bill->save();
+
+                    $registration = $bill->summary->registration;
+                    $registration->status_code = 'AR';
+                    $registration->save();
+                    // Send email to customer
+                }
+                break;
+            case 'async_payment_failed':
+                $session = $event->data->object;
+
+                $bill = $this->getBillByCheckoutSessionId($session->id);
+                if ($bill) {
+                    $bill->status = 3;
+                    $bill->pay_confirm_at = Carbon::now();
+                    $bill->save();
+                    // Send email to customer
+                }
+                break;
+
+                // ... handle other event types
+            default:
+                return response()->noContent(400);
+        }
+
+        return response()->noContent(200);
     }
 }

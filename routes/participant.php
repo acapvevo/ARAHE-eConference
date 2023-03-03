@@ -130,7 +130,9 @@ Route::prefix('participant')->name('participant.')->group(function () {
         Route::prefix('payment')->name('payment.')->group(function () {
             Route::prefix('pay')->name('pay.')->group(function () {
                 Route::post('', [PayController::class, 'main'])->name('main');
-                Route::get('/return', [PayController::class, 'return'])->name('return');
+                Route::get('/success', [PayController::class, 'success'])->name('success');
+                Route::get('/cancel', [PayController::class, 'cancel'])->name('cancel');
+                Route::post('/webhook', [PayController::class, 'webhook'])->name('webhook');
             });
 
             Route::prefix('record')->name('record.')->group(function () {

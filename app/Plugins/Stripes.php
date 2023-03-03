@@ -55,4 +55,19 @@ class Stripes
 
         return $price->id;
     }
+
+    static function createCheckoutSession($line_items, $summary)
+    {
+        $stripe = self::getClient();
+
+        return $stripe->checkout->sessions->create([
+            'line_items' => $line_items,
+            'mode' => 'payment',
+            'success_url' => route('participant.payment.pay.success') . '?session_id={CHECKOUT_SESSION_ID}',
+            'cancel_url' => route('participant.payment.pay.cancel') . '?session_id={CHECKOUT_SESSION_ID}',
+            'metadata' => [
+                'summary_id' => $summary->id,
+            ]
+        ]);
+    }
 }

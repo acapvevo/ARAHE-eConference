@@ -17,13 +17,12 @@ class Bill extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'registration_id',
-        'amount',
-        'code',
+        'summary_id',
+        'checkoutSession_id',
         'pay_attempt_at',
         'pay_complete_at',
-        'status',
-        'reason',
+        'pay_confirm_at',
+        'status'
     ];
 
     /**
@@ -34,11 +33,11 @@ class Bill extends Model
     protected $casts = [];
 
     /**
-     * Get the Registration that owns the Bill.
+     * Get the Summary that owns the Bill.
      */
-    public function registration()
+    public function summary()
     {
-        return $this->belongsTo(Registration::class);
+        return $this->belongsTo(Summary::class);
     }
 
     public function getPayAttemptAt()
@@ -49,6 +48,11 @@ class Bill extends Model
     public function getPayCompleteAt()
     {
         return Carbon::parse($this->pay_complete_at)->translatedFormat('j F Y h:m:s A');
+    }
+
+    public function getPayConfirmAt()
+    {
+        return Carbon::parse($this->pay_confirm_at)->translatedFormat('j F Y h:m:s A');
     }
 
     public function getStatusPayment()

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Laravel\Cashier\Billable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -13,7 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Participant extends Authenticatable
 {
-    use HasFactory, Notifiable, Billable;
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.

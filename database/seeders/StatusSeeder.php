@@ -47,9 +47,15 @@ class StatusSeeder extends Seeder
         ]);
 
         DB::table('status')->insertTs([
-            'label' => 'Waiting for Payment',
+            'label' => 'Waiting for Payment From Participant',
             'code' => 'PR',
             'description' => 'Your package has been locked and the total has been calculated. Please do the payment to proceed',
+        ]);
+
+        DB::table('status')->insertTs([
+            'label' => 'Waiting for Payment Confirmation',
+            'code' => 'PW',
+            'description' => 'Your payment has been process. Please wait for an email from us to confirm the payment',
         ]);
 
         DB::table('status')->insertTs([

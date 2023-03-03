@@ -16,13 +16,12 @@ return new class extends Migration
         Schema::create('bills', function (Blueprint $table) {
             $table->id();
 
-            $table->integer('submission_id');
-            $table->integer('amount');
-            $table->string('code')->unique();
+            $table->integer('summary_id');
+            $table->string('checkoutSession_id')->unique();
             $table->timestamp('pay_attempt_at');
             $table->timestamp('pay_complete_at')->nullable();
-            $table->integer('status')->nullable();
-            $table->string('reason')->nullable();
+            $table->timestamp('pay_confirm_at')->nullable();
+            $table->integer('status')->default(2);
 
             $table->timestamps();
         });
