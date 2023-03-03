@@ -126,15 +126,13 @@ class PayController extends Controller
                     // Send email to customer
                 }
                 break;
-            case 'async_payment_failed':
+            case 'checkout.session.expired':
                 $session = $event->data->object;
 
                 $bill = $this->getBillByCheckoutSessionId($session->id);
                 if ($bill) {
                     $bill->status = 3;
-                    $bill->pay_confirm_at = Carbon::now();
                     $bill->save();
-                    // Send email to customer
                 }
                 break;
 
