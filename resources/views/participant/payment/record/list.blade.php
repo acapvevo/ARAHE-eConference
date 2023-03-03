@@ -13,7 +13,7 @@
                 <table class="table table-bordered" id="table_id">
                     <thead class="table-primary">
                         <tr>
-                            <th>Year</th>
+                            <th>Registration ID</th>
                             <th>Date Attempt</th>
                             <th>Date Completed</th>
                             <th>Amount</th>
@@ -24,12 +24,12 @@
                         @foreach ($bills as $bill)
                             <tr>
                                 <td><a
-                                        href="{{ route('participant.payment.record.view', ['id' => $bill->id]) }}">{{ $bill->submission->form->session->year }}</a>
+                                        href="{{ route('participant.payment.record.view', ['id' => $bill->id]) }}">{{ $bill->summary->registration->code }}</a>
                                 </td>
                                 <td>{{ $bill->getPayAttemptAt() }}</td>
                                 <td>{{ $bill->getPayCompleteAt() }}</td>
-                                <td>RM {{number_format($bill->amount/100, 2)}}</td>
-                                <td>{{$bill->getStatusPayment()->label}}</td>
+                                <td>RM {{ number_format($bill->summary->total, 2) }}</td>
+                                <td>{{ $bill->getStatusPayment()->label }}</td>
                             </tr>
                         @endforeach
                     </tbody>
