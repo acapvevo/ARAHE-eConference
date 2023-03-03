@@ -18,13 +18,15 @@ class LocalitySeeder extends Seeder
         DB::table('locality')->insertTs([
             'code' => 'L',
             'name' => 'Local',
-            'currency' => 'RM'
+            'currency' => 'RM',
+            'stripe_currency' => 'myr'
         ]);
 
         DB::table('locality')->insertTs([
             'code' => 'I',
             'name' => 'International',
-            'currency' => 'USD$'
+            'currency' => 'USD$',
+            'stripe_currency' => 'usd'
         ]);
     }
 }

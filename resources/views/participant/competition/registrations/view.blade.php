@@ -28,7 +28,8 @@
                     </button>
                 @endif
                 @if ($registration->status_code === 'PR')
-                    <button type="button" class="btn btn-success">
+                    <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                        data-bs-target="#checkoutSessionModal">
                         Proceed to Payment
                     </button>
                 @endif
@@ -91,7 +92,11 @@
                 </table>
             </div>
 
-            @if ($registration->status_code === 'DR' || $registration->status_code === 'PR')
+            @if (
+                $registration->status_code === 'DR' ||
+                    $registration->status_code === 'PR' ||
+                    $registration->status_code === 'PW' ||
+                    $registration->status_code === 'AR')
                 <div class="pt-3">
                     <hr>
                     <h4 class="text-center">Package Details</h4>
@@ -142,7 +147,7 @@
                             @if ($registration->summary && $registration->summary->hotel_id && $registration->summary->occupancy_id)
                                 @php
                                     $hotelRate = $registration->summary->getHotelRate();
-
+                                    
                                     $hotel = $hotelRate->hotel;
                                     $occupancy = $hotelRate->occupancy;
                                 @endphp
@@ -160,7 +165,9 @@
                                 </tr>
                             @endif
                             <tr>
-                                <td colspan="3"><strong class="float-end">TOTAL</strong></td>
+                                <td colspan="3"><strong
+                                        class="float-end">TOTAL{{ $registration->status_code === 'DR' || $registration->status_code === 'PR' ? ' NEED TO PAY' : ' PAID' }}</strong>
+                                </td>
                                 <td>{{ $registration->summary ? $registration->summary->getLocality()->currency : '' }}{{ $registration->summary ? $registration->summary->total : '' }}
                                 </td>
                             </tr>
@@ -275,7 +282,7 @@
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="reset" class="btn btn-secondary" form="registrationForm">Reset</button>
                         <button type="submit" class="btn btn-primary" form="registrationForm">Save</button>
                     </div>
                 </div>
@@ -291,6 +298,7 @@
                     <div class="modal-header">
                         <h4 class="modal-title text-center" id="chooseLocalityModalLabel">Please Choose your Locality for
                             Registration</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form id="chooseLocality">
@@ -313,9 +321,7 @@
                         </form>
                     </div>
                     <div class="modal-footer">
-                        @if ($registration->status_code !== 'NR')
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        @endif
+                        <button type="reset" class="btn btn-secondary" form="chooseLocality">Reset</button>
                         <button type="submit" class="btn btn-primary" form="chooseLocality">Submit</button>
                     </div>
                 </div>
@@ -348,7 +354,7 @@
                             @php
                                 $locality_code = $registration->category->getLocality()->code;
                                 $currentDuration = $registration->form->getDurationBasedCurrentDate($locality_code);
-
+                                
                                 $currentChosenPackageFee = $registration->summary ? $registration->summary->getPackageFee() : null;
                             @endphp
                             <div class="mb-3 table-responsive">
@@ -434,7 +440,7 @@
                                         @foreach ($registration->form->extras as $indexExtra => $extra)
                                             @php
                                                 $currentFee = $extra->fees->firstWhere('duration_id', $currentDuration->id);
-
+                                                
                                                 $isChosenFee = $registration->summary
                                                     ? $chosenExtraFees->contains(function ($fee) use ($currentFee) {
                                                         return $fee->id == $currentFee->id;
@@ -501,7 +507,7 @@
                             @php
                                 $occupancies = $registration->form->getOccupanciesByLocality($locality_code);
                                 $hotels = $registration->form->getHotelsByLocality($locality_code);
-
+                                
                                 $currentChosenHotelRate = $registration->summary ? $registration->summary->getHotelRate() : null;
                             @endphp
                             <div class="mb-3 table-responsive">
@@ -572,8 +578,113 @@
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="reset" class="btn btn-secondary" form="choosePackageForm">Reset</button>
                         <button type="submit" class="btn btn-primary" form="choosePackageForm">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    @if ($registration->status_code === 'PR')
+        <div class="modal fade" id="checkoutSessionModal" tabindex="-1" aria-labelledby="checkoutSessionModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="checkoutSessionModalLabel">Payment Confirmation</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ route('participant.payment.pay.main') }}" method="post"
+                            id="checkoutSessionForm">
+                            @csrf
+
+                            <input type="hidden" name="summary_id" value="{{ $registration->summary->id }}">
+
+                            <div class="pt-3 pb-3 table-responsive">
+                                <table class="table table-bordered align-middle text-center">
+                                    <thead class="table-primary">
+                                        <tr>
+                                            <th style="width: 50%">Package</th>
+                                            <th>Code</th>
+                                            <th style="width: 30%">Option</th>
+                                            <th style="width: 10%">Fee/Rate</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th colspan="4">Main Package</th>
+                                        </tr>
+                                        <tr>
+                                            @php
+                                                $currentChosenPackageFee = $registration->summary->getPackageFee();
+                                            @endphp
+                                            <td>{!! $currentChosenPackageFee->parent->description ?? '' !!}</td>
+                                            <td>{{ $currentChosenPackageFee->parent->code ?? '' }}</td>
+                                            <td class="table-light"></td>
+                                            <td>{{ $registration->summary->getLocality()->currency }}{{ $currentChosenPackageFee->amount ?? '' }}
+                                            </td>
+                                            <input type="hidden" name="price_id[]"
+                                                value="{{ $currentChosenPackageFee->price_id }}">
+                                        </tr>
+                                        @php
+                                            $currentChosenExtraFees = $registration->summary->getExtraFees();
+                                        @endphp
+                                        @if ($currentChosenExtraFees)
+                                            <tr>
+                                                <th colspan="4">Extra Packages</th>
+                                            </tr>
+                                            @foreach ($currentChosenExtraFees as $extraFee)
+                                                <tr>
+                                                    <td>{{ $extraFee->parent->description ?? '' }}</td>
+                                                    <td>{{ $extraFee->parent->code ?? '' }}</td>
+                                                    <td>{{ $extraFee->parent->options[$extraFee->optionIndex] ?? '' }}
+                                                    </td>
+                                                    <td>{{ $registration->summary->getLocality()->currency }}{{ $extraFee->amount ?? '' }}
+                                                    </td>
+                                                    <input type="hidden" name="price_id[]"
+                                                        value="{{ $extraFee->price_id }}">
+                                                </tr>
+                                            @endforeach
+                                        @endif
+                                        @if ($registration->summary && $registration->summary->hotel_id && $registration->summary->occupancy_id)
+                                            @php
+                                                $hotelRate = $registration->summary->getHotelRate();
+                                                
+                                                $hotel = $hotelRate->hotel;
+                                                $occupancy = $hotelRate->occupancy;
+                                            @endphp
+                                            <tr>
+                                                <th colspan="4">Hotel Accomadation Package</th>
+                                            </tr>
+                                            <tr>
+                                                <td>{{ $hotel->description }} ({{ $hotel->getDaysAndNights() }}:
+                                                    Check In:
+                                                    {{ $hotel->checkIn->format('d M') }} Check Out:
+                                                    {{ $hotel->checkOut->format('d M') }})</td>
+                                                <td>{{ $hotel->code }}</td>
+                                                <td class="table-light"></td>
+                                                <td>{{ $registration->summary->getLocality()->currency }}{{ $hotelRate->amount ?? '' }}
+                                                </td>
+                                                <input type="hidden" name="price_id[]"
+                                                    value="{{ $hotelRate->price_id }}">
+                                            </tr>
+                                        @endif
+                                        <tr>
+                                            <td colspan="3"><strong class="float-end">TOTAL NEED TO PAY</strong>
+                                            </td>
+                                            <td>{{ $registration->summary->getLocality()->currency }}{{ $registration->summary->total }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="checkoutButton" class="btn btn-primary">Checkout</button>
                     </div>
                 </div>
             </div>
@@ -799,6 +910,33 @@
                 const choosePackageModal = new bootstrap.Modal('#choosePackageModal');
                 choosePackageModal.show();
             @endif
+        </script>
+    @endif
+
+    @if ($registration->status_code === 'PR')
+        <script>
+            const checkoutButtonEl = document.getElementById('checkoutButton');
+            const checkoutSessionForm = document.getElementById('checkoutSessionForm');
+            const checkoutSessionModal = new bootstrap.Modal('#checkoutSessionModal');
+
+            checkoutButtonEl.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Do you confirm to proceed?',
+                    text: 'The package that have been chosen will be locked and cannot be change after the payment',
+                    showDenyButton: true,
+                    confirmButtonText: 'Proceed',
+                    denyButtonText: 'Cancel',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        checkoutSessionForm.submit();
+                    } else if (result.isDenied) {
+                        checkoutSessionModal.hide();
+                    }
+                })
+            });
         </script>
     @endif
 @endsection

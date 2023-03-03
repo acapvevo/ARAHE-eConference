@@ -30,7 +30,19 @@ class StatusPaymentSeeder extends Seeder
         DB::table('status_payment')->insertTs([
             'label' => 'Failed',
             'code' => '3',
-            'description' => 'Your payment was failed, Please remake your payment'
+            'description' => 'Your payment was failed, Please make new payment'
+        ]);
+
+        DB::table('status_payment')->insertTs([
+            'label' => 'Cancelled',
+            'code' => '4',
+            'description' => 'Your payment has been cancelled, Please make new payment'
+        ]);
+
+        DB::table('status_payment')->insertTs([
+            'label' => 'Waiting',
+            'code' => '5',
+            'description' => 'Your payment currently being processed, Please wait for a few minutes'
         ]);
     }
 }

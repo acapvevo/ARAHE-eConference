@@ -42,8 +42,15 @@ class Occupancy extends Model
     /**
      * Get the Rates associated with the Occupancy.
      */
-    public function Rate()
+    public function rates()
     {
         return $this->hasMany(Rate::class);
+    }
+
+    public function updateRatesInStripe()
+    {
+        foreach($this->rates as $rate) {
+            $rate->updateStripe();
+        }
     }
 }

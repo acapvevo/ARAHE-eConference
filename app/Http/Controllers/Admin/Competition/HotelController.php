@@ -70,6 +70,8 @@ class HotelController extends Controller
             }
         }
 
+        $form->updateHotelsInStripe();
+
         //Occupancy
         if (count($request['occupancies']) >= $form->occupancies->count()) {
             for ($i = 0; $i < count($request['occupancies']); $i++) {
@@ -106,6 +108,8 @@ class HotelController extends Controller
                 $occupancy->delete();
             }
         }
+
+        $form->updateOccupansiesInStripe();
 
         return redirect(route('admin.competition.package.view', ['form_id' => $form->id]))->with('success', 'Hotel and Occupancy details for Year ' . $form->session->year . ' was updated successfully');
     }

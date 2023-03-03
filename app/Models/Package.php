@@ -44,4 +44,11 @@ class Package extends Model
     {
         return $this->morphMany(Fee::class, 'parent');
     }
+
+    public function updateFeesInStripe()
+    {
+        foreach($this->fees as $fee) {
+            $fee->updateStripe();
+        }
+    }
 }

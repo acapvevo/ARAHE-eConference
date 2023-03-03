@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin\Competition;
 
 use App\Models\Rate;
+use App\Plugins\Stripes;
 use App\Traits\FormTrait;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -33,7 +34,23 @@ class RateController extends Controller
                 $rate->hotel_id = $rateInput['hotel_id'];
             }
 
+            if(!$rate->product_id){
+                $name = '[' . $rate->getLocality()->name . '] HotelAccommodation_' . $rate->hotel->code . '-Occupancy_' . $rate->occupancy->type;
+                $description = 'Including ' . $rate->hotel->description . ' (' . $rate->occupancy->type . ') as accommodation for ARAHE conference';
+                $product = Stripes::createProduct($name, $description);
+
+                $rate->product_id = $product->id;
+            }
+
+            $oldAmount = $rate->amount;
             $rate->amount = $rateInput['amount'];
+
+            if(!$rate->price_id || $oldAmount != $rate->amount){
+                $currency = $rate->getLocality()->stripe_currency;
+
+                $rate->price_id = Stripes::createPrice($rate->amount, $currency, $rate->product_id);
+            }
+
             $rate->save();
         }
 

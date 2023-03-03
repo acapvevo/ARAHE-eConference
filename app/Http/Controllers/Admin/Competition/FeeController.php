@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Competition;
 use App\Models\Fee;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Plugins\Stripes;
 use App\Traits\FormTrait;
 
 class FeeController extends Controller
@@ -23,10 +24,10 @@ class FeeController extends Controller
 
         $form = $this->getForm($request->form_id);
 
-        foreach($request['fee'] as $feeInput){
+        foreach ($request['fee'] as $feeInput) {
             $fee = Fee::where('parent_type', 'App\Models\Package')->where('parent_id', $feeInput['package_id'])->where('duration_id', $feeInput['duration_id'])->first();
 
-            if(!$fee){
+            if (!$fee) {
                 $fee = new Fee;
 
                 $fee->parent_type = 'App\Models\Package';
@@ -34,7 +35,23 @@ class FeeController extends Controller
                 $fee->duration_id = $feeInput['duration_id'];
             }
 
+            if (!$fee->product_id) {
+                $name = '[' . $fee->duration->getLocality()->name . '] Package_' . $fee->parent->code . '-Duration_' . $fee->duration->name;
+                $description = $fee->parent->description;
+                $product = Stripes::createProduct($name, $description);
+
+                $fee->product_id = $product->id;
+            }
+
+            $oldAmount = $fee->amount;
             $fee->amount = $feeInput['amount'];
+
+            if (!$fee->price_id || $oldAmount != $fee->amount) {
+                $currency = $fee->duration->getLocality()->stripe_currency;
+
+                $fee->price_id = Stripes::createPrice($fee->amount, $currency, $fee->product_id);
+            }
+
             $fee->save();
         }
 
@@ -53,10 +70,10 @@ class FeeController extends Controller
 
         $form = $this->getForm($request->form_id);
 
-        foreach($request['extraFee'] as $feeInput){
+        foreach ($request['extraFee'] as $feeInput) {
             $fee = Fee::where('parent_type', 'App\Models\Extra')->where('parent_id', $feeInput['extra_id'])->where('duration_id', $feeInput['duration_id'])->first();
 
-            if(!$fee){
+            if (!$fee) {
                 $fee = new Fee;
 
                 $fee->parent_type = 'App\Models\Extra';
@@ -64,7 +81,23 @@ class FeeController extends Controller
                 $fee->duration_id = $feeInput['duration_id'];
             }
 
+            if (!$fee->product_id) {
+                $name = '[' . $fee->duration->getLocality()->name . '] Package_' . $fee->parent->code . '-Duration_' . $fee->duration->name;
+                $description = 'Including ' . $fee->parent->description . ' in overall trip for ARAHE conference';
+                $product = Stripes::createProduct($name, $description);
+
+                $fee->product_id = $product->id;
+            }
+
+            $oldAmount = $fee->amount;
             $fee->amount = $feeInput['amount'];
+
+            if (!$fee->price_id || $oldAmount != $fee->amount) {
+                $currency = $fee->duration->getLocality()->stripe_currency;
+
+                $fee->price_id = Stripes::createPrice($fee->amount, $currency, $fee->product_id);
+            }
+
             $fee->save();
         }
 

@@ -66,6 +66,8 @@ class ExtraController extends Controller
 
         $extra->save();
 
+        $extra->updateFeesInStripe();
+
         return redirect(route('admin.competition.extra.view', ['id' => $extra->id]))->with('success', 'This Extra has been updated successfully');
 
     }
