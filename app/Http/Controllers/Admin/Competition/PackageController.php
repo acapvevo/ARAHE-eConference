@@ -154,6 +154,8 @@ class PackageController extends Controller
 
         $OnSiteDurationInternational->save();
 
+        $form->updateDurationsInStripe();
+
         return redirect(route('admin.competition.package.view', ['form_id' => $form->id]))->with('success', 'Durations and Categories details for Year ' . $form->session->year . ' was updated successfully');
     }
 
@@ -204,6 +206,8 @@ class PackageController extends Controller
                 $package->delete();
             }
         }
+
+        $form->updateCategoiesInStripe();
 
         return redirect(route('admin.competition.package.view', ['form_id' => $form->id]))->with('success', 'Packages details for Year ' . $form->session->year . ' was updated successfully');
     }

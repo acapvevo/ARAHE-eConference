@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Plugins\Stripes;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Rate extends Model
 {
@@ -18,6 +20,8 @@ class Rate extends Model
         'hotel_id',
         'duration_id',
         'amount',
+        'product_id',
+        'price_id',
     ];
 
     /**
@@ -41,5 +45,20 @@ class Rate extends Model
     public function occupancy()
     {
         return $this->belongsTo(Occupancy::class);
+    }
+
+    public function getLocality()
+    {
+        return DB::table('locality')->where('code', $this->occupancy->locality)->first();
+    }
+
+    public function updateStripe()
+    {
+        if ($this->product_id) {
+            $name = '[' . $this->getLocality()->name . '] HotelAccommodation_' . $this->hotel->code . '-Occupancy_' . $this->occupancy->type;
+            $description = 'Including ' . $this->hotel->description . ' (' . $this->occupancy->type . ') as accommodation for ARAHE conference';
+
+            Stripes::updateProduct($this->product_id, $name, $description);
+        }
     }
 }

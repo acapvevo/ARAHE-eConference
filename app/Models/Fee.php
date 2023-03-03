@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use PDO;
+use App\Plugins\Stripes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Fee extends Model
 {
@@ -19,6 +21,8 @@ class Fee extends Model
         'parent_type',
         'duration_id',
         'amount',
+        'product_id',
+        'price_id',
     ];
 
     /**
@@ -36,12 +40,21 @@ class Fee extends Model
         return $this->morphTo();
     }
 
-
     /**
      * Get the Duration that owns the Fee.
      */
     public function duration()
     {
         return $this->belongsTo(Duration::class);
+    }
+
+    public function updateStripe()
+    {
+        if ($this->product_id) {
+            $name = '[' . $this->duration->getLocality()->name . '] Package_' . $this->parent->code . '-Duration_' . $this->duration->name;
+            $description = $this->parent->parent_type == 'App\Models\Package' ? $this->parent->description : 'Including ' . $this->parent->description . ' in overall trip for ARAHE conference';
+
+            Stripes::updateProduct($this->product_id, $name, $description);
+        }
     }
 }

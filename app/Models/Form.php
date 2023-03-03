@@ -124,4 +124,36 @@ class Form extends Model
     {
         return $this->hotels->where('locality', $locality_code);
     }
+
+    public function updateDurationsInStripe()
+    {
+        foreach($this->durations as $duration)
+        {
+            $duration->updateFeesInStripe();
+        }
+    }
+
+    public function updateCategoiesInStripe()
+    {
+        foreach($this->getPackages() as $package)
+        {
+            $package->updateFeesInStripe();
+        }
+    }
+
+    public function updateHotelsInStripe()
+    {
+        foreach($this->hotels as $hotel)
+        {
+            $hotel->updateRatesInStripe();
+        }
+    }
+
+    public function updateOccupansiesInStripe()
+    {
+        foreach($this->occupancies as $occupancy)
+        {
+            $occupancy->updateRatesInStripe();
+        }
+    }
 }

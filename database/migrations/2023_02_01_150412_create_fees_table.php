@@ -22,6 +22,9 @@ return new class extends Migration
             $table->integer('duration_id');
             $table->double('amount');
 
+            $table->string('product_id')->nullable();
+            $table->string('price_id')->nullable();
+
             $table->timestamps();
         });
     }

@@ -68,4 +68,11 @@ class Duration extends Model
     {
         return $this->{$point}->translatedFormat('d/m/Y');
     }
+
+    public function updateFeesInStripe()
+    {
+        foreach($this->fees as $fee) {
+            $fee->updateStripe();
+        }
+    }
 }

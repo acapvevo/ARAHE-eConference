@@ -20,6 +20,9 @@ return new class extends Migration
             $table->integer('hotel_id');
             $table->double('amount');
 
+            $table->string('product_id')->nullable();
+            $table->string('price_id')->nullable();
+
             $table->timestamps();
         });
     }

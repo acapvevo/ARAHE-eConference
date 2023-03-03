@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('code');
             $table->string('name');
             $table->string('currency');
+            $table->string('stripe_currency');
 
             $table->timestamps();
         });

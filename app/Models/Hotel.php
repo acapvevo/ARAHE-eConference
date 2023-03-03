@@ -57,4 +57,11 @@ class Hotel extends Model
 
         return $days . $nights;
     }
+
+    public function updateRatesInStripe()
+    {
+        foreach($this->rates as $rate) {
+            $rate->updateStripe();
+        }
+    }
 }
