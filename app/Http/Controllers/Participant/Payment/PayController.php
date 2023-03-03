@@ -71,7 +71,7 @@ class PayController extends Controller
         $registration->status_code = 'AR';
         $registration->save();
 
-        return redirect(route('participant.competition.registration.view', ['form_id' => $bill->summary->registration->form->id]))->with('success', 'Your payment successfully completed. Please wait until we send email for payment confirmation');
+        return redirect(route('participant.competition.registration.view', ['form_id' => $bill->summary->registration->form->id]))->with('success', 'Your payment successfully completed. See you at the conference');
     }
 
     public function cancel(Request $request)
