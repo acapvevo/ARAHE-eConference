@@ -39,25 +39,108 @@
                         <table class="table table-bordered">
                             <tbody>
                                 <tr>
-                                    <td colspan="2"><img src="{{ $reviewer->participant->getImageSrc() }}"width="200"
-                                            height="200" class="img-fluid rounded-circle mx-auto d-block"
-                                            alt="Profile Picture"></td>
+                                    <th class="w-25">Active Status</th>
+                                    <td>{{ $reviewer->active ? 'Active' : 'Inactive' }}</td>
                                 </tr>
                                 <tr>
-                                    <th class="w-25">Name</th>
+                                    <th colspan="2" class="text-center"><strong>Account Details</strong></th>
+                                </tr>
+                                <tr>
+                                    <th class="w-25">Title: </th>
+                                    <td>{{ $reviewer->participant->getTitle() }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="w-25">Name: </th>
                                     <td>{{ $reviewer->participant->name }}</td>
                                 </tr>
                                 <tr>
-                                    <th class="w-25">Email</th>
-                                    <td>{{ $reviewer->email }}</td>
+                                    <th class="w-25">Date of Birth: </th>
+                                    <td>{{ $reviewer->participant->date_of_birth->format('j F Y') }}</td>
                                 </tr>
                                 <tr>
-                                    <th class="w-25">Hired Since</th>
-                                    <td>{{ $reviewer->getHiredSince() }}</td>
+                                    <th class="w-25">Type of Participation: </th>
+                                    <td>{{ $reviewer->participant->getType() }}</td>
                                 </tr>
                                 <tr>
-                                    <th class="w-25">Active Status</th>
-                                    <td>{{ $reviewer->active ? 'Active' : 'Inactive' }}</td>
+                                    <th class="w-25">Email: </th>
+                                    <td>{{ $reviewer->participant->email }}</td>
+                                </tr>
+
+                                <tr>
+                                    <th colspan="2" class="text-center"><strong>Institution</strong></th>
+                                </tr>
+                                <tr>
+                                    <th class="w-25">University: </th>
+                                    <td>{{ $reviewer->participant->institution->name }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="w-25">Faculty: </th>
+                                    <td>{{ $reviewer->participant->institution->faculty }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="w-25">Department: </th>
+                                    <td>{{ $reviewer->participant->institution->department }}</td>
+                                </tr>
+
+
+                                <tr>
+                                    <th colspan="2" class="text-center"><strong>Address</strong></th>
+                                </tr>
+                                <tr>
+                                    <th class="w-25">Line 1: </th>
+                                    <td>{{ $reviewer->participant->address->lineOne }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="w-25">Line 2: </th>
+                                    <td>{{ $reviewer->participant->address->lineTwo }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="w-25">Line 3: </th>
+                                    <td>{{ $reviewer->participant->address->lineThree }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="w-25">City: </th>
+                                    <td>{{ $reviewer->participant->address->city }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="w-25">Postcode: </th>
+                                    <td>{{ $reviewer->participant->address->postcode }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="w-25">State: </th>
+                                    <td>{{ $reviewer->participant->address->state }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="w-25">Country: </th>
+                                    <td>{{ $reviewer->participant->address->country }}</td>
+                                </tr>
+
+                                <tr>
+                                    <th colspan="2" class="text-center"><strong>Contact</strong></th>
+                                </tr>
+                                <tr>
+                                    <th class="w-25">Phone Number: </th>
+                                    <td>{{ $reviewer->participant->contact->phoneNumber }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="w-25">Fax Number: </th>
+                                    <td>{{ $reviewer->participant->contact->faxNumber }}</td>
+                                </tr>
+
+                                <tr>
+                                    <th colspan="2" class="text-center"><strong>Emergency Person Details</strong></th>
+                                </tr>
+                                <tr>
+                                    <th class="w-25">Name: </th>
+                                    <td>{{ $reviewer->participant->emergency->name }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="w-25">Email: </th>
+                                    <td>{{ $reviewer->participant->emergency->email }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="w-25">Phone Number: </th>
+                                    <td>{{ $reviewer->participant->emergency->phoneNumber }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -76,14 +159,14 @@
                             </thead>
                             @php
                                 $submissions = $reviewer->submissions->sortByDesc(function ($submission) {
-                                    return $submission->form->session->year;
+                                    return $submission->registration->form->session->year;
                                 });
                             @endphp
                             <tbody>
                                 @foreach ($submissions as $submission)
                                     <tr>
-                                        <td>{{ $submission->form->session->year }}</td>
-                                        <td>{{ $submission->participant->name }}</td>
+                                        <td>{{ $submission->registration->form->session->year }}</td>
+                                        <td>{{ $submission->registration->participant->name }}</td>
                                         <td>{{ $submission->title }}</td>
                                         <td>{{ $submission->getStatusLabel() }}</td>
                                     </tr>

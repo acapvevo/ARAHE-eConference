@@ -109,6 +109,11 @@ class Participant extends Authenticatable
         return Bill::whereIn('summary_id', $this->getSummaries()->pluck('id'))->get();
     }
 
+    public function getSubmissions()
+    {
+        return Submission::whereIn('registration_id', $this->registrations->pluck('id'))->get();
+    }
+
     public function getJoinedSince()
     {
         return Carbon::parse($this->created_at)->translatedFormat('j F Y');

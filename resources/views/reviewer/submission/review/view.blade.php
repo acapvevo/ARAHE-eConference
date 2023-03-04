@@ -12,12 +12,18 @@
             <div class="row pt-3 pb-3">
                 <div class="col d-grid gap-2 d-md-flex justify-content-md-end">
 
-                    <button type="submit" class="btn btn-danger" form="giveReview" name="submit"
-                    value="reject" @disabled($submission->status_code !== 'IR')>
+                    <button type="submit" class="btn btn-danger" form="giveReview" name="submit" value="reject"
+                        @disabled($submission->status_code !== 'IR')>
                         Reject Submission
                     </button>
 
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#giveReviewModal" @disabled($submission->status_code !== 'IR')>
+                    <button type="submit" class="btn btn-warning" form="giveReview" name="submit" value="return"
+                        @disabled($submission->status_code !== 'IR')>
+                        Re-assign
+                    </button>
+
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#giveReviewModal"
+                        @disabled($submission->status_code !== 'IR')>
                         Give Review
                     </button>
                 </div>
@@ -151,7 +157,8 @@
         </div>
     </div>
 
-    <div class="modal fade" id="giveReviewModal" tabindex="-1" aria-labelledby="giveReviewModalLabel" aria-hidden="true">
+    <div class="modal fade" id="giveReviewModal" tabindex="-1" aria-labelledby="giveReviewModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
@@ -179,7 +186,8 @@
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="correction-tab" data-bs-toggle="tab"
                                     data-bs-target="#correction-tab-pane" type="button" role="tab"
-                                    aria-controls="correction-tab-pane" aria-selected="false">Paper with Correction</button>
+                                    aria-controls="correction-tab-pane" aria-selected="false">Paper with
+                                    Correction</button>
                             </li>
                         </ul>
 
@@ -207,13 +215,15 @@
 
                                 @php
                                     $scales = DB::table('scale')->get();
+                                    $totalMark = 0;
                                 @endphp
 
                                 <div class="table-responsive">
                                     <table class="table table-bordered">
                                         <thead class="table-primary">
                                             <tr>
-                                                <th style="width: 60%" class="align-middle text-center" rowspan="2">Description</th>
+                                                <th style="width: 60%" class="align-middle text-center" rowspan="2">
+                                                    Description</th>
                                                 <th class="align-middle text-center" colspan="5">Scale</th>
                                             </tr>
                                             <tr>
@@ -223,19 +233,35 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($submission->registration->form->rubrics as $rubric)
+                                            @foreach ($submission->registration->form->rubrics as $index => $rubric)
                                                 <tr>
                                                     <td>{{ $rubric->description }}</td>
                                                     @foreach ($scales as $scale)
                                                         <td>
                                                             <div class="form-check text-center">
-                                                                <input class="form-check-input float-none" type="radio" value="{{$scale->code}}"
-                                                                    name="rubrics[{{$rubric->id}}]" id="rubrics{{$rubric->id}}_{{$scale->id}}" @checked(old('rubrics.' . $rubric->id) == $scale->code)>
+                                                                <input
+                                                                    class="form-check-input float-none rubrics rubric{{ $index }}"
+                                                                    type="radio" value="{{ $scale->code }}"
+                                                                    mark={!! $scale->mark !!}
+                                                                    name="rubrics[{{ $rubric->id }}]"
+                                                                    id="rubrics{{ $rubric->id }}_{{ $scale->id }}"
+                                                                    @checked(old('rubrics.' . $rubric->id) == $scale->code)>
                                                             </div>
                                                         </td>
                                                     @endforeach
                                                 </tr>
+                                                @php
+                                                    $totalMark += $scale->mark;
+                                                @endphp
                                             @endforeach
+                                            <tr>
+                                                <th>
+                                                    <div class="d-flex justify-content-end">
+                                                        TOTAL SCORE
+                                                    </div>
+                                                <td colspan="{{ $scales->count() }}" id="total">0/{{$totalMark}}</td>
+                                                </th>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -270,7 +296,7 @@
 
                                 <div class="mb-3">
                                     <label for="correction" class="form-label">Upload Paper with Correction <small
-                                            class="text-muted">(PDF only, Max:
+                                            class="text-muted">(PDF, DOC, and DOCX only) (Max Size:
                                             4MB)</small></label>
                                     <input type="file"
                                         class="form-control {{ $errors->has('correction') ? 'is-invalid' : '' }}"
@@ -296,10 +322,48 @@
     <script src="{{ asset('lib/summernote/summernote-lite.js') }}"></script>
 
     <script>
-        $('#summernote').summernote({
-            placeholder: 'Give your comment',
-            tabsize: 2,
-            height: 120
+        $("document").ready(function() {
+            $('#summernote').summernote({
+                placeholder: 'Give your comment',
+                tabsize: 2,
+                height: 120
+            });
+
+            updateTotalScore();
         });
+
+        const getAllScaleInput = document.getElementsByClassName('rubrics');
+
+        Array.from(getAllScaleInput).forEach(function(el) {
+            el.addEventListener("change", function(event) {
+                updateTotalScore();
+            });
+        });
+
+        function updateTotalScore() {
+            const rubricCount = {{ $submission->registration->form->rubrics->count() }};
+            const totalEl = document.getElementById('total');
+
+            let total = 0;
+            for (let index = 0; index < rubricCount; index++) {
+                let chosenScale = $(".rubric" + index + ":checked ").attr('mark') ?? 0;
+
+                total += parseInt(chosenScale);
+            }
+
+            const percentage = total/parseInt({{$totalMark}}) * 100;
+            if(percentage >= 80){
+                totalEl.innerHTML = total + '/{{$totalMark}} (' + percentage.toFixed(2) + '%) <span class="badge bg-success">Excellent</span>';
+            } else {
+                totalEl.innerHTML = total + '/{{$totalMark}} (' + percentage.toFixed(2) + '%) <span class="badge bg-danger">Need Correction</span>';
+            }
+        }
     </script>
+
+    @if ($errors->any())
+        <script>
+            const giveReviewModal = new bootstrap.Modal('#giveReviewModal')
+            giveReviewModal.show();
+        </script>
+    @endif
 @endsection

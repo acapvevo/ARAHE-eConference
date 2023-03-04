@@ -60,16 +60,16 @@ class ReviewController extends Controller
             'correction' => [
                 'nullable',
                 'file',
-                'mimes:pdf',
+                'mimes:pdf,doc,docx',
                 'max:4096'
             ],
-            'submit' => 'required|string|in:save,reject'
+            'submit' => 'required|string|in:save,reject,return'
         ]);
 
         $submission = $this->getSubmission($id);
 
         if ($request->submit === 'reject') {
-            $submission->status_code = 'P';
+            $submission->status_code = 'R';
             $submission->reviewer_id = null;
             $submission->deleteFile('correctionFile');
             $submission->totalMark = 0;
@@ -78,6 +78,16 @@ class ReviewController extends Controller
             $submission->save();
 
             return redirect(route('reviewer.submission.review.list'))->with('success', 'Submission ' . $submission->registration->code . ' has been successfully rejected.');
+        } else if($request->submit === 'return'){
+            $submission->status_code = 'P';
+            $submission->reviewer_id = null;
+            $submission->deleteFile('correctionFile');
+            $submission->totalMark = 0;
+            $submission->comment = null;
+
+            $submission->save();
+
+            return redirect(route('reviewer.submission.review.list'))->with('success', 'Submission ' . $submission->registration->code . ' has been send to Admin to be re-appoint to other reviewer.');
         }
 
         $totalMark = 0;
@@ -110,7 +120,7 @@ class ReviewController extends Controller
         }
 
         if ($submission->calculatePercentage() >= 80) {
-            $submission->status_code = 'WP';
+            $submission->status_code = 'A';
             $submission->deleteFile('correctionFile');
 
             $submission->setAcceptedDate();

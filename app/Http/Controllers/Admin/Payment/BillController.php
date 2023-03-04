@@ -3,22 +3,30 @@
 namespace App\Http\Controllers\Admin\Payment;
 
 use App\Models\Bill;
+use App\Plugins\Stripes;
+use App\Traits\PaymentTrait;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Traits\PaymentTrait;
 
 class BillController extends Controller
 {
-    use PaymentTrait;
+    public function list()
+    {
+        $bills = Bill::orderBy('created_at', 'desc')->get();
+
+        return view('admin.payment.bill.list')->with([
+            'bills' => $bills,
+        ]);
+    }
 
     public function view($id)
     {
         $bill = Bill::find($id);
-        $infoToyyibPay = $this->getBill($bill->code);
+        $checkoutSession = Stripes::getCheckoutSession($bill->checkoutSession_id);
 
         return view('admin.payment.bill.view')->with([
             'bill' => $bill,
-            'infoToyyibPay' => $infoToyyibPay,
+            'checkoutSession' => $checkoutSession,
         ]);
     }
 }

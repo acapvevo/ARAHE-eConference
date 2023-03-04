@@ -189,15 +189,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
 
         Route::prefix('payment')->name('payment.')->group(function () {
-            Route::prefix('category')->name('category.')->group(function () {
-                Route::get('', [CategoryController::class, 'list'])->name('list');
-                Route::get('/{id}', [CategoryController::class, 'view'])->name('view');
-                Route::patch('/{id}', [CategoryController::class, 'update'])->name('update');
-            });
-
             Route::prefix('bill')->name('bill.')->group(function () {
+                Route::get('', [BillController::class, 'list'])->name('list');
                 Route::get('/{id}', [BillController::class, 'view'])->name('view');
-                Route::post('/download', [BillController::class, 'download'])->name('download');
             });
         });
 

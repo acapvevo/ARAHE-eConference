@@ -16,7 +16,7 @@ class AssignController extends Controller
     {
         $currentForm = $this->getCurrentForm();
         $registrations = $currentForm->registrations->filter(function($registration){
-            return $registration->submission->status_code === "P";
+            return $registration->submission && $registration->submission->status_code === "P";
         });
 
         return view('admin.submission.assign.list')->with([

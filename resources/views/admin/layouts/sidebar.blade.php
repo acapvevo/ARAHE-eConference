@@ -31,8 +31,8 @@
                     href="{{ route('admin.member.reviewer.list') }}"><i class="fas fa-user-tie"></i><span>Reviewer
                         Management</span></a></li>
             <li class="nav-item"><a
-                    class="nav-link {{ request()->routeIs('admin.payment.category.*') || request()->routeIs('admin.payment.bill.*') ? 'active' : '' }}"
-                    href="{{ route('admin.payment.category.list') }}"><i class="fas fa-money-check"></i><span>Payment
+                    class="nav-link {{ request()->routeIs('admin.payment.bill.*') ? 'active' : '' }}"
+                    href="{{ route('admin.payment.bill.list') }}"><i class="fas fa-money-check"></i><span>Payment
                         Management</span></a></li>
             <li class="nav-item"><a class="nav-link {{ request()->routeIs('admin.system.manual.*') ? 'active' : '' }}"
                     href="{{ route('admin.system.manual.view') }}"><i class="fas fa-book-reader"></i><span>User
