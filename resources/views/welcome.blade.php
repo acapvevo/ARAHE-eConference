@@ -349,7 +349,7 @@
 
       <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
         <div class="text-center">
-          <img src="https://arahe2023.mahe.org.my/images/logo-inverse.png" width="500" height="300"/>
+          <img src="https://arahe2023.mahe.org.my/images/logo-default.png" width="500" height="300"/>
         </div>
         <h1 class="flex justify-center dark:text-white">Login As</h1>
         <div
