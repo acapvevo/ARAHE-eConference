@@ -73,15 +73,15 @@ function process(event) {
 
     if (phoneNumber && !phoneInput.isValidNumber()) {
         phoneError.style.display = "block";
-        phoneError.innerHTML = `Invalid phone number.`;
+        phoneError.innerHTML = `Invalid Phone Number.`;
         phoneInputField.classList.add("is-invalid");
     } else if (faxNumber && !faxInput.isValidNumber()) {
         faxError.style.display = "block";
-        faxError.innerHTML = `Invalid fax number.`;
+        faxError.innerHTML = `Invalid Fax Number.`;
         faxInputField.classList.add("is-invalid");
     } else if (emergencyPhoneNumber && !emergencyPhoneInput.isValidNumber()) {
         emergencyPhoneError.style.display = "block";
-        emergencyPhoneError.innerHTML = `Invalid fax number.`;
+        emergencyPhoneError.innerHTML = `Invalid Emergency Phone Number.`;
         emergencyPhoneInputField.classList.add("is-invalid");
     } else {
         phoneInputField.value = phoneNumber;
