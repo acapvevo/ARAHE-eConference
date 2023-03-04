@@ -431,15 +431,16 @@
 
 @section('scripts')
     <script>
-        //Authors
-        const addAuthorButton = document.getElementById('addAuthor');
-        const currentIndexAuthor =
-            {{ count(old('authors', $submission->authors ?? [])) }};
+        @if ($submission->status_code === 'N')
+            //Authors
+            const addAuthorButton = document.getElementById('addAuthor');
+            const currentIndexAuthor =
+                {{ count(old('authors', $submission->authors ?? [])) }};
 
-        let iA = currentIndexAuthor;
-        addAuthorButton.addEventListener('click', function() {
+            let iA = currentIndexAuthor;
+            addAuthorButton.addEventListener('click', function() {
 
-            var stringHtmlScaleElements = `<tr>
+                var stringHtmlScaleElements = `<tr>
                                                 <td>
                                                     <input type="text" name="authors[` + iA + `][name]"
                                                         id="authors.` + iA + `.name"
@@ -454,28 +455,28 @@
                                                 </td>
                                             </tr>`;
 
-            $("#tableAuthors tbody").append(stringHtmlScaleElements);
+                $("#tableAuthors tbody").append(stringHtmlScaleElements);
 
-            iA++;
-        });
+                iA++;
+            });
 
-        $("#removeAuthor").on("click", function() {
-            if (iA != 0) {
-                iA--
-                $('#tableAuthors tr:last').remove();
-            }
-        });
+            $("#removeAuthor").on("click", function() {
+                if (iA != 0) {
+                    iA--
+                    $('#tableAuthors tr:last').remove();
+                }
+            });
 
 
-        //Co-Authors
-        const addCoAuthorButton = document.getElementById('addCoAuthor');
-        const currentIndexCoAuthor =
-            {{ count(old('coAuthors', $submission->coAuthors ?? [])) }};
+            //Co-Authors
+            const addCoAuthorButton = document.getElementById('addCoAuthor');
+            const currentIndexCoAuthor =
+                {{ count(old('coAuthors', $submission->coAuthors ?? [])) }};
 
-        let iCA = currentIndexCoAuthor;
-        addCoAuthorButton.addEventListener('click', function() {
+            let iCA = currentIndexCoAuthor;
+            addCoAuthorButton.addEventListener('click', function() {
 
-            var stringHtmlScaleElements = `<tr>
+                var stringHtmlScaleElements = `<tr>
                                                 <td>
                                                     <input type="text" name="coAuthors[` + iCA + `][name]"
                                                         id="coAuthors.` + iCA + `.name"
@@ -490,34 +491,29 @@
                                                 </td>
                                             </tr>`;
 
-            iCA++;
+                iCA++;
 
-            $("#tableCoAuthors tbody").append(stringHtmlScaleElements);
-        });
+                $("#tableCoAuthors tbody").append(stringHtmlScaleElements);
+            });
 
-        $("#removeCoAuthor").on("click", function() {
-            if (iCA != 0) {
-                iCA--
-                $('#tableCoAuthors tr:last').remove();
-            }
-        });
+            $("#removeCoAuthor").on("click", function() {
+                if (iCA != 0) {
+                    iCA--
+                    $('#tableCoAuthors tr:last').remove();
+                }
+            });
 
-        @if (
-            $errors->has('registration_id') ||
-                $errors->has('title') ||
-                $errors->has('authors.*') ||
-                $errors->has('coAuthors.*') ||
-                $errors->has('presenter') ||
-                $errors->has('abstract') ||
-                $errors->has('abstractFile') ||
-                $errors->has('paperFile') ||
-                $errors->has('keywords'))
-            const createSubmissionModal = new bootstrap.Modal('#createSubmissionModal');
-            createSubmissionModal.show();
+            @if ($errors->any())
+                const createSubmissionModal = new bootstrap.Modal('#createSubmissionModal');
+                createSubmissionModal.show();
+            @endif
         @endif
-        @if ($errors->has('paperFileCorrection'))
-            const updateSubmissionModal = new bootstrap.Modal('#updateSubmissionModal');
-            updateSubmissionModal.show();
+
+        @if ($submission->status_code === 'C')
+            @if ($errors->any())
+                const updateSubmissionModal = new bootstrap.Modal('#updateSubmissionModal');
+                updateSubmissionModal.show();
+            @endif
         @endif
     </script>
 @endsection

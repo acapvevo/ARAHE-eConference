@@ -53,7 +53,7 @@ class SubmissionController extends Controller
             'authors' => 'required|array',
             'authors.*.name' => 'required|string|distinct',
             'authors.*.email' => 'required|string|distinct',
-            'coAuthors' => 'required|array',
+            'coAuthors' => 'nullable|array',
             'coAuthors.*.name' => 'required|string|distinct',
             'coAuthors.*.email' => 'required|string|distinct',
             'keywords' => 'required|string',
@@ -68,7 +68,7 @@ class SubmissionController extends Controller
         $submission->registration_id = $request->registration_id;
         $submission->title = $request->title;
         $submission->authors = $request->authors;
-        $submission->coAuthors = $request->coAuthors;
+        $submission->coAuthors = $request->coAuthors ?? [];
         $submission->presenter = $request->presenter;
         $submission->abstract = $request->abstract;
         $submission->keywords = $request->keywords;
