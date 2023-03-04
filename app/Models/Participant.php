@@ -84,11 +84,11 @@ class Participant extends Authenticatable
     }
 
     /**
-     * Get the Submissions for the Participant.
+     * Get the Registrations for the Participant.
      */
-    public function submissions()
+    public function registrations()
     {
-        return $this->hasMany(Submission::class);
+        return $this->hasMany(Registration::class);
     }
 
     /**
@@ -97,6 +97,21 @@ class Participant extends Authenticatable
     public function reviewer()
     {
         return $this->hasOne(Reviewer::class);
+    }
+
+    public function getSummaries()
+    {
+        return Summary::whereIn('registration_id', $this->registrations->pluck('id'))->get();
+    }
+
+    public function getBills()
+    {
+        return Bill::whereIn('summary_id', $this->getSummaries()->pluck('id'))->get();
+    }
+
+    public function getSubmissions()
+    {
+        return Submission::whereIn('registration_id', $this->registrations->pluck('id'))->get();
     }
 
     public function getJoinedSince()

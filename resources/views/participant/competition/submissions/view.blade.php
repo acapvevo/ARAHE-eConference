@@ -55,7 +55,7 @@
                         @empty
                             <tr>
                                 <th class='w-25'>Authors</th>
-                                <td  colspan="2"></td>
+                                <td colspan="2"></td>
                             </tr>
                         @endforelse
                         @forelse ($submission->coAuthors ?? [] as $index => $coAuthor)
@@ -131,7 +131,8 @@
                         </tr>
                         <tr>
                             <th class='w-25'>Total Mark</th>
-                            <td colspan="2">{{ $submission->calculatePercentage() === 0 ? '' : number_format($submission->calculatePercentage(), 2) . '%' }}
+                            <td colspan="2">
+                                {{ $submission->calculatePercentage() === 0 ? '' : number_format($submission->calculatePercentage(), 2) . '%' }}
                             </td>
                         </tr>
                         <tr>
@@ -161,263 +162,271 @@
         </div>
     </div>
 
-    <div class="modal fade" id="createSubmissionModal" tabindex="-1" aria-labelledby="createSubmissionModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title fs-5" id="createSubmissionModalLabel">Create Submission</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{ route('participant.competition.submission.create') }}" method="post"
-                        id="createSubmission" enctype="multipart/form-data">
-                        @csrf
+    @if ($submission->status_code === 'N')
+        <div class="modal fade" id="createSubmissionModal" tabindex="-1" aria-labelledby="createSubmissionModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title fs-5" id="createSubmissionModalLabel">Create Submission</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ route('participant.competition.submission.create') }}" method="post"
+                            id="createSubmission" enctype="multipart/form-data">
+                            @csrf
 
-                        <input type="hidden" name="registration_id" value="{{ $submission->registration->id }}">
+                            <input type="hidden" name="registration_id" value="{{ $submission->registration->id }}">
 
-                        <div class="mb-3">
-                            <label for="code" class="form-label">Registration ID</label>
-                            <input type="text" readonly class="form-control-plaintext" name="code"
-                                id="code"
-                                value="{{ old('code', $submission->registration->code) }}">
-                        </div>
+                            <div class="mb-3">
+                                <label for="code" class="form-label">Registration ID</label>
+                                <input type="text" readonly class="form-control-plaintext" name="code"
+                                    id="code" value="{{ old('code', $submission->registration->code) }}">
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="title" class="form-label">Title</label>
-                            <input type="text" class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }}"
-                                name="title" id="title" placeholder="Enter Paper title"
-                                value="{{ old('title', $submission->title) }}">
-                            @error('title')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Title</label>
+                                <input type="text"
+                                    class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }}" name="title"
+                                    id="title" placeholder="Enter Paper title"
+                                    value="{{ old('title', $submission->title) }}">
+                                @error('title')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="authors" class="form-label">Authors</label>
-                            <div class="table-responsive" id="authors">
-                                <table class="table table-bordered" id="tableAuthors">
-                                    <thead class="table-primary">
-                                        <tr>
-                                            <th>Author Name</th>
-                                            <th>Author Email</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (old('authors', $submission->authors ?? []) as $index => $author)
+                            <div class="mb-3">
+                                <label for="authors" class="form-label">Authors</label>
+                                <div class="table-responsive" id="authors">
+                                    <table class="table table-bordered" id="tableAuthors">
+                                        <thead class="table-primary">
                                             <tr>
-                                                <td>
-                                                    <input type="text" name="authors[{{ $index }}][name]"
-                                                        id="authors.{{ $index }}.name"
-                                                        class="form-control {{ $errors->has('authors.' . $index . '.name') ? 'is-invalid' : '' }}"
-                                                        placeholder="Enter Author {{ $index + 1 }} Name"
-                                                        value="{{ $author['name'] }}">
-                                                    @error('authors.' . $index . '.name')
-                                                        <div class="invalid-feedback">
-                                                            {{ $message }}
-                                                        </div>
-                                                    @enderror
-                                                </td>
-                                                <td>
-                                                    <input type="email" name="authors[{{ $index }}][email]"
-                                                        id="authors.{{ $index }}.email"
-                                                        class="form-control {{ $errors->has('authors.' . $index . '.email') ? 'is-invalid' : '' }}"
-                                                        placeholder="Enter Author {{ $index + 1 }} Email"
-                                                        value="{{ $author['email'] }}">
-                                                    @error('authors.' . $index . '.email')
-                                                        <div class="invalid-feedback">
-                                                            {{ $message }}
-                                                        </div>
-                                                    @enderror
-                                                </td>
+                                                <th>Author Name</th>
+                                                <th>Author Email</th>
                                             </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                                <div class="d-flex justify-content-end">
-                                    <div class="btn-group pt-3 pb-3" role="group">
-                                        <button type="button" id="addAuthor" class="btn btn-success"><i
-                                                class="fa-solid fa-plus"></i></button>
-                                        <button type="button" id="removeAuthor" class="btn btn-danger"><i
-                                                class="fa-solid fa-minus"></i></button>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (old('authors', $submission->authors ?? []) as $index => $author)
+                                                <tr>
+                                                    <td>
+                                                        <input type="text" name="authors[{{ $index }}][name]"
+                                                            id="authors.{{ $index }}.name"
+                                                            class="form-control {{ $errors->has('authors.' . $index . '.name') ? 'is-invalid' : '' }}"
+                                                            placeholder="Enter Author {{ $index + 1 }} Name"
+                                                            value="{{ $author['name'] }}">
+                                                        @error('authors.' . $index . '.name')
+                                                            <div class="invalid-feedback">
+                                                                {{ $message }}
+                                                            </div>
+                                                        @enderror
+                                                    </td>
+                                                    <td>
+                                                        <input type="email" name="authors[{{ $index }}][email]"
+                                                            id="authors.{{ $index }}.email"
+                                                            class="form-control {{ $errors->has('authors.' . $index . '.email') ? 'is-invalid' : '' }}"
+                                                            placeholder="Enter Author {{ $index + 1 }} Email"
+                                                            value="{{ $author['email'] }}">
+                                                        @error('authors.' . $index . '.email')
+                                                            <div class="invalid-feedback">
+                                                                {{ $message }}
+                                                            </div>
+                                                        @enderror
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                    <div class="d-flex justify-content-end">
+                                        <div class="btn-group pt-3 pb-3" role="group">
+                                            <button type="button" id="addAuthor" class="btn btn-success"><i
+                                                    class="fa-solid fa-plus"></i></button>
+                                            <button type="button" id="removeAuthor" class="btn btn-danger"><i
+                                                    class="fa-solid fa-minus"></i></button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="mb-3">
-                            <label for="coAuthors" class="form-label">Co-Authors</label>
-                            <div class="table-responsive" id="coAuthors">
-                                <table class="table table-bordered" id="tableCoAuthors">
-                                    <thead class="table-primary">
-                                        <tr>
-                                            <th>Co-Author Name</th>
-                                            <th>Co-Author Email</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (old('coAuthors', $submission->coAuthors ?? []) as $index => $coAuthor)
+                            <div class="mb-3">
+                                <label for="coAuthors" class="form-label">Co-Authors</label>
+                                <div class="table-responsive" id="coAuthors">
+                                    <table class="table table-bordered" id="tableCoAuthors">
+                                        <thead class="table-primary">
                                             <tr>
-                                                <td>
-                                                    <input type="text" name="coAuthors[{{ $index }}][name]"
-                                                        id="coAuthors.{{ $index }}.name"
-                                                        class="form-control {{ $errors->has('coAuthors.' . $index . '.name') ? 'is-invalid' : '' }}"
-                                                        placeholder="Enter Co-Author {{ $index + 1 }} Name"
-                                                        value="{{ $coAuthor['name'] }}">
-                                                    @error('coAuthors.' . $index . '.name')
-                                                        <div class="invalid-feedback">
-                                                            {{ $message }}
-                                                        </div>
-                                                    @enderror
-                                                </td>
-                                                <td>
-                                                    <input type="email" name="coAuthors[{{ $index }}][email]"
-                                                        id="coAuthors.{{ $index }}.email"
-                                                        class="form-control {{ $errors->has('coAuthors.' . $index . '.email') ? 'is-invalid' : '' }}"
-                                                        placeholder="Enter Co-Author {{ $index + 1 }} Email"
-                                                        value="{{ $coAuthor['email'] }}">
-                                                    @error('coAuthors.' . $index . '.email')
-                                                        <div class="invalid-feedback">
-                                                            {{ $message }}
-                                                        </div>
-                                                    @enderror
-                                                </td>
+                                                <th>Co-Author Name</th>
+                                                <th>Co-Author Email</th>
                                             </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                                <div class="d-flex justify-content-end">
-                                    <div class="btn-group pt-3 pb-3" role="group">
-                                        <button type="button" id="addCoAuthor" class="btn btn-success"><i
-                                                class="fa-solid fa-plus"></i></button>
-                                        <button type="button" id="removeCoAuthor" class="btn btn-danger"><i
-                                                class="fa-solid fa-minus"></i></button>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (old('coAuthors', $submission->coAuthors ?? []) as $index => $coAuthor)
+                                                <tr>
+                                                    <td>
+                                                        <input type="text" name="coAuthors[{{ $index }}][name]"
+                                                            id="coAuthors.{{ $index }}.name"
+                                                            class="form-control {{ $errors->has('coAuthors.' . $index . '.name') ? 'is-invalid' : '' }}"
+                                                            placeholder="Enter Co-Author {{ $index + 1 }} Name"
+                                                            value="{{ $coAuthor['name'] }}">
+                                                        @error('coAuthors.' . $index . '.name')
+                                                            <div class="invalid-feedback">
+                                                                {{ $message }}
+                                                            </div>
+                                                        @enderror
+                                                    </td>
+                                                    <td>
+                                                        <input type="email"
+                                                            name="coAuthors[{{ $index }}][email]"
+                                                            id="coAuthors.{{ $index }}.email"
+                                                            class="form-control {{ $errors->has('coAuthors.' . $index . '.email') ? 'is-invalid' : '' }}"
+                                                            placeholder="Enter Co-Author {{ $index + 1 }} Email"
+                                                            value="{{ $coAuthor['email'] }}">
+                                                        @error('coAuthors.' . $index . '.email')
+                                                            <div class="invalid-feedback">
+                                                                {{ $message }}
+                                                            </div>
+                                                        @enderror
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                    <div class="d-flex justify-content-end">
+                                        <div class="btn-group pt-3 pb-3" role="group">
+                                            <button type="button" id="addCoAuthor" class="btn btn-success"><i
+                                                    class="fa-solid fa-plus"></i></button>
+                                            <button type="button" id="removeCoAuthor" class="btn btn-danger"><i
+                                                    class="fa-solid fa-minus"></i></button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="mb-3">
-                            <label for="presenter" class="form-label">Presenter</label>
-                            <input type="text"
-                                class="form-control {{ $errors->has('presenter') ? 'is-invalid' : '' }}" name="presenter"
-                                id="presenter" placeholder="Enter Presenter"
-                                value="{{ old('presenter', $submission->presenter) }}">
-                            @error('presenter')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
+                            <div class="mb-3">
+                                <label for="presenter" class="form-label">Presenter</label>
+                                <input type="text"
+                                    class="form-control {{ $errors->has('presenter') ? 'is-invalid' : '' }}"
+                                    name="presenter" id="presenter" placeholder="Enter Presenter"
+                                    value="{{ old('presenter', $submission->presenter) }}">
+                                @error('presenter')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="abstract" class="form-label">Abstract</label>
-                            <textarea class="form-control {{ $errors->has('abstract') ? 'is-invalid' : '' }}" rows="5" name="abstract"
-                                id="abstract" placeholder="Enter Abstract" required>{{ old('abstract', $submission->abstract) }}</textarea>
-                            @error('abstract')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
+                            <div class="mb-3">
+                                <label for="abstract" class="form-label">Abstract</label>
+                                <textarea class="form-control {{ $errors->has('abstract') ? 'is-invalid' : '' }}" rows="5" name="abstract"
+                                    id="abstract" placeholder="Enter Abstract" required>{{ old('abstract', $submission->abstract) }}</textarea>
+                                @error('abstract')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="abstractFile" class="form-label">Abstract File <small class="text-muted">(PDF or
-                                    DOCX only, Max:
-                                    4MB)</small></label>
-                            <input type="file"
-                                class="form-control {{ $errors->has('abstractFile') ? 'is-invalid' : '' }}"
-                                name="abstractFile" id="abstractFile">
-                            @error('abstractFile')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
+                            <div class="mb-3">
+                                <label for="abstractFile" class="form-label">Abstract File <small class="text-muted">(PDF
+                                        or
+                                        DOCX only, Max:
+                                        4MB)</small></label>
+                                <input type="file"
+                                    class="form-control {{ $errors->has('abstractFile') ? 'is-invalid' : '' }}"
+                                    name="abstractFile" id="abstractFile">
+                                @error('abstractFile')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="keywords" class="form-label">Keywords</label>
-                            <input type="text"
-                                class="form-control {{ $errors->has('keywords') ? 'is-invalid' : '' }}" name="keywords"
-                                id="keywords" placeholder="Enter Keywords (Ex: Keyword 1, Keyword 2, Keyword 3, ...)"
-                                value="{{ old('keywords', $submission->keywords) }}">
-                            @error('keywords')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
+                            <div class="mb-3">
+                                <label for="keywords" class="form-label">Keywords</label>
+                                <input type="text"
+                                    class="form-control {{ $errors->has('keywords') ? 'is-invalid' : '' }}"
+                                    name="keywords" id="keywords"
+                                    placeholder="Enter Keywords (Ex: Keyword 1, Keyword 2, Keyword 3, ...)"
+                                    value="{{ old('keywords', $submission->keywords) }}">
+                                @error('keywords')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="paperFile" class="form-label">Paper File <small class="text-muted">(PDF or DOCX
-                                    only, Max:
-                                    4MB)</small></label>
-                            <input type="file"
-                                class="form-control {{ $errors->has('paperFile') ? 'is-invalid' : '' }}" name="paperFile"
-                                id="paperFile">
-                            @error('paperFile')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
+                            <div class="mb-3">
+                                <label for="paperFile" class="form-label">Paper File <small class="text-muted">(PDF or
+                                        DOCX
+                                        only, Max:
+                                        4MB)</small></label>
+                                <input type="file"
+                                    class="form-control {{ $errors->has('paperFile') ? 'is-invalid' : '' }}"
+                                    name="paperFile" id="paperFile">
+                                @error('paperFile')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
 
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="reset" class="btn btn-secondary" form="createSubmission">Reset</button>
-                    <button type="submit" class="btn btn-primary" form="createSubmission">Save</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="updateSubmissionModal" tabindex="-1" aria-labelledby="updateSubmissionModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title fs-5" id="updateSubmissionModalLabel">Update Submission</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{ route('participant.competition.submission.update', ['id' => $submission->id]) }}" method="post"
-                        id="updateSubmission" enctype="multipart/form-data">
-                        @csrf
-                        @method('PATCH')
-
-                        <div class="mb-3">
-                            <label for="code" class="form-label">Registration ID</label>
-                            <input type="text" readonly class="form-control-plaintext" name="code"
-                                id="code"
-                                value="{{ old('code', $submission->registration->code) }}">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="paperFileCorrection" class="form-label">Paper with Correction File<small class="text-muted">(PDF or DOCX
-                                    only, Max:
-                                    4MB)</small></label>
-                            <input type="file"
-                                class="form-control {{ $errors->has('paperFileCorrection') ? 'is-invalid' : '' }}" name="paperFileCorrection"
-                                id="paperFileCorrection">
-                            @error('paperFileCorrection')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
-
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="reset" class="btn btn-secondary" form="updateSubmission">Reset</button>
-                    <button type="submit" class="btn btn-primary" form="updateSubmission">Save</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="reset" class="btn btn-secondary" form="createSubmission">Reset</button>
+                        <button type="submit" class="btn btn-primary" form="createSubmission">Save</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    @endif
+
+    @if ($submission->status_code === 'C')
+        <div class="modal fade" id="updateSubmissionModal" tabindex="-1" aria-labelledby="updateSubmissionModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title fs-5" id="updateSubmissionModalLabel">Update Submission</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ route('participant.competition.submission.update', ['id' => $submission->id]) }}"
+                            method="post" id="updateSubmission" enctype="multipart/form-data">
+                            @csrf
+                            @method('PATCH')
+
+                            <div class="mb-3">
+                                <label for="code" class="form-label">Registration ID</label>
+                                <input type="text" readonly class="form-control-plaintext" name="code"
+                                    id="code" value="{{ old('code', $submission->registration->code) }}">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="paperFileCorrection" class="form-label">Paper with Correction File<small
+                                        class="text-muted">(PDF or DOCX
+                                        only, Max:
+                                        4MB)</small></label>
+                                <input type="file"
+                                    class="form-control {{ $errors->has('paperFileCorrection') ? 'is-invalid' : '' }}"
+                                    name="paperFileCorrection" id="paperFileCorrection">
+                                @error('paperFileCorrection')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="reset" class="btn btn-secondary" form="updateSubmission">Reset</button>
+                        <button type="submit" class="btn btn-primary" form="updateSubmission">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 @endsection
 
 @section('scripts')
@@ -493,7 +502,16 @@
             }
         });
 
-        @if ($errors->has('registration_id') || $errors->has('title') || $errors->has('authors.*') || $errors->has('coAuthors.*') || $errors->has('presenter') || $errors->has('abstract') || $errors->has('abstractFile') || $errors->has('paperFile') || $errors->has('keywords'))
+        @if (
+            $errors->has('registration_id') ||
+                $errors->has('title') ||
+                $errors->has('authors.*') ||
+                $errors->has('coAuthors.*') ||
+                $errors->has('presenter') ||
+                $errors->has('abstract') ||
+                $errors->has('abstractFile') ||
+                $errors->has('paperFile') ||
+                $errors->has('keywords'))
             const createSubmissionModal = new bootstrap.Modal('#createSubmissionModal');
             createSubmissionModal.show();
         @endif

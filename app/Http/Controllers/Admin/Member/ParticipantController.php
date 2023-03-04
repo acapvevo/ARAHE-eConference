@@ -14,7 +14,7 @@ class ParticipantController extends Controller
 
     public function list()
     {
-        $participants = Participant::all()->load('submissions', 'reviewer');
+        $participants = Participant::all()->load('registrations', 'reviewer');
 
         return view('admin.member.participant.list')->with([
             'participants' => $participants,

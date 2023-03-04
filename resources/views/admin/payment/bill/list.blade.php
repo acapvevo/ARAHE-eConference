@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-    <h3 class="text-dark mb-1">Participant Management - Participant List</h3>
+    <h3 class="text-dark mb-1">Payment Record - Bill List</h3>
 
     <div class="card">
         <div class="card-body">
@@ -13,25 +13,23 @@
                 <table class="table table-bordered" id="table_id">
                     <thead class="table-primary">
                         <tr>
-                            <th style="width:40%">Name</th>
-                            <th>Email</th>
-                            <th>Joined Since</th>
-                            <th style="width:10%">Registration</th>
-                            <th style="width:10%">Submission</th>
-                            <th style="width:5%">Reviewer</th>
+                            <th>Registration ID</th>
+                            <th>Date Attempt</th>
+                            <th>Date Completed</th>
+                            <th>Amount</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($participants as $participant)
+                        @foreach ($bills as $bill)
                             <tr>
                                 <td><a
-                                        href="{{ route('admin.member.participant.view', ['id' => $participant->id]) }}">{{ $participant->name }}</a>
+                                        href="{{ route('admin.payment.bill.view', ['id' => $bill->id]) }}">{{ $bill->summary->registration->code }}</a>
                                 </td>
-                                <td>{{$participant->email}}</td>
-                                <td>{{$participant->getJoinedSince()}}</td>
-                                <td>{{$participant->registrations->count()}} time(s)</td>
-                                <td>{{$participant->getSubmissions()->count()}} time(s)</td>
-                                <td>{{isset($participant->reviewer) ? 'Yes' : 'No'}}</td>
+                                <td>{{ $bill->getPayAttemptAt() }}</td>
+                                <td>{{ $bill->getPayCompleteAt() }}</td>
+                                <td>RM {{ number_format($bill->summary->total, 2) }}</td>
+                                <td>{{ $bill->getStatusPayment()->label }}</td>
                             </tr>
                         @endforeach
                     </tbody>

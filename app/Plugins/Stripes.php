@@ -61,6 +61,7 @@ class Stripes
         $stripe = self::getClient();
 
         return $stripe->checkout->sessions->create([
+            'payment_method_types' => ['card', 'fpx'],
             'line_items' => $line_items,
             'mode' => 'payment',
             'success_url' => route('participant.payment.pay.success') . '?session_id={CHECKOUT_SESSION_ID}',
@@ -69,5 +70,15 @@ class Stripes
                 'summary_id' => $summary->id,
             ]
         ]);
+    }
+
+    static function getCheckoutSession($session_id)
+    {
+        $stripe = self::getClient();
+
+        return $stripe->checkout->sessions->retrieve(
+            $session_id,
+            []
+          );
     }
 }
