@@ -207,6 +207,9 @@ class PackageController extends Controller
             $summary->hotel_id = $hotelRate->hotel->id;
             $summary->occupancy_id = $hotelRate->occupancy->id;
             $summary->total += $hotelRate->amount;
+        } else {
+            $summary->hotel_id = null;
+            $summary->occupancy_id = null;
         }
 
         $summary->locality = $summary->getDuration()->getLocality()->code;
