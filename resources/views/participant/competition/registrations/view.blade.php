@@ -467,7 +467,9 @@
                                                             type="checkbox" value="{{ $currentFee->id }}"
                                                             name="extra[{{ $indexExtra }}][fee]"
                                                             id="extra.{{ $indexExtra }}.fee"
-                                                            @checked((old('extra.' . $indexExtra . '.fee') == $currentFee->id || $isChosenFee) && !($currentChosenPackageFee->fullPackage ?? false))>
+                                                            @checked(
+                                                                (old('extra.' . $indexExtra . '.fee') == $currentFee->id || $isChosenFee) &&
+                                                                    !($currentChosenPackageFee->fullPackage ?? false))>
                                                     </div>
                                                     @error('extra.' . $indexExtra . '.fee')
                                                         <div class="invalid-feedback d-block">
@@ -863,6 +865,8 @@
                 checkOption();
             });
 
+            const extraCount = {!! $registration->form->extras->count() !!};
+
             $("input:radio.packageFee").change(function() {
                 checkPackage(this.value)
             });
@@ -906,12 +910,15 @@
                                 $('.noExtraOption').css('opacity', '0.5');
                             } else {
 
-                                @if (($currentChosenPackageFee->fullPackage ?? false))
-                                    if ($('input:checkbox.extraFee').length) {
+                                for (let i = 0; i < extraCount; i++) {
+                                    if ($('input:checkbox.extraFee' + i).length && !$("input:checkbox.extraFee" + i).is(":checked")) {
                                         $("input:checkbox.extraFee").prop('checked', false);
+
                                         $("input:checkbox.extraFee").attr("disabled", false);
+                                    } else {
+                                        $("input:checkbox.extraFee").prop('checked', false);
                                     }
-                                @endif
+                                }
 
                                 checkOption(category.fullPackage);
 
@@ -937,8 +944,6 @@
             function uncheckExtraPackageOptionsRadioButton() {
                 $('input:radio.extraOption').length ? $("input:radio.extraOption").prop('checked', false) : null;
             }
-
-            const extraCount = {!! $registration->form->extras->count() !!};
 
             function checkOption(fullPackage = false) {
                 for (let i = 0; i < extraCount; i++) {
