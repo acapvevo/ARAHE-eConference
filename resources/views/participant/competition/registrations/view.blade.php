@@ -139,7 +139,12 @@
                                         <td>{{ $extraFee->parent->description ?? '' }}</td>
                                         <td>{{ $extraFee->parent->code ?? '' }}</td>
                                         <td>{{ $extraFee->parent->options[$extraFee->optionIndex] ?? '' }}</td>
-                                        <td>{{ $registration->summary ? $registration->summary->getLocality()->currency : '' }}{{ $extraFee->amount ?? '' }}
+                                        <td>
+                                            @if ($currentChosenPackageFee->parent->fullPackage)
+                                                INCLUDED
+                                            @else
+                                                {{ $registration->summary ? $registration->summary->getLocality()->currency : '' }}{{ $extraFee->amount ?? '' }}
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
@@ -457,8 +462,9 @@
                                                 </td>
                                                 <td>
                                                     <div class="form-check d-flex justify-content-center">
-                                                        <input class="form-check-input extraFee" type="checkbox"
-                                                            value="{{ $currentFee->id }}"
+                                                        <input
+                                                            class="form-check-input extraFee extraFee{{ $indexExtra }}"
+                                                            type="checkbox" value="{{ $currentFee->id }}"
                                                             name="extra[{{ $indexExtra }}][fee]"
                                                             id="extra.{{ $indexExtra }}.fee"
                                                             @checked(old('extra.' . $indexExtra . '.fee') == $currentFee->id || $isChosenFee)>
@@ -472,15 +478,16 @@
                                                 <td>
                                                     @forelse ($extra->options as $indexOption => $option)
                                                         <div class="form-check">
-                                                            <input class="form-check-input extraOption" type="radio"
-                                                                value="{{ $indexOption + 1 }}"
+                                                            <input
+                                                                class="form-check-input extraOption extraOption{{ $indexExtra }}"
+                                                                type="radio" value="{{ $indexOption + 1 }}"
                                                                 name="extra[{{ $indexExtra }}][option]"
                                                                 id="extra.{{ $indexExtra }}.option.{{ $indexOption }}"
                                                                 @checked(old(
                                                                         'extra.' . $indexExtra . '.option',
                                                                         isset($registration->summary->extras[$indexExtra]['option'])
                                                                             ? $registration->summary->extras[$indexExtra]['option'] + 1
-                                                                            : null) ==
+                                                                            : 0) ==
                                                                         $indexOption + 1)>
                                                             <label class="form-check-label"
                                                                 for="extra.{{ $indexExtra }}.option.{{ $indexOption }}">
@@ -508,7 +515,7 @@
                                 $occupancies = $registration->form->getOccupanciesByLocality($locality_code);
                                 $hotels = $registration->form->getHotelsByLocality($locality_code);
 
-                                $currentChosenHotelRate = $registration->summary ? $registration->summary->getHotelRate() : null;
+                                $currentChosenHotelRate = $registration->summary->hotel_id ? $registration->summary->getHotelRate() : null;
                             @endphp
                             <div class="mb-3 table-responsive">
                                 <label for="hotel" class="form-label">Hotel Accommodation Packages <small>( This option
@@ -853,6 +860,7 @@
         <script>
             $(document).ready(function() {
                 checkPackage($("input:radio.packageFee:checked").val());
+                checkOption();
             });
 
             $("input:radio.packageFee").change(function() {
@@ -865,29 +873,37 @@
                             fee: value
                         })
                         .then(function(response) {
-                            $('.warning').css('display', 'none');
+                            $('#warningExtra').css('display', 'none');
+                            $('#warningHotel').css('display', 'none');
 
                             const category = response.data.category;
 
                             if (category.fullPackage) {
-                                $('#warningExtra').html("This Packages has been INCLUDED. Please choose an option that available from each package.");
+                                $('#warningExtra').html(
+                                    "This Packages has been INCLUDED. Please choose an option that available from each package."
+                                );
                                 $('#warningExtra').css('display', 'inline');
 
                                 $('#warningHotel').html("The Hotel Accommodation has been INCLUDED");
                                 $('#warningHotel').css('display', 'inline');
 
-                                $('input:checkbox.extraFee').length ? $("input:checkbox.extraFee").attr("disabled",
-                                    true) : null;
-                                $('input:radio.hotelRate').length ? $("input:radio.hotelRate").attr("disabled",
-                                    true) : null;
+                                checkOption(category.fullPackage);
+                                
+                                $('input:radio.extraOption').length ? $("input:radio.extraOption").prop('disabled', false) :
+                                    null;
+
+                                if ($('input:radio.hotelRate').length) {
+                                    $("input:radio.hotelRate").prop('checked', false);
+
+                                    $("input:radio.hotelRate").attr("disabled", true);
+                                }
                                 $('.noExtraOption').css('opacity', '0.5');
                             } else {
-                                $('.warning').css('display', 'none');
+                                checkOption(category.fullPackage);
 
-                                $('input:checkbox.extraFee').length ? $("input:checkbox.extraFee").attr("disabled",
-                                    false) : null;
                                 $('input:radio.hotelRate').length ? $("input:radio.hotelRate").attr("disabled",
                                     false) : null;
+
                                 $('.noExtraOption').css('opacity', '1');
                             }
                         })
@@ -897,9 +913,35 @@
                 } else {
                     $('input:checkbox.extraFee').length ? $("input:checkbox.extraFee").attr("disabled",
                         true) : null;
+                    checkOption();
                     $('input:radio.hotelRate').length ? $("input:radio.hotelRate").attr("disabled",
                         true) : null;
                     $('.noExtraOption').css('opacity', '0.5');
+                }
+            }
+
+            function uncheckExtraPackageOptionsRadioButton() {
+                $('input:radio.extraOption').length ? $("input:radio.extraOption").prop('checked', false) : null;
+            }
+
+            const extraCount = {!! $registration->form->extras->count() !!};
+
+            function checkOption(fullPackage = false) {
+                for (let i = 0; i < extraCount; i++) {
+                    checkExtraOptionRadioButtonPerExtra(i, fullPackage)
+
+                    $("input:checkbox.extraFee" + i).change(function() {
+                        checkExtraOptionRadioButtonPerExtra(i, fullPackage)
+                    });
+                }
+            }
+
+            function checkExtraOptionRadioButtonPerExtra(i, fullPackage) {
+                if (!$("input:checkbox.extraFee" + i).is(":checked") && $('input:radio.extraOption' + i).length) {
+                    fullPackage ? null : $("input:radio.extraOption" + i).prop('checked', false)
+                    $("input:radio.extraOption" + i).prop('disabled', true)
+                } else {
+                    $("input:radio.extraOption" + i).prop('disabled', false)
                 }
             }
 

@@ -27,6 +27,7 @@ class Package extends Model
      * @var array
      */
     protected $casts = [
+        'fullPackage' => 'boolean'
     ];
 
     /**

@@ -33,7 +33,15 @@ class PackageController extends Controller
             'registration_id' => 'required|exists:App\Models\Registration,id',
             'package' => 'required|array',
             'package.fee' => 'required|integer|exists:fees,id',
-            'extra' => 'sometimes|array',
+            'extra' => [
+                Rule::requiredIf(function ()  use ($request) {
+                    $fee = $this->getFee($request->package['fee']);
+
+                    return $fee->parent->fullPackage;
+                }),
+                'sometimes',
+                'array',
+            ],
             'extra.*' => 'required|array',
             'extra.*.fee' => [
                 'sometimes',
@@ -46,21 +54,25 @@ class PackageController extends Controller
 
                     if ($fee->parent->options->count()) {
                         if (!$option)
-                            $fail('Please choose an option if you interested to include this extra package');
-                        else if (!$fee->parent->options->has($option))
-                            $fail('Please choose the options again');
+                            $fail('Please choose option available if you interested to include this extra package');
                     }
                 },
             ],
             'extra.*.option' => [
-                'sometimes',
-                'integer',
-                'required_with:extra.*.fee',
                 Rule::requiredIf(function ()  use ($request) {
                     $mainPackage = Package::find($request->package['fee']);
 
                     return $mainPackage->fullPackage;
                 }),
+                function ($attribute, $value, $fail) use ($request) {
+                    $index = explode('.', $attribute)[1];
+                    $fee = $this->getFee($request->get('extra')[$index]['fee'] ?? 0);
+
+                    if (!$fee)
+                        $fail('Please checked the box to include this extra package');
+                },
+                'sometimes',
+                'integer',
             ],
             'hotel' => 'sometimes|array',
             'hotel.rate' => 'sometimes|integer|exists:rates,id',
@@ -114,7 +126,15 @@ class PackageController extends Controller
             'summary_id' => 'required|exists:App\Models\Summary,id',
             'package' => 'required|array',
             'package.fee' => 'required|integer|exists:fees,id',
-            'extra' => 'sometimes|array',
+            'extra' => [
+                Rule::requiredIf(function ()  use ($request) {
+                    $mainFee = $this->getFee($request->package['fee']);
+
+                    return $mainFee->parent->fullPackage;
+                }),
+                'nullable',
+                'array',
+            ],
             'extra.*' => 'required|array',
             'extra.*.fee' => [
                 'sometimes',
@@ -127,14 +147,27 @@ class PackageController extends Controller
 
                     if ($fee->parent->options->count()) {
                         if (!$option)
-                            $fail('Please choose an option if you interested to include this extra package');
-                        else if (!$fee->parent->options->has($option))
-                            $fail('Please choose the options again');
+                            $fail('Please choose option available if you interested to include this extra package');
                     }
                 },
             ],
             'extra.*.option' => [
-                'nullable',
+                Rule::requiredIf(function ()  use ($request) {
+                    $mainFee = $this->getFee($request->package['fee']);
+
+                    return $mainFee->parent->fullPackage;
+                }),
+                function ($attribute, $value, $fail) use ($request) {
+                    $index = explode('.', $attribute)[1];
+                    $fee = $this->getFee($request->get('extra')[$index]['fee'] ?? 0);
+                    $mainFee = $this->getFee($request->package['fee']);
+
+                    if (!$fee && !$mainFee->parent->fullPackage)
+                        $fail('Please checked the box to include this extra package');
+                    if (!$value && $mainFee->parent->fullPackage)
+                        $fail('Please choose an option from this package');
+                },
+                'sometimes',
                 'integer',
             ],
             'hotel' => 'sometimes|array',
@@ -151,10 +184,16 @@ class PackageController extends Controller
         $summary->total += $packageFee->amount;
 
         $summary->extras = [];
-        foreach ($request->extra ?? [] as $extra) {
-            $extraFee = $this->getFee($extra['fee'] ?? 0);
-
-            if ($extraFee) {
+        if ($summary->getPackage()->fullPackage) {
+            foreach ($summary->registration->form->extras as $index => $extra) {
+                $summary->extras[] = [
+                    'id' => $extra->id,
+                    'option' => $extra->options->count() ? ($request->get('extra')[$index]['option'] - 1) : null,
+                ];
+            }
+        } else {
+            foreach ($request->extra ?? [] as $extra) {
+                $extraFee = $this->getFee($extra['fee']);
                 $summary->extras[] = [
                     'id' => $extraFee->parent->id,
                     'option' => isset($extra['option']) ? ($extra['option'] - 1) : null,
