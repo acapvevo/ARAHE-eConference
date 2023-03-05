@@ -76,7 +76,7 @@ class PackageController extends Controller
         $summary->total += $packageFee->amount;
 
         $summary->extras = [];
-        foreach ($request->extra as $extra) {
+        foreach ($request->extra ?? [] as $extra) {
             $extraFee = $this->getFee($extra['fee']);
             $summary->extras[] = [
                 'id' => $extraFee->parent->id,
@@ -85,10 +85,12 @@ class PackageController extends Controller
             $summary->total += $extraFee->amount;
         }
 
-        $hotelRate = $this->getRate($request->hotel['rate']);
-        $summary->hotel_id = $hotelRate->hotel->id;
-        $summary->occupancy_id = $hotelRate->occupancy->id;
-        $summary->total += $hotelRate->amount;
+        if ($request->hotel['rate']) {
+            $hotelRate = $this->getRate($request->hotel['rate']);
+            $summary->hotel_id = $hotelRate->hotel->id;
+            $summary->occupancy_id = $hotelRate->occupancy->id;
+            $summary->total += $hotelRate->amount;
+        }
 
         $summary->locality = $summary->getDuration()->getLocality()->code;
 

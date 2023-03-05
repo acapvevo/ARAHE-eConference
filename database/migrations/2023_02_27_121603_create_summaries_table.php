@@ -17,11 +17,11 @@ return new class extends Migration
             $table->id();
 
             $table->integer('registration_id');
-            $table->integer('duration_id')->nullable();
+            $table->integer('duration_id');
             $table->integer('package_id');
             $table->json('extras');
-            $table->integer('hotel_id');
-            $table->integer('occupancy_id');
+            $table->integer('hotel_id')->nullable();
+            $table->integer('occupancy_id')->nullable();
             $table->integer('total');
             $table->string('locality');
 
