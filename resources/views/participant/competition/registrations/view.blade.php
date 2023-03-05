@@ -912,10 +912,9 @@
 
                                 for (let i = 0; i < extraCount; i++) {
                                     if ($('input:checkbox.extraFee' + i).length && !$("input:checkbox.extraFee" + i).is(":checked")) {
-                                        console.log(i);
-                                        $("input:checkbox.extraFee").prop('checked', false);
+                                        $('input:checkbox.extraFee' + i).prop('checked', false);
 
-                                        $("input:checkbox.extraFee").attr("disabled", false);
+                                        $('input:checkbox.extraFee' + i).attr("disabled", false);
                                     }
                                 }
 
