@@ -906,13 +906,6 @@
                                 $('.noExtraOption').css('opacity', '0.5');
                             } else {
 
-                                if ($('input:checkbox.extraFee').length) {
-                                    $("input:checkbox.extraFee").prop('checked', false);
-                                    uncheckExtraPackageOptionsRadioButton();
-
-                                    $("input:checkbox.extraFee").attr("disabled", false);
-                                }
-
                                 checkOption(category.fullPackage);
 
                                 $('input:radio.hotelRate').length ? $("input:radio.hotelRate").attr("disabled",
