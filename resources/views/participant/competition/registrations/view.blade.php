@@ -467,7 +467,7 @@
                                                             type="checkbox" value="{{ $currentFee->id }}"
                                                             name="extra[{{ $indexExtra }}][fee]"
                                                             id="extra.{{ $indexExtra }}.fee"
-                                                            @checked(old('extra.' . $indexExtra . '.fee') == $currentFee->id || $isChosenFee)>
+                                                            @checked((old('extra.' . $indexExtra . '.fee') == $currentFee->id || $isChosenFee) && !($currentChosenPackageFee->fullPackage ?? false))>
                                                     </div>
                                                     @error('extra.' . $indexExtra . '.fee')
                                                         <div class="invalid-feedback d-block">
@@ -887,8 +887,14 @@
                                 $('#warningHotel').html("The Hotel Accommodation has been INCLUDED");
                                 $('#warningHotel').css('display', 'inline');
 
+                                if ($('input:checkbox.extraFee').length) {
+                                    $("input:checkbox.extraFee").prop('checked', false);
+
+                                    $("input:checkbox.extraFee").attr("disabled", true);
+                                }
+
                                 checkOption(category.fullPackage);
-                                
+
                                 $('input:radio.extraOption').length ? $("input:radio.extraOption").prop('disabled', false) :
                                     null;
 
@@ -899,6 +905,14 @@
                                 }
                                 $('.noExtraOption').css('opacity', '0.5');
                             } else {
+
+                                if ($('input:checkbox.extraFee').length) {
+                                    $("input:checkbox.extraFee").prop('checked', false);
+                                    uncheckExtraPackageOptionsRadioButton();
+
+                                    $("input:checkbox.extraFee").attr("disabled", false);
+                                }
+
                                 checkOption(category.fullPackage);
 
                                 $('input:radio.hotelRate').length ? $("input:radio.hotelRate").attr("disabled",
