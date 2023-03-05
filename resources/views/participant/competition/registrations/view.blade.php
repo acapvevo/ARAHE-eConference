@@ -420,7 +420,7 @@
                                                 ,
                                             @endif
                                         @endforeach)
-                                    </small> <small class="text-danger warning">Please choose Package
+                                    </small> <small class="text-danger" id="warningExtra">Please choose Package
                                         FIRST</small></label>
                                 <table class="table table-bordered align-middle text-center" id="extra">
                                     <thead class="table-primary align-middle">
@@ -519,7 +519,7 @@
                                                 ,
                                             @endif
                                         @endforeach)
-                                    </small> <small class="text-danger warning">Please choose Package
+                                    </small> <small class="text-danger" id="warningHotel">Please choose Package
                                         FIRST</small></label>
                                 <table class="table table-bordered align-middle text-center" id="hotel">
                                     <thead class="table-primary align-middle">
@@ -870,8 +870,11 @@
                             const category = response.data.category;
 
                             if (category.fullPackage) {
-                                $('.warning').html("This Packages has been INCLUDED. Please choose an option that available from each package.");
-                                $('.warning').css('display', 'inline');
+                                $('#warningExtra').html("This Packages has been INCLUDED. Please choose an option that available from each package.");
+                                $('#warningExtra').css('display', 'inline');
+
+                                $('#warningHotel').html("The Hotel Accommodation has been INCLUDED");
+                                $('#warningHotel').css('display', 'inline');
 
                                 $('input:checkbox.extraFee').length ? $("input:checkbox.extraFee").attr("disabled",
                                     true) : null;
