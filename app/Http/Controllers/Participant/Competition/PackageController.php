@@ -88,7 +88,7 @@ class PackageController extends Controller
             }
         }
 
-        if ($request->hotel['rate']) {
+        if ($request->hotel['rate'] ?? null) {
             $hotelRate = $this->getRate($request->hotel['rate']);
             $summary->hotel_id = $hotelRate->hotel->id;
             $summary->occupancy_id = $hotelRate->occupancy->id;
@@ -163,7 +163,7 @@ class PackageController extends Controller
             }
         }
 
-        if ($request->hotel['rate']) {
+        if ($request->hotel['rate'] ?? null) {
             $hotelRate = $this->getRate($request->hotel['rate']);
             $summary->hotel_id = $hotelRate->hotel->id;
             $summary->occupancy_id = $hotelRate->occupancy->id;
