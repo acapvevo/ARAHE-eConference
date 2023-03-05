@@ -906,11 +906,11 @@
                                 $('.noExtraOption').css('opacity', '0.5');
                             } else {
 
-                                @if (!($currentChosenPackageFee->fullPackage ?? false))
-                                if ($('input:checkbox.extraFee').length) {
-                                    $("input:checkbox.extraFee").prop('checked', false);
-                                    $("input:checkbox.extraFee").attr("disabled", false);
-                                }
+                                @if (($currentChosenPackageFee->fullPackage ?? false))
+                                    if ($('input:checkbox.extraFee').length) {
+                                        $("input:checkbox.extraFee").prop('checked', false);
+                                        $("input:checkbox.extraFee").attr("disabled", false);
+                                    }
                                 @endif
 
                                 checkOption(category.fullPackage);
