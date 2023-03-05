@@ -19,14 +19,21 @@ class LocalitySeeder extends Seeder
             'code' => 'L',
             'name' => 'Local',
             'currency' => 'RM',
-            'stripe_currency' => 'myr'
+            'stripe_currency' => 'myr',
+            'payment_methods' => json_encode([
+                'fpx',
+                'card'
+            ])
         ]);
 
         DB::table('locality')->insertTs([
             'code' => 'I',
             'name' => 'International',
             'currency' => 'USD$',
-            'stripe_currency' => 'usd'
+            'stripe_currency' => 'usd',
+            'payment_methods' => json_encode([
+                'card'
+            ])
         ]);
     }
 }

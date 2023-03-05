@@ -47,7 +47,7 @@ class PayController extends Controller
             ];
         }
 
-        $checkoutSession = Stripes::createCheckoutSession($line_items, $summary);
+        $checkoutSession = Stripes::createCheckoutSession($line_items, $summary, $summary->getLocality());
 
         $bill->checkoutSession_id = $checkoutSession->id;
         $bill->pay_attempt_at = Carbon::now();

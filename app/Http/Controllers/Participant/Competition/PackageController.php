@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Participant\Competition;
 
 use App\Http\Controllers\Controller;
+use App\Models\Package;
 use App\Models\Summary;
 use App\Traits\FeeTrait;
 use App\Traits\RateTrait;
@@ -52,8 +53,14 @@ class PackageController extends Controller
                 },
             ],
             'extra.*.option' => [
-                'nullable',
+                'sometimes',
                 'integer',
+                'required_with:extra.*.fee',
+                Rule::requiredIf(function ()  use ($request) {
+                    $mainPackage = Package::find($request->package['fee']);
+
+                    return $mainPackage->fullPackage;
+                }),
             ],
             'hotel' => 'sometimes|array',
             'hotel.rate' => 'sometimes|integer|exists:rates,id',
