@@ -147,7 +147,7 @@
                             @if ($registration->summary && $registration->summary->hotel_id && $registration->summary->occupancy_id)
                                 @php
                                     $hotelRate = $registration->summary->getHotelRate();
-                                    
+
                                     $hotel = $hotelRate->hotel;
                                     $occupancy = $hotelRate->occupancy;
                                 @endphp
@@ -354,7 +354,7 @@
                             @php
                                 $locality_code = $registration->category->getLocality()->code;
                                 $currentDuration = $registration->form->getDurationBasedCurrentDate($locality_code);
-                                
+
                                 $currentChosenPackageFee = $registration->summary ? $registration->summary->getPackageFee() : null;
                             @endphp
                             <div class="mb-3 table-responsive">
@@ -440,7 +440,7 @@
                                         @foreach ($registration->form->extras as $indexExtra => $extra)
                                             @php
                                                 $currentFee = $extra->fees->firstWhere('duration_id', $currentDuration->id);
-                                                
+
                                                 $isChosenFee = $registration->summary
                                                     ? $chosenExtraFees->contains(function ($fee) use ($currentFee) {
                                                         return $fee->id == $currentFee->id;
@@ -507,7 +507,7 @@
                             @php
                                 $occupancies = $registration->form->getOccupanciesByLocality($locality_code);
                                 $hotels = $registration->form->getHotelsByLocality($locality_code);
-                                
+
                                 $currentChosenHotelRate = $registration->summary ? $registration->summary->getHotelRate() : null;
                             @endphp
                             <div class="mb-3 table-responsive">
@@ -651,7 +651,7 @@
                                         @if ($registration->summary && $registration->summary->hotel_id && $registration->summary->occupancy_id)
                                             @php
                                                 $hotelRate = $registration->summary->getHotelRate();
-                                                
+
                                                 $hotel = $hotelRate->hotel;
                                                 $occupancy = $hotelRate->occupancy;
                                             @endphp
@@ -870,12 +870,10 @@
                             const category = response.data.category;
 
                             if (category.fullPackage) {
-                                $('.warning').html("This Packages has been INCLUDED");
+                                $('.warning').html("This Packages has been INCLUDED. Please choose an option that available from each package.");
                                 $('.warning').css('display', 'inline');
 
                                 $('input:checkbox.extraFee').length ? $("input:checkbox.extraFee").attr("disabled",
-                                    true) : null;
-                                $('input:radio.extraOption').length ? $("input:radio.extraOption").attr("disabled",
                                     true) : null;
                                 $('input:radio.hotelRate').length ? $("input:radio.hotelRate").attr("disabled",
                                     true) : null;
@@ -884,8 +882,6 @@
                                 $('.warning').css('display', 'none');
 
                                 $('input:checkbox.extraFee').length ? $("input:checkbox.extraFee").attr("disabled",
-                                    false) : null;
-                                $('input:radio.extraOption').length ? $("input:radio.extraOption").attr("disabled",
                                     false) : null;
                                 $('input:radio.hotelRate').length ? $("input:radio.hotelRate").attr("disabled",
                                     false) : null;
@@ -897,8 +893,6 @@
                         });
                 } else {
                     $('input:checkbox.extraFee').length ? $("input:checkbox.extraFee").attr("disabled",
-                        true) : null;
-                    $('input:radio.extraOption').length ? $("input:radio.extraOption").attr("disabled",
                         true) : null;
                     $('input:radio.hotelRate').length ? $("input:radio.hotelRate").attr("disabled",
                         true) : null;
