@@ -53,7 +53,7 @@
                         </tr>
                         <tr>
                             <th class='w-25'>Abstract</th>
-                            <td colspan="2">{{ $submission->abstract }}</td>
+                            <td colspan="2">{!! $submission->abstract !!}</td>
                         </tr>
                         <tr>
                             <th class='w-25'>Abstract File</th>

@@ -27,7 +27,6 @@ class ParticipantSeeder extends Seeder
         $participant = Participant::create([
             'name' => 'reviewer1',
             'title' => 'dr',
-            'type' => 'P',
             'date_of_birth' => Carbon::parse($faker->date()),
             'email' => 'reviewer1@gmail.com',
             'password' => Hash::make('reviewer1'),
@@ -62,7 +61,6 @@ class ParticipantSeeder extends Seeder
         $participant = Participant::create([
             'name' => 'participant1',
             'title' => 'mr',
-            'type' => 'SS',
             'date_of_birth' => Carbon::parse($faker->date()),
             'email' => 'participant1@gmail.com',
             'password' => Hash::make('participant1'),

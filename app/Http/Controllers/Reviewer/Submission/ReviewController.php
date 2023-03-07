@@ -7,9 +7,12 @@ use App\Traits\FormTrait;
 use App\Traits\RubricTrait;
 use Illuminate\Http\Request;
 use App\Traits\SubmissionTrait;
-use App\Http\Controllers\Controller;
 use App\Traits\RegistrationTrait;
+use App\Mail\SubmissionCorrection;
+use App\Http\Controllers\Controller;
+use App\Mail\SubmissionAccepted;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class ReviewController extends Controller
 {
@@ -111,7 +114,7 @@ class ReviewController extends Controller
         $submission->comment = $request->comment;
 
         if ($request->has('correction'))
-            $submission->saveFile('Correction', 'correctionFile', $request->file('correction'));
+            $submission->saveFile('Reviewed', 'correctionFile', $request->file('correction'));
         else {
             if ($submission->calculatePercentage() < 80)
                 return back()->withInput()->withErrors([
@@ -124,8 +127,13 @@ class ReviewController extends Controller
             $submission->deleteFile('correctionFile');
 
             $submission->setAcceptedDate();
-        } else
+
+            Mail::to($submission->registration->participant->email)->send(new SubmissionAccepted($submission));
+        } else{
             $submission->status_code = 'C';
+
+            Mail::to($submission->registration->participant->email)->send(new SubmissionCorrection($submission));
+        }
 
         $submission->save();
 

@@ -97,4 +97,9 @@ class Summary extends Model
     {
         return $this->getHotel()->rates->firstWhere('occupancy_id', $this->getOccupancy()->id);
     }
+
+    public function getFormalOutputTotal()
+    {
+        return $this->getLocality()->currency . ' ' . number_format($this->total, 2);
+    }
 }

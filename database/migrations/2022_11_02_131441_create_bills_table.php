@@ -18,10 +18,12 @@ return new class extends Migration
 
             $table->integer('summary_id');
             $table->string('checkoutSession_id')->unique();
+            $table->string('payment_intent_id')->unique()->nullable();
             $table->timestamp('pay_attempt_at');
             $table->timestamp('pay_complete_at')->nullable();
             $table->timestamp('pay_confirm_at')->nullable();
             $table->integer('status')->default(2);
+            $table->string('receipt')->nullable();
 
             $table->timestamps();
         });

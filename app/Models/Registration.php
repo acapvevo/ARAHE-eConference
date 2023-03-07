@@ -21,7 +21,7 @@ class Registration extends Model
         'form_id',
         'participant_id',
         'code',
-        'register_as',
+        'type',
         'category_id',
         'proof',
         'link',
@@ -97,6 +97,11 @@ class Registration extends Model
     public function getDietary()
     {
         return DB::table('dietary_preference')->where('code', $this->dietary)->first();
+    }
+
+    public function getType()
+    {
+        return DB::table('participant_type')->where('code', $this->type)->first();
     }
 
     public function getProofFile()

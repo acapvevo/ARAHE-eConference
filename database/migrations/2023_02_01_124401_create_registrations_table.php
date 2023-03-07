@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('category_id');
 
             $table->string('code')->unique();
-            $table->string('register_as');
+            $table->string('type');
             $table->string('proof')->nullable();
             $table->integer('link')->nullable();
             $table->string('dietary');

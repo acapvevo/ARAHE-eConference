@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('image')->nullable();
             $table->string('title');
-            $table->string('type');
             $table->date('date_of_birth');
 
             $table->string('password');

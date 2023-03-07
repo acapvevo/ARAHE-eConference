@@ -34,7 +34,6 @@ class ProfileController extends Controller
             ],
             'account.title' => 'required|string|exists:participant_title,code',
             'account.date_of_birth' => 'required|date',
-            'account.type' => 'required|string|exists:participant_type,code',
             'institution.university' => [
                 'required',
                 'string',
@@ -82,7 +81,6 @@ class ProfileController extends Controller
         $participant->name = $request->account['name'];
         $participant->title = $request->account['title'];
         $participant->date_of_birth = $request->account['date_of_birth'];
-        $participant->type = $request->account['type'];
         $participant->email = $request->account['email'];
 
         $participant->save();

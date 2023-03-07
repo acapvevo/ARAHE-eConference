@@ -123,7 +123,7 @@ class PackageController extends Controller
         });
         $latestDurationLocal = $form->durations->where('locality', 'L')->sortByDesc('end')->first();
 
-        if(!isset($OnSiteDurationLocal)){
+        if(!$OnSiteDurationLocal){
             $OnSiteDurationLocal = new Duration;
 
             $OnSiteDurationLocal->name = 'On-site';
@@ -141,7 +141,7 @@ class PackageController extends Controller
         });
         $latestDurationInternational = $form->durations->where('locality', 'I')->sortByDesc('end')->first();
 
-        if(!isset($OnSiteDurationInternational)){
+        if(!$OnSiteDurationInternational){
             $OnSiteDurationInternational = new Duration;
 
             $OnSiteDurationInternational->name = 'On-site';

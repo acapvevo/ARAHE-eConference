@@ -34,6 +34,12 @@ class RecordController extends Controller
 
     public function receipt(Request $request)
     {
+        $request->validate([
+            'bill_id' => 'required|integer|exists:bills,id'
+        ]);
 
+        $bill = Bill::find($request->bill_id);
+
+        return $bill->downloadReceipt();
     }
 }

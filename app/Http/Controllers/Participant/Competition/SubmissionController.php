@@ -7,9 +7,11 @@ use App\Models\Submission;
 use Illuminate\Http\Request;
 use App\Traits\SubmissionTrait;
 use Illuminate\Validation\Rule;
+use App\Mail\SubmissionSubmited;
 use App\Traits\RegistrationTrait;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class SubmissionController extends Controller
 {
@@ -78,6 +80,8 @@ class SubmissionController extends Controller
 
         $submission->status_code = 'P';
         $submission->setSubmitDate();
+
+        Mail::to($submission->registration->participant->email)->send(new SubmissionSubmited($submission));
 
         $submission->save();
 

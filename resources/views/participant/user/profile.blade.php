@@ -33,10 +33,6 @@
                         <td>{{ $user->date_of_birth->format('j F Y') }}</td>
                     </tr>
                     <tr>
-                        <th class="w-25">Type of Participation: </th>
-                        <td>{{ $user->getType() }}</td>
-                    </tr>
-                    <tr>
                         <th class="w-25">Email: </th>
                         <td>{{ $user->email }}</td>
                     </tr>
@@ -222,27 +218,6 @@
                                         type="text" placeholder="Enter Your Date of Birth" name="account[date_of_birth]"
                                         id="account.date_of_birth" value="{{ old('account.date_of_birth', $user->date_of_birth) }}">
                                     @error('account.date_of_birth')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-
-                                <div class="mb-3">
-                                    @php
-                                        $participant_types = DB::table('participant_type')->get();
-                                    @endphp
-                                    <label for="account.type" class="form-label">Type Of Participation</label>
-                                    <select class="form-select {{ $errors->has('account.type') ? 'is-invalid' : '' }}"
-                                        name="account[type]" id="account.type">
-                                        <option selected disabled>Choose Type of Participation</option>
-                                        @foreach ($participant_types as $participant_type)
-                                            <option value="{{ $participant_type->code }}" @selected(old('account.type', $user->type) == $participant_type->code)>
-                                                {{ $participant_type->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @error('account.type')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>

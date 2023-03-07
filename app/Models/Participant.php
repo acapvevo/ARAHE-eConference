@@ -22,7 +22,6 @@ class Participant extends Authenticatable
     protected $fillable = [
         'name',
         'title',
-        'type',
         'date_of_birth',
         'email',
         'image',
@@ -138,10 +137,5 @@ class Participant extends Authenticatable
     public function getTitle()
     {
         return DB::table('participant_title')->where('code', $this->title)->first()->name;
-    }
-
-    public function getType()
-    {
-        return DB::table('participant_type')->where('code', $this->type)->first()->name;
     }
 }

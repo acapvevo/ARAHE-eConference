@@ -85,9 +85,11 @@
                                     <td class="text-center" colspan="2">{{ $category->name }} ({{ $category->code }})
                                     </td>
                                     <td class="text-center">
-                                        {{ $category->needProof ? 'NEED Proof for Registration' : 'DO NOT NEED Proof for Registration' }}</td>
+                                        {{ $category->needProof ? 'NEED Proof for Registration' : 'DO NOT NEED Proof for Registration' }}
+                                    </td>
                                     <td class="text-center">
-                                        {{ $category->needLink ? 'CAN Register with other Participant' : 'CANNOT Register with other Participant' }}</td>
+                                        {{ $category->needLink ? 'CAN Register with other Participant' : 'CANNOT Register with other Participant' }}
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>
@@ -116,9 +118,11 @@
                                     <td class="text-center" colspan="2">{{ $category->name }} ({{ $category->code }})
                                     </td>
                                     <td class="text-center">
-                                        {{ $category->needProof ? 'NEED Proof for Registration' : 'DO NOT NEED Proof for Registration' }}</td>
+                                        {{ $category->needProof ? 'NEED Proof for Registration' : 'DO NOT NEED Proof for Registration' }}
+                                    </td>
                                     <td class="text-center">
-                                        {{ $category->needLink ? 'CAN Register with other Participant' : 'CANNOT Register with other Participant' }}</td>
+                                        {{ $category->needLink ? 'CAN Register with other Participant' : 'CANNOT Register with other Participant' }}
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>
@@ -685,7 +689,7 @@
                                         <td rowspan="{{ $occupanciesInternational->count() }}">International</td>
                                     @endif
                                     <td>{{ $occupancy->type }}</td>
-                                    <td>{{ $occupancy->number }} Person{{$occupancy->number > 1 ? 's' : ''}}</td>
+                                    <td>{{ $occupancy->number }} Person{{ $occupancy->number > 1 ? 's' : '' }}</td>
                                     <td>{{ $occupancy->bookBefore->format('d M') }}</td>
                                 </tr>
                             @endforeach
@@ -695,7 +699,7 @@
                                         <td rowspan="{{ $occupanciesLocal->count() }}">Local</td>
                                     @endif
                                     <td>{{ $occupancy->type }}</td>
-                                    <td>{{ $occupancy->number }} Person{{$occupancy->number > 1 ? 's' : ''}}</td>
+                                    <td>{{ $occupancy->number }} Person{{ $occupancy->number > 1 ? 's' : '' }}</td>
                                     <td>{{ $occupancy->bookBefore->format('d M') }}</td>
                                 </tr>
                             @endforeach
@@ -737,7 +741,9 @@
                                 @endphp
                                 @foreach ($occupanciesInternational as $occupancy)
                                     <th style="width: {{ $widthEachColumnInternational }}%">
-                                        Rate (BEFORE {{strtoupper($occupancy->bookBefore->format('F d, Y'))}}) {{ $occupancy->type }} ({{$occupancy->number}} {{$occupancy->number > 1 ? 'Persons' : 'Person'}})
+                                        Rate (BEFORE {{ strtoupper($occupancy->bookBefore->format('F d, Y')) }})
+                                        {{ $occupancy->type }} ({{ $occupancy->number }}
+                                        {{ $occupancy->number > 1 ? 'Persons' : 'Person' }})
                                     </th>
                                 @endforeach
                             </tr>
@@ -745,11 +751,13 @@
                         <tbody>
                             @foreach ($hotelsInternational as $hotel)
                                 <tr>
-                                    <td>{{ $hotel->description }} ({{ $hotel->getDaysAndNights() }}: Check In: {{$hotel->checkIn->format('d M')}} Check Out: {{$hotel->checkOut->format('d M')}})</td>
+                                    <td>{{ $hotel->description }} ({{ $hotel->getDaysAndNights() }}: Check In:
+                                        {{ $hotel->checkIn->format('d M') }} Check Out:
+                                        {{ $hotel->checkOut->format('d M') }})</td>
                                     <td>{{ $hotel->code }}</td>
                                     @foreach ($occupanciesInternational as $occupancy)
                                         <td>
-                                            USD${{ DB::table('rates')->where('hotel_id', $hotel->id)->where('occupancy_id', $occupancy->id)->first()->amount ?? 0 }}{{$occupancy->number > 1 ? '/pax' : ''}}
+                                            USD${{ DB::table('rates')->where('hotel_id', $hotel->id)->where('occupancy_id', $occupancy->id)->first()->amount ?? 0 }}{{ $occupancy->number > 1 ? '/pax' : '' }}
                                         </td>
                                     @endforeach
                                 </tr>
@@ -770,7 +778,9 @@
                                 @endphp
                                 @foreach ($occupanciesLocal as $occupancy)
                                     <th style="width: {{ $widthEachColumnLocal }}%">
-                                        Rate (BEFORE {{strtoupper($occupancy->bookBefore->format('F d, Y'))}}) {{ $occupancy->type }} ({{$occupancy->number}}  {{$occupancy->number > 1 ? 'Persons' : 'Person'}})
+                                        Rate (BEFORE {{ strtoupper($occupancy->bookBefore->format('F d, Y')) }})
+                                        {{ $occupancy->type }} ({{ $occupancy->number }}
+                                        {{ $occupancy->number > 1 ? 'Persons' : 'Person' }})
                                     </th>
                                 @endforeach
                             </tr>
@@ -778,11 +788,13 @@
                         <tbody>
                             @foreach ($hotelsLocal as $hotel)
                                 <tr>
-                                    <td>{{ $hotel->description }} ({{ $hotel->getDaysAndNights() }}: Check In: {{$hotel->checkIn->format('d M')}} Check Out: {{$hotel->checkOut->format('d M')}})</td>
+                                    <td>{{ $hotel->description }} ({{ $hotel->getDaysAndNights() }}: Check In:
+                                        {{ $hotel->checkIn->format('d M') }} Check Out:
+                                        {{ $hotel->checkOut->format('d M') }})</td>
                                     <td>{{ $hotel->code }}</td>
                                     @foreach ($occupanciesLocal as $occupancy)
                                         <td>
-                                            RM{{ DB::table('rates')->where('hotel_id', $hotel->id)->where('occupancy_id', $occupancy->id)->first()->amount ?? 0 }}{{$occupancy->number > 1 ? '/pax' : ''}}
+                                            RM{{ DB::table('rates')->where('hotel_id', $hotel->id)->where('occupancy_id', $occupancy->id)->first()->amount ?? 0 }}{{ $occupancy->number > 1 ? '/pax' : '' }}
                                         </td>
                                     @endforeach
                                 </tr>
@@ -1140,7 +1152,7 @@
                                         <th style="width: 30%"></th>
                                         <th style="width: 10%">Code</th>
                                         @php
-                                            $widthEachColumnInternational = 60 / $durationsInternational->count();
+                                            $widthEachColumnInternational = $durationsInternational->count() ? 60 / $durationsInternational->count() : 60;
                                         @endphp
                                         @foreach ($durationsInternationalWihtoutOnsite as $duration)
                                             <th style="width: {{ $widthEachColumnInternational }}%">
@@ -1232,7 +1244,7 @@
                                         <th style="width: 30%"></th>
                                         <th style="width: 10%">Code</th>
                                         @php
-                                            $widthEachColumnLocal = 60 / $durationsLocal->count();
+                                            $widthEachColumnLocal = $durationsLocal->count() ? 60 / $durationsLocal->count() : 60;
                                         @endphp
                                         @foreach ($durationsLocalWihtoutOnsite as $duration)
                                             <th style="width: {{ $widthEachColumnLocal }}%">
@@ -1448,7 +1460,7 @@
                                         <th style="width: 30%"></th>
                                         <th style="width: 10%">Code</th>
                                         @php
-                                            $widthEachColumnInternational = 60 / $durationsInternational->count();
+                                            $widthEachColumnInternational = $durationsInternational->count() ? 60 / $durationsInternational->count() : 60;
                                         @endphp
                                         @foreach ($durationsInternationalWihtoutOnsite as $duration)
                                             <th style="width: {{ $widthEachColumnInternational }}%">
@@ -1530,7 +1542,7 @@
                                         <th style="width: 30%"></th>
                                         <th style="width: 10%">Code</th>
                                         @php
-                                            $widthEachColumnLocal = 60 / $durationsLocal->count();
+                                            $widthEachColumnLocal = $durationsLocal->count() ? 60 / $durationsLocal->count() : 60;
                                         @endphp
                                         @foreach ($durationsLocalWihtoutOnsite as $duration)
                                             <th style="width: {{ $widthEachColumnLocal }}%">
@@ -1744,7 +1756,8 @@
                                                     class="form-select {{ $errors->has('occupancies.' . $index . '.locality') ? 'is-invalid' : '' }}"
                                                     name="occupancies[{{ $index }}][locality]"
                                                     id="occupancies.{{ $index }}.locality">
-                                                    <option selected disabled>Choose Occupancy {{ $index + 1 }} Locality
+                                                    <option selected disabled>Choose Occupancy {{ $index + 1 }}
+                                                        Locality
                                                     </option>
                                                     @foreach ($localityList as $locality)
                                                         <option value="{{ $locality->code }}"
@@ -1819,8 +1832,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modifyRateModal" tabindex="-1" aria-labelledby="modifyRateModalLabel"
-        aria-hidden=true>
+    <div class="modal fade" id="modifyRateModal" tabindex="-1" aria-labelledby="modifyRateModalLabel" aria-hidden=true>
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
@@ -1838,18 +1850,21 @@
                             <table class="table table-bordered text-center">
                                 <thead>
                                     <tr>
-                                        <th colspan="{{ $occupanciesInternational->count() + 2 }}" class="table-primary">
+                                        <th colspan="{{ $occupanciesInternational->count() + 2 }}"
+                                            class="table-primary">
                                             International</th>
                                     </tr>
                                     <tr>
                                         <th style="width: 30%"></th>
                                         <th style="width: 10%">Code</th>
                                         @php
-                                            $widthEachColumnInternational = 60 / $occupanciesInternational->count();
+                                            $widthEachColumnInternational = $occupanciesInternational->count() ? 60 / $occupanciesInternational->count() : 60;
                                         @endphp
                                         @foreach ($occupanciesInternational as $occupancy)
                                             <th style="width: {{ $widthEachColumnInternational }}%">
-                                                Rate (BEFORE {{strtoupper($occupancy->bookBefore->format('F d, Y'))}}) {{ $occupancy->type }} ({{$occupancy->number}}  {{$occupancy->number > 1 ? 'Persons' : 'Person'}})
+                                                Rate (BEFORE {{ strtoupper($occupancy->bookBefore->format('F d, Y')) }})
+                                                {{ $occupancy->type }} ({{ $occupancy->number }}
+                                                {{ $occupancy->number > 1 ? 'Persons' : 'Person' }})
                                             </th>
                                         @endforeach
                                     </tr>
@@ -1860,7 +1875,9 @@
                                     @endphp
                                     @foreach ($hotelsInternational as $hotel)
                                         <tr>
-                                            <td>{{ $hotel->description }} ({{ $hotel->getDaysAndNights() }}: Check In: {{$hotel->checkIn->format('d M')}} Check Out: {{$hotel->checkOut->format('d M')}})</td>
+                                            <td>{{ $hotel->description }} ({{ $hotel->getDaysAndNights() }}: Check In:
+                                                {{ $hotel->checkIn->format('d M') }} Check Out:
+                                                {{ $hotel->checkOut->format('d M') }})</td>
                                             <td>{{ $hotel->code }}</td>
                                             @foreach ($occupanciesInternational as $occupancy)
                                                 <td>
@@ -1875,7 +1892,7 @@
                                                             class="form-control {{ $errors->has('rates.' . $rateIndex . '.amount') }}"
                                                             name="rates[{{ $rateIndex }}][amount]"
                                                             value="{{ old('rates.' . $rateIndex . '.amount',DB::table('rates')->where('hotel_id', $hotel->id)->where('occupancy_id', $occupancy->id)->first()->amount ?? 0) }}">
-                                                            {!!$occupancy->number > 1 ? '<span class="input-group-text">/pax</span>' : ''!!}
+                                                        {!! $occupancy->number > 1 ? '<span class="input-group-text">/pax</span>' : '' !!}
                                                     </div>
                                                     @error('rates.' . $rateIndex . '.amount')
                                                         <div class="invalid-feedback">
@@ -1901,11 +1918,13 @@
                                         <th style="width: 30%"></th>
                                         <th style="width: 10%">Code</th>
                                         @php
-                                            $widthEachColumnLocal = 60 / $occupanciesLocal->count();
+                                            $widthEachColumnLocal = $occupanciesLocal->count() ? 60 / $occupanciesLocal->count() : 60;
                                         @endphp
                                         @foreach ($occupanciesLocal as $occupancy)
                                             <th style="width: {{ $widthEachColumnLocal }}%">
-                                                Rate (BEFORE {{strtoupper($occupancy->bookBefore->format('F d, Y'))}}) {{ $occupancy->type }} ({{$occupancy->number}}  {{$occupancy->number > 1 ? 'Persons' : 'Person'}})
+                                                Rate (BEFORE {{ strtoupper($occupancy->bookBefore->format('F d, Y')) }})
+                                                {{ $occupancy->type }} ({{ $occupancy->number }}
+                                                {{ $occupancy->number > 1 ? 'Persons' : 'Person' }})
                                             </th>
                                         @endforeach
                                     </tr>
@@ -1913,7 +1932,9 @@
                                 <tbody>
                                     @foreach ($hotelsLocal as $hotel)
                                         <tr>
-                                            <td>{{ $hotel->description }} ({{ $hotel->getDaysAndNights() }}: Check In: {{$hotel->checkIn->format('d M')}} Check Out: {{$hotel->checkOut->format('d M')}})</td>
+                                            <td>{{ $hotel->description }} ({{ $hotel->getDaysAndNights() }}: Check In:
+                                                {{ $hotel->checkIn->format('d M') }} Check Out:
+                                                {{ $hotel->checkOut->format('d M') }})</td>
                                             <td>{{ $hotel->code }}</td>
                                             @foreach ($occupanciesLocal as $occupancy)
                                                 <td>
@@ -1928,7 +1949,7 @@
                                                             class="form-control {{ $errors->has('rates.' . $rateIndex . '.amount') }}"
                                                             name="rates[{{ $rateIndex }}][amount]"
                                                             value="{{ old('rates.' . $rateIndex . '.amount',DB::table('rates')->where('hotel_id', $hotel->id)->where('occupancy_id', $occupancy->id)->first()->amount ?? 0) }}">
-                                                            {!!$occupancy->number > 1 ? '<span class="input-group-text">/pax</span>' : ''!!}
+                                                        {!! $occupancy->number > 1 ? '<span class="input-group-text">/pax</span>' : '' !!}
                                                     </div>
                                                     @error('rates.' . $rateIndex . '.amount')
                                                         <div class="invalid-feedback">
@@ -2003,7 +2024,8 @@
                                                 <div class="form-check form-switch form-switch-lg d-flex justify-content-center">
                                                     <input class="form-check-input" type="checkbox" role="switch" name="categories[` +
                 iC + `][needProof]"
-                                                        id="categories.` + iC + `.needProof" value=1>
+                                                        id="categories.` + iC +
+                `.needProof" value=1>
                                                 </div>
                                             </td>
                                             <td>
@@ -2231,7 +2253,7 @@
                                                     class="form-select"
                                                     name="occupancies[` + iOC + `][locality]"
                                                     id="occupancies.` + iOC + `.locality">
-                                                    <option selected disabled>Choose Occupancy ` + (iOC + 1) +  ` Locality
+                                                    <option selected disabled>Choose Occupancy ` + (iOC + 1) + ` Locality
                                                     </option>
                                                     @foreach ($localityList as $locality)
                                                         <option value="{{ $locality->code }}">{{ $locality->name }}</option>
@@ -2243,14 +2265,14 @@
                                                     class="form-control"
                                                     name="occupancies[` + iOC + `][type]"
                                                     id="occupancies.` + iOC + `.type"
-                                                    placeholder="Enter Occupancy ` + (iOC + 1) +    ` Room Type">
+                                                    placeholder="Enter Occupancy ` + (iOC + 1) + ` Room Type">
                                             </td>
                                             <td>
                                                 <input type="text"
                                                     class="form-control"
                                                     name="occupancies[` + iOC + `][number]"
                                                     id="occupancies.` + iOC + `.number"
-                                                    placeholder="Enter Occupancy ` + (iOC + 1) +    ` Number of Person">
+                                                    placeholder="Enter Occupancy ` + (iOC + 1) + ` Number of Person">
                                             </td>
                                             <td>
                                                 <input type="date"

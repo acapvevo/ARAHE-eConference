@@ -1,6 +1,7 @@
 @extends('participant.layouts.app')
 
 @section('styles')
+    <link href="{{ asset('lib/summernote/summernote-lite.css') }}" rel="stylesheet">
 @endsection
 
 @section('content')
@@ -78,7 +79,7 @@
                         </tr>
                         <tr>
                             <th class='w-25'>Abstract</th>
-                            <td colspan="2">{{ $submission->abstract }}</td>
+                            <td colspan="2">{!! $submission->abstract !!}</td>
                         </tr>
                         <tr>
                             <th class='w-25'>Abstract File</th>
@@ -430,8 +431,26 @@
 @endsection
 
 @section('scripts')
+    <script src="{{ asset('lib/summernote/summernote-lite.js') }}"></script>
+
     <script>
         @if ($submission->status_code === 'N')
+            $("document").ready(function() {
+                $('#abstract').summernote({
+                    placeholder: 'Enter Abstract',
+                    tabsize: 2,
+                    height: 120,
+                    toolbar: [
+                        ['fontgroup', ['fontname', 'fontsize']],
+                        ['style', ['bold', 'italic', 'underline', 'clear']],
+                        ['font', ['strikethrough', 'superscript', 'subscript']],
+                        ['color', ['color']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['height', ['height']]
+                    ]
+                });
+            });
+
             //Authors
             const addAuthorButton = document.getElementById('addAuthor');
             const currentIndexAuthor =

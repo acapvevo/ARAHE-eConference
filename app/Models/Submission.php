@@ -117,4 +117,9 @@ class Submission extends Model
 
         $this->{$attribute} = null;
     }
+
+    public function getFilePath($attribute)
+    {
+        return 'ARAHE' . $this->registration->form->session->year . '/submission/' . str_replace('-', '_', $this->registration->code) . '/' . $this->{$attribute};
+    }
 }

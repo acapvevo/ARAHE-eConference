@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Participant\Payment\PayController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::post('/stripe/webhook', [PayController::class, 'webhook'])->name('webhook');
 
 require __DIR__.'/super_admin.php';
 require __DIR__.'/admin.php';

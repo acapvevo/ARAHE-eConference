@@ -36,7 +36,7 @@
                         </tr>
                         <tr>
                             <th class='w-25'>Role</th>
-                            <td colspan="2">{{ strtoupper($registration->register_as) }}</td>
+                            <td colspan="2">{{ $registration->getType()->name }}</td>
                         </tr>
                         <tr>
                             <th class='w-25'>Locality</th>

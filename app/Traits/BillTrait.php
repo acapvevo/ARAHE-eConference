@@ -20,4 +20,9 @@ trait BillTrait
     {
         return Bill::where('checkoutSession_id', $session_id)->first();
     }
+
+    public function getBillByPaymentIntentId($payment_intent_id)
+    {
+        return Bill::where('payment_intent_id', $payment_intent_id)->first();
+    }
 }

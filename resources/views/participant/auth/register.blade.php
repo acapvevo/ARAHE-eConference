@@ -73,27 +73,6 @@
                         </div>
 
                         <div class="mb-3">
-                            @php
-                                $participant_types = DB::table('participant_type')->get();
-                            @endphp
-                            <select
-                                class="form-select form-control-user {{ $errors->has('account.type') ? 'is-invalid' : '' }}"
-                                name="account[type]" id="account.type">
-                                <option selected disabled>Choose Type of Participation</option>
-                                @foreach ($participant_types as $participant_type)
-                                    <option value="{{ $participant_type->code }}" @selected(old('account.type') == $participant_type->code)>
-                                        {{ $participant_type->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('account.type')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
                             <input
                                 class="form-control form-control-user {{ $errors->has('account.email') ? 'is-invalid' : '' }}"
                                 type="email" placeholder="Enter Your Email Address" name="account[email]"

@@ -68,7 +68,7 @@ class Stripes
             'cancel_url' => route('participant.payment.pay.cancel') . '?session_id={CHECKOUT_SESSION_ID}',
             'metadata' => [
                 'summary_id' => $summary->id,
-            ]
+            ],
         ]);
     }
 
@@ -78,7 +78,7 @@ class Stripes
 
         return $stripe->checkout->sessions->retrieve(
             $session_id,
-            []
+            ['expand' => ['payment_intent.payment_method']]
         );
     }
 }

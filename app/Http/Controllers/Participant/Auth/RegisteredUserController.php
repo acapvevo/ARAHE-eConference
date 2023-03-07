@@ -45,7 +45,6 @@ class RegisteredUserController extends Controller
         $request->validate([
             'account.name' => 'required|string|max:255',
             'account.title' => 'required|string|exists:participant_title,code',
-            'account.type' => 'required|string|exists:participant_type,code',
             'account.date_of_birth' => 'required|date',
             'account.email' => 'required|string|email|max:255|unique:participants,email',
             'account.password' => 'required|string|confirmed|min:8',
@@ -82,7 +81,6 @@ class RegisteredUserController extends Controller
             'name' => $request->account['name'],
             'title' => $request->account['title'],
             'date_of_birth' => $request->account['date_of_birth'],
-            'type' => $request->account['type'],
             'email' => $request->account['email'],
             'password' => Hash::make($request->account['password']),
             'login_at' => Carbon::now(),

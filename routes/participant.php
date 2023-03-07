@@ -132,11 +132,13 @@ Route::prefix('participant')->name('participant.')->group(function () {
                 Route::post('', [PayController::class, 'main'])->name('main');
                 Route::get('/success', [PayController::class, 'success'])->name('success');
                 Route::get('/cancel', [PayController::class, 'cancel'])->name('cancel');
+                Route::get('/review/{id}', [PayController::class, 'review'])->name('review');
             });
 
             Route::prefix('record')->name('record.')->group(function () {
                 Route::get('', [RecordController::class, 'list'])->name('list');
                 Route::get('/{id}', [RecordController::class, 'view'])->name('view');
+                Route::post('/receipt', [RecordController::class, 'receipt'])->name('receipt');
             });
         });
 
@@ -149,6 +151,4 @@ Route::prefix('participant')->name('participant.')->group(function () {
         });
         // });
     });
-
-    Route::post('/payment/pay/webhook', [PayController::class, 'webhook'])->name('payment.pay.webhook');
 });

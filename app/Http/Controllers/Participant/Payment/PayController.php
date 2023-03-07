@@ -5,13 +5,16 @@ namespace App\Http\Controllers\Participant\Payment;
 use Stripe\Webhook;
 use App\Models\Bill;
 use App\Plugins\Stripes;
+use App\Traits\BillTrait;
 use App\Traits\SummaryTrait;
 use Illuminate\Http\Request;
 use UnexpectedValueException;
+use App\Mail\PaymentCompleted;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Traits\BillTrait;
+use Illuminate\Support\Facades\Mail;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Stripe\Exception\SignatureVerificationException;
 
 class PayController extends Controller
@@ -63,12 +66,14 @@ class PayController extends Controller
         ]);
 
         $bill = $this->getBillByCheckoutSessionId($request->session_id);
-        $bill->status = 1;
+        $bill->status = 5;
+        $bill->setPaymentIntent();
         $bill->pay_complete_at = Carbon::now();
+
         $bill->save();
 
         $registration = $bill->summary->registration;
-        $registration->status_code = 'AR';
+        $registration->status_code = 'PW';
         $registration->save();
 
         return redirect(route('participant.competition.registration.view', ['form_id' => $bill->summary->registration->form->id]))->with('success', 'Your payment successfully completed. See you at the conference');
@@ -111,28 +116,49 @@ class PayController extends Controller
 
         // Handle the event
         switch ($event->type) {
-            case 'checkout.session.completed':
-                $session = $event->data->object;
+            case 'payment_intent.canceled':
+                $payment_intent = $event->data->object;
 
-                $bill = $this->getBillByCheckoutSessionId($session->id);
+                $bill = $this->getBillByPaymentIntentId($payment_intent->id);
                 if ($bill) {
-                    $bill->status = 5;
+                    $bill->status = 4;
+
+                    $bill->save();
+                }
+
+                break;
+            case 'payment_intent.payment_failed':
+                $payment_intent = $event->data->object;
+
+                $bill = $this->getBillByPaymentIntentId($payment_intent->id);
+                if ($bill) {
+                    $bill->status = 3;
+
+                    $bill->save();
+                }
+                break;
+            case 'payment_intent.succeeded':
+                $payment_intent = $event->data->object;
+
+                $bill = $this->getBillByPaymentIntentId($payment_intent->id);
+                if ($bill) {
+                    $bill->status = 1;
                     $bill->pay_confirm_at = Carbon::now();
+
+                    $pdf = PDF::loadView('pdf.payment.receipt', [
+                        'bill' => $bill,
+                        'checkoutSession' => Stripes::getCheckoutSession($bill->checkoutSession_id),
+                        'imageBase64' => 'data:image/png;base64, ' . base64_encode(file_get_contents(public_path('assets/favicon/android-chrome-512x512.png')))
+                    ]);
+                    $pdf->save($bill->getReceiptFilepath(), 'local');
+
+                    Mail::to($bill->summary->registration->participant->email)->send(new PaymentCompleted($bill));
+
                     $bill->save();
 
                     $registration = $bill->summary->registration;
                     $registration->status_code = 'AR';
                     $registration->save();
-                    // Send email to customer
-                }
-                break;
-            case 'checkout.session.expired':
-                $session = $event->data->object;
-
-                $bill = $this->getBillByCheckoutSessionId($session->id);
-                if ($bill) {
-                    $bill->status = 3;
-                    $bill->save();
                 }
                 break;
 
@@ -142,5 +168,23 @@ class PayController extends Controller
         }
 
         return response()->noContent(200);
+    }
+
+    public function review($id)
+    {
+        $bill = Bill::find($id);
+
+        $pdf = PDF::loadView('pdf.payment.receipt', [
+            'bill' => $bill,
+            'checkoutSession' => Stripes::getCheckoutSession($bill->checkoutSession_id),
+            'imageBase64' => 'data:image/png;base64, ' . base64_encode(file_get_contents(public_path('assets/favicon/android-chrome-512x512.png')))
+        ])->setPaper('a4', 'potrait');
+        $pdf->save($bill->getReceiptFilepath(), 'local');
+
+        return view('pdf.payment.receipt')->with([
+            'bill' => $bill,
+            'checkoutSession' => Stripes::getCheckoutSession($bill->checkoutSession_id),
+            'imageBase64' => 'data:image/png;base64, ' . base64_encode(file_get_contents(public_path('assets/favicon/android-chrome-512x512.png')))
+        ]);
     }
 }

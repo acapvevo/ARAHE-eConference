@@ -48,7 +48,7 @@
                         </tr>
                         <tr>
                             <th class='w-25'>Register As</th>
-                            <td>{{ strtoupper($registration->register_as) }}</td>
+                            <td>{{ $registration->getType() ? $registration->getType()->name : '' }}</td>
                         </tr>
                         <tr>
                             <th class='w-25'>Locality</th>
@@ -205,8 +205,6 @@
                                 @method('PATCH')
                             @endif
 
-                            <input type="hidden" name="locality" id="locality">
-
                             <div class="mb-3">
                                 <label for="code" class="form-label">Registration ID</label>
                                 <input type="text" readonly class="form-control-plaintext" id="code" name="code"
@@ -214,14 +212,19 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="register_as" class="form-label">Register As</label>
-                                <select class="form-select {{ $errors->has('register_as') ? 'is-invalid' : '' }}"
-                                    id="register_as" name="register_as">
-                                    <option selected disabled value="">Choose Role</option>
-                                    <option @selected(old('register_as', $registration->register_as) == 'presenter') value="presenter">Presenter</option>
-                                    <option @selected(old('register_as', $registration->register_as) == 'participant') value="participant">Participant</option>
+                                @php
+                                    $typeList = DB::table('participant_type')->get();
+                                @endphp
+                                <label for="type" class="form-label">Register As</label>
+                                <select class="form-select {{ $errors->has('type') ? 'is-invalid' : '' }}" id="type"
+                                    name="type">
+                                    <option hidden>Choose Role</option>
+                                    @foreach ($typeList as $type)
+                                        <option @selected(old('type', $registration->type) == $type->code) value="{{ $type->code }}">
+                                            {{ $type->name }}</option>
+                                    @endforeach
                                 </select>
-                                @error('register_as')
+                                @error('type')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>
@@ -517,7 +520,7 @@
                                 $occupancies = $registration->form->getOccupanciesByLocality($locality_code);
                                 $hotels = $registration->form->getHotelsByLocality($locality_code);
 
-                                $currentChosenHotelRate = $registration->summary->hotel_id ? $registration->summary->getHotelRate() : null;
+                                $currentChosenHotelRate = $registration->summary->hotel_id ?? 0 ? $registration->summary->getHotelRate() : null;
                             @endphp
                             <div class="mb-3 table-responsive">
                                 <label for="hotel" class="form-label">Hotel Accommodation Packages <small>( This option
@@ -650,7 +653,12 @@
                                                     <td>{{ $extraFee->parent->code ?? '' }}</td>
                                                     <td>{{ $extraFee->parent->options[$extraFee->optionIndex] ?? '' }}
                                                     </td>
-                                                    <td>{{ $registration->summary->getLocality()->currency }}{{ $extraFee->amount ?? '' }}
+                                                    <td>
+                                                        @if ($currentChosenPackageFee->parent->fullPackage)
+                                                            INCLUDED
+                                                        @else
+                                                            {{ $registration->summary ? $registration->summary->getLocality()->currency : '' }}{{ $extraFee->amount ?? '' }}
+                                                        @endif
                                                     </td>
                                                     <input type="hidden" name="price_id[]"
                                                         value="{{ $extraFee->price_id }}">
@@ -804,8 +812,6 @@
                 const locality_code = document.querySelector('input[name="locality_code"]:checked').value;
                 const form_id = "{{ $registration->form->id }}";
 
-                document.getElementById('locality').value = locality_code;
-
                 const categorySelect = document.getElementById('category');
 
                 axios.post('/participant/competition/registration/category', {
@@ -911,7 +917,8 @@
                             } else {
 
                                 for (let i = 0; i < extraCount; i++) {
-                                    if ($('input:checkbox.extraFee' + i).length && !$("input:checkbox.extraFee" + i).is(":checked")) {
+                                    if ($('input:checkbox.extraFee' + i).length && !$("input:checkbox.extraFee" + i).is(
+                                            ":checked")) {
                                         $('input:checkbox.extraFee' + i).prop('checked', false);
 
                                         $('input:checkbox.extraFee' + i).attr("disabled", false);

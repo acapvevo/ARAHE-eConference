@@ -17,7 +17,7 @@ class ParticipantTitleSeeder extends Seeder
     {
         DB::table('participant_title')->insertTs([
             'code' => 'mr',
-            'name' => 'Mr',
+            'name' => 'Mr.',
         ]);
 
         DB::table('participant_title')->insertTs([
@@ -27,22 +27,22 @@ class ParticipantTitleSeeder extends Seeder
 
         DB::table('participant_title')->insertTs([
             'code' => 'mrs',
-            'name' => 'Mrs',
+            'name' => 'Mrs.',
         ]);
 
         DB::table('participant_title')->insertTs([
             'code' => 'ms',
-            'name' => 'Ms',
+            'name' => 'Ms.',
         ]);
 
         DB::table('participant_title')->insertTs([
             'code' => 'dr',
-            'name' => 'Dr',
+            'name' => 'Dr.',
         ]);
 
         DB::table('participant_title')->insertTs([
             'code' => 'prof',
-            'name' => 'Prof',
+            'name' => 'Prof.',
         ]);
     }
 }

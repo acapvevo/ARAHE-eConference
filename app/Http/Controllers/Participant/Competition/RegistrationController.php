@@ -105,7 +105,7 @@ class RegistrationController extends Controller
         $request->validate([
             'form_id' => 'required|exists:App\Models\Form,id',
             'code' => 'required|unique:App\Models\Registration,code',
-            'register_as' => 'required|in:presenter,participant',
+            'type' => 'required|string|exists:participant_type,code',
             'category' => 'required|exists:App\Models\Category,id',
             'proof' => [
                 'sometimes',
@@ -129,7 +129,7 @@ class RegistrationController extends Controller
         $registration->participant_id = $participant->id;
         $registration->form_id = $request->form_id;
         $registration->code = $request->code;
-        $registration->register_as = $request->register_as;
+        $registration->type = $request->type;
         $registration->category_id = $request->category;
         $registration->dietary = $request->dietary;
 
@@ -155,8 +155,7 @@ class RegistrationController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'locality' => 'required|string|exists:locality,code',
-            'register_as' => 'required|in:presenter,participant',
+            'type' => 'required|string|exists:participant_type,code',
             'category' => 'required|exists:App\Models\Category,id',
             'proof' => [
                 Rule::requiredIf(function () use ($request) {
@@ -174,7 +173,7 @@ class RegistrationController extends Controller
 
         $registration = Registration::find($id);
 
-        $registration->register_as = $request->register_as;
+        $registration->type = $request->type;
         $registration->category_id = $request->category;
 
         if ($request->hasFile('proof')) {
