@@ -224,7 +224,7 @@ class Form extends Model
 
                 foreach ($bills as $bill) {
                     if($locality->name == $bill->summary->getLocality()->name && $month->translatedFormat('F') == $bill->getPayConfirmAtMonth()){
-                        $totalPaymentByLocalityByMonth[$locality->name . ' (' . $locality->currency . ')'][$month->translatedFormat('F')] += $bill->total;
+                        $totalPaymentByLocalityByMonth[$locality->name . ' (' . $locality->currency . ')'][$month->translatedFormat('F')] += $bill->summary->total;
                     }
                 }
             }
