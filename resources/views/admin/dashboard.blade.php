@@ -118,7 +118,6 @@
             form_id: {{ $form->id }}
         }).then(function(response) {
             const data = response.data;
-            console.log(data.sessionMonths)
 
             const dataRegistrationStatistic = {
                 labels: Object.keys(response.data.registrationStatistic),
