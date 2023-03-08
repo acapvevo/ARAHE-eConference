@@ -59,6 +59,11 @@ class Bill extends Model
         return Carbon::parse($this->pay_confirm_at)->translatedFormat('j F Y h:m:s A');
     }
 
+    public function getPayConfirmAtMonth()
+    {
+        return Carbon::parse($this->pay_confirm_at)->translatedFormat('F');
+    }
+
     public function getTransactionDate()
     {
         return Carbon::parse($this->pay_complete_at)->translatedFormat('j F Y');

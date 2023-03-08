@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
@@ -110,7 +111,7 @@ class Form extends Model
     {
         $currentDate = Carbon::now();
 
-        return $this->durations->where('locality', $locality_code)->first(function($duration) use ($currentDate){
+        return $this->durations->where('locality', $locality_code)->first(function ($duration) use ($currentDate) {
             return $currentDate->between($duration->start, $duration->end);
         });
     }
@@ -127,33 +128,121 @@ class Form extends Model
 
     public function updateDurationsInStripe()
     {
-        foreach($this->durations as $duration)
-        {
+        foreach ($this->durations as $duration) {
             $duration->updateFeesInStripe();
         }
     }
 
     public function updateCategoiesInStripe()
     {
-        foreach($this->getPackages() as $package)
-        {
+        foreach ($this->getPackages() as $package) {
             $package->updateFeesInStripe();
         }
     }
 
     public function updateHotelsInStripe()
     {
-        foreach($this->hotels as $hotel)
-        {
+        foreach ($this->hotels as $hotel) {
             $hotel->updateRatesInStripe();
         }
     }
 
     public function updateOccupansiesInStripe()
     {
-        foreach($this->occupancies as $occupancy)
-        {
+        foreach ($this->occupancies as $occupancy) {
             $occupancy->updateRatesInStripe();
         }
+    }
+
+    public function getTotalPaymentDone()
+    {
+        $localities = DB::table('locality')->get();
+
+        $totalPayment = [];
+        foreach ($localities as $locality) {
+            $totalPayment[$locality->code] = 0;
+        }
+
+        foreach ($this->registrations as $regisration) {
+            if ($regisration->summary && ($regisration->status_code === 'AR' || $regisration->status_code === 'PW')) {
+                $totalPayment[$regisration->summary->locality] += $regisration->summary->total;
+            }
+        }
+
+        return $totalPayment;
+    }
+
+    public function getPaperPending()
+    {
+        return Submission::where('status_code', 'P')->whereIn('registration_id', $this->registrations->pluck('id'))->get()->count();
+    }
+
+    public function getTotalPaper()
+    {
+        return Submission::whereIn('registration_id', $this->registrations->pluck('id'))->get()->count();
+    }
+
+    public function getRegistrationStatistic()
+    {
+        $registrationsByStatus = $this->registrations->mapToGroups(function ($registration) {
+            return [$registration->getStatusLabel() => $registration];
+        });
+
+        $registrationsByStatusCount = [];
+        foreach ($registrationsByStatus as $statusLabel => $registrations) {
+            $registrationsByStatusCount[$statusLabel] = $registrations->count();
+        }
+
+        return $registrationsByStatusCount;
+    }
+
+    public function getSubmissionStatistic()
+    {
+        $submissionsByStatus = Submission::whereIn('registration_id', $this->registrations->pluck('id'))->get()->mapToGroups(function ($submission) {
+            return [$submission->getStatusLabel() => $submission];
+        });
+
+        $submissionsByStatusCount = [];
+        foreach ($submissionsByStatus as $statusLabel => $submissions) {
+            $submissionsByStatusCount[$statusLabel] = $submissions->count();
+        }
+
+        return $submissionsByStatusCount;
+    }
+
+    public function getPaymentStatistic()
+    {
+        $localities = DB::table('locality')->get();
+        $bills = Bill::whereBetween('pay_confirm_at', [$this->session->returnDateObj('registration', 'start'), $this->session->returnDateObj('registration', 'end')])->where('status', 1)->get();
+        $months = CarbonPeriod::create($this->session->returnDateObj('registration', 'start'), '1 month', $this->session->returnDateObj('registration', 'end'));
+
+        foreach($localities as $locality){
+            $totalPaymentByLocalityByMonth[$locality->name . ' (' . $locality->currency . ')'] = [];
+
+            foreach($months as $month){
+                $totalPaymentByLocalityByMonth[$locality->name . ' (' . $locality->currency . ')'][$month->translatedFormat('F')] = 0;
+
+                foreach ($bills as $bill) {
+                    if($locality->name == $bill->summary->getLocality()->name && $month->translatedFormat('F') == $bill->getPayConfirmAtMonth()){
+                        $totalPaymentByLocalityByMonth[$locality->name . ' (' . $locality->currency . ')'][$month->translatedFormat('F')] += $bill->total;
+                    }
+                }
+            }
+        }
+
+
+        return $totalPaymentByLocalityByMonth;
+    }
+
+    public function getMonthsSession()
+    {
+        $months = CarbonPeriod::create($this->session->returnDateObj('registration', 'start'), '1 month', $this->session->returnDateObj('registration', 'end'));
+
+        $monthsName = collect();
+        foreach($months as $month){
+            $monthsName->push($month->translatedFormat('F'));
+        }
+
+        return $monthsName;
     }
 }
