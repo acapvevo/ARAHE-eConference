@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 use App\Traits\ReviewerTrait;
 use App\Traits\SubmissionTrait;
 use App\Http\Controllers\Controller;
+use App\Mail\RegistrationCompleted;
 use App\Models\Registration;
+use Illuminate\Support\Facades\Mail;
 
 class RegistrationController extends Controller
 {
@@ -48,6 +50,8 @@ class RegistrationController extends Controller
         $registration = Registration::find($id);
 
         $registration->status_code = $request->decision;
+
+        Mail::to($registration->participant->email)->send(new RegistrationCompleted($registration));
 
         $registration->save();
 

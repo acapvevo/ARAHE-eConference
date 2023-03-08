@@ -183,6 +183,8 @@ class RegistrationController extends Controller
             $request->file('proof')->storeAs($filePath, $fileName);
 
             $registration->proof = $fileName;
+        } else {
+            $registration->proof = null;
         }
 
         $registration->link = $request->link ?? null;
