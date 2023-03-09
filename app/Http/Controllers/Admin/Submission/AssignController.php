@@ -7,10 +7,11 @@ use Illuminate\Http\Request;
 use App\Traits\ReviewerTrait;
 use App\Traits\SubmissionTrait;
 use App\Http\Controllers\Controller;
+use App\Traits\RecordTrait;
 
 class AssignController extends Controller
 {
-    use FormTrait, SubmissionTrait, ReviewerTrait;
+    use FormTrait, SubmissionTrait, ReviewerTrait, RecordTrait;
 
     public function list()
     {
@@ -57,6 +58,11 @@ class AssignController extends Controller
 
         $submission->reviewer_id = $request->reviewer_id;
         $submission->status_code = 'IR';
+
+        $record = $this->getRecordByReviewerIdAndFormId($request->reviewer_id, $submission->registration->form_id);
+        $record->assign += 1;
+        $record->reviewing += 1;
+        $record->save();
 
         $submission->save();
 

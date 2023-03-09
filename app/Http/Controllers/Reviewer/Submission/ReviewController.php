@@ -11,12 +11,13 @@ use App\Traits\RegistrationTrait;
 use App\Mail\SubmissionCorrection;
 use App\Http\Controllers\Controller;
 use App\Mail\SubmissionAccepted;
+use App\Traits\RecordTrait;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 class ReviewController extends Controller
 {
-    use FormTrait, RegistrationTrait, SubmissionTrait, RubricTrait;
+    use FormTrait, RegistrationTrait, SubmissionTrait, RubricTrait, RecordTrait;
 
     public function list()
     {
@@ -70,6 +71,7 @@ class ReviewController extends Controller
         ]);
 
         $submission = $this->getSubmission($id);
+        $record = $this->getRecordByReviewerIdAndFormId($submission->reviewer_id, $submission->registration->form_id);
 
         if ($request->submit === 'reject') {
             $submission->status_code = 'R';
@@ -77,6 +79,9 @@ class ReviewController extends Controller
             $submission->deleteFile('correctionFile');
             $submission->totalMark = 0;
             $submission->comment = null;
+
+            $record->reject += 1;
+            $record->save();
 
             $submission->save();
 
@@ -87,6 +92,9 @@ class ReviewController extends Controller
             $submission->deleteFile('correctionFile');
             $submission->totalMark = 0;
             $submission->comment = null;
+
+            $record->return += 1;
+            $record->save();
 
             $submission->save();
 
@@ -129,6 +137,10 @@ class ReviewController extends Controller
             $submission->setAcceptedDate();
 
             Mail::to($submission->registration->participant->email)->send(new SubmissionAccepted($submission));
+
+            $record->reviewing -= 1;
+            $record->accept += 1;
+            $record->save();
         } else{
             $submission->status_code = 'C';
 

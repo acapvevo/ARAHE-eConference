@@ -194,8 +194,8 @@
                                 <tbody>
                                     @foreach ($reviewers as $index => $reviewer)
                                         @php
-                                            $submissions = $reviewer->submissions->filter(function ($currentSubmission) use ($submission) {
-                                                return $currentSubmission->registration->form->session->id === $submission->registration->form->session->id;
+                                            $record = $reviewer->records->first(function ($record) use ($submission) {
+                                                return $record->form_id == $submission->registration->form_id;
                                             });
                                         @endphp
 
@@ -207,7 +207,7 @@
                                                 </div>
                                             </td>
                                             <td>{{ $reviewer->participant->name }}</td>
-                                            <td class="text-center">{{ $reviewer->submissions->count() }}</td>
+                                            <td class="text-center">{{ $record->assign }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

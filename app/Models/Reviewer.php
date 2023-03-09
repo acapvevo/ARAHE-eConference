@@ -55,6 +55,14 @@ class Reviewer extends Authenticatable
     }
 
     /**
+     * Get the Records that associate to the Reviewer
+     */
+    public function records()
+    {
+        return $this->hasMany(Record::class);
+    }
+
+    /**
      * Get the Participant that become Reviewer.
      */
     public function participant()
