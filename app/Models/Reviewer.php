@@ -79,4 +79,24 @@ class Reviewer extends Authenticatable
     {
         return Carbon::parse($this->created_at)->translatedFormat('j F Y');
     }
+
+    public function getRecordByFormId($form_id)
+    {
+        if (Record::where('reviewer_id', $this->id)->where('form_id', $form_id)->exists()) {
+            $record = Record::where('reviewer_id', $this->id)->where('form_id', $form_id)->first();
+        } else {
+            $record = new Record([
+                'reviewer_id' => $this->id,
+                'form_id' => $form_id,
+                'accept' => 0,
+                'reject' => 0,
+                'return' => 0,
+                'assign' => 0,
+                'reviewing' => 0,
+            ]);
+            $record->save();
+        }
+
+        return $record;
+    }
 }

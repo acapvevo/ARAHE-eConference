@@ -193,12 +193,6 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($reviewers as $index => $reviewer)
-                                        @php
-                                            $record = $reviewer->records->first(function ($record) use ($submission) {
-                                                return $record->form_id == $submission->registration->form_id;
-                                            });
-                                        @endphp
-
                                         <tr>
                                             <td>
                                                 <div class="form-check">
@@ -207,7 +201,7 @@
                                                 </div>
                                             </td>
                                             <td>{{ $reviewer->participant->name }}</td>
-                                            <td class="text-center">{{ $record->assign }}</td>
+                                            <td class="text-center">{{ $reviewer->getRecordByFormId($submission->registration->form->id)->assign }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
