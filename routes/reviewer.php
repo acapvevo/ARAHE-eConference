@@ -64,10 +64,12 @@ Route::prefix('reviewer')->name('reviewer.')->group(function () {
             ->name('logout');
 
         // Route::middleware('verified:reviewer.verification.notice')->group(function () {
-        Route::get('/', [DashboardController::class, 'index']);
+        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-        Route::get('/dashboard', [DashboardController::class, 'index'])
-            ->name('dashboard');
+        Route::prefix('dashboard')->name('dashboard.')->group(function () {
+            Route::get('', [DashboardController::class, 'index'])->name('index');
+            Route::post('/statistic', [DashboardController::class, 'statistic'])->name('statistic');
+        });
 
         //User Management Routes
         Route::prefix('user')->name('user.')->group(function () {

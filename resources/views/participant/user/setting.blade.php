@@ -16,10 +16,10 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="ProfilePicture" class="form-label">Profile Picture</label>
-                    <input class="form-control {{ $errors->has('ProfilePicture') ? 'is-invalid' : '' }}" type="file"
-                        id="ProfilePicture" name="ProfilePicture">
-                    @error('ProfilePicture')
+                    <label for="profilePicture" class="form-label">Profile Picture</label>
+                    <input class="form-control {{ $errors->has('profilePicture') ? 'is-invalid' : '' }}" type="file"
+                        id="profilePicture" name="profilePicture">
+                    @error('profilePicture')
                         <div class="invalid-feedback">
                             {{ $message }}
                         </div>

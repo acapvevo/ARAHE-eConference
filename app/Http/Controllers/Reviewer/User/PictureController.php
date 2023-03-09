@@ -19,13 +19,13 @@ class PictureController extends Controller
         ]);
 
         $imageName = $user->id . '.' . $request->ProfilePicture->extension();
-        $imagePath = "app\profile_picture\\participant";
+        $imagePath = "app\profile_picture/participant";
 
         $img = Image::make($request->ProfilePicture);
-        if(!Storage::exists("profile_picture\\participant")) {
-            Storage::makeDirectory("profile_picture\\participant"); //creates directory
+        if(!Storage::exists("profile_picture/participant")) {
+            Storage::makeDirectory("profile_picture/participant"); //creates directory
         }
-        $img->fit(300)->save(storage_path($imagePath . "\\" . $imageName));
+        $img->fit(300)->save(storage_path($imagePath . "/" . $imageName));
 
         $user->image = $imageName;
 

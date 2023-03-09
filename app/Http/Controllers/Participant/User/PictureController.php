@@ -15,17 +15,17 @@ class PictureController extends Controller
         $user = Auth::guard('participant')->user();
 
         $request->validate([
-            'ProfilePicture' => 'required|image|mimes:png,jpg,jpeg|max:2048'
+            'profilePicture' => 'required|image|mimes:png,jpg,jpeg|max:2048'
         ]);
 
-        $imageName = $user->id . '.' . $request->ProfilePicture->extension();
-        $imagePath = "app\profile_picture\\participant";
+        $imageName = $user->id . '.' . $request->profilePicture->extension();
+        $imagePath = "app/profile_picture/participant";
 
-        $img = Image::make($request->ProfilePicture);
-        if(!Storage::exists("profile_picture\\participant")) {
-            Storage::makeDirectory("profile_picture\\participant"); //creates directory
+        $img = Image::make($request->profilePicture);
+        if(!Storage::exists("profile_picture/participant")) {
+            Storage::makeDirectory("profile_picture/participant"); //creates directory
         }
-        $img->fit(300)->save(storage_path($imagePath . "\\" . $imageName));
+        $img->fit(300)->save(storage_path($imagePath . "/" . $imageName));
 
         $user->image = $imageName;
 
