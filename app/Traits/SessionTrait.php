@@ -33,7 +33,7 @@ trait SessionTrait
         else if ($this->checkSession($currentYear))
             return $this->getSessionByYear($currentYear);
 
-        return Session::first();
+        return $$latestSession;
     }
 
     public function getSessionByYear($year)
