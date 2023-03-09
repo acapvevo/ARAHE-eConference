@@ -13,7 +13,7 @@
                 <table class="table table-bordered" id="table_id">
                     <thead class="table-primary">
                         <tr>
-                            <th>Year</th>
+                            <th>Registration ID</th>
                             <th>Title</th>
                             <th>Status</th>
                             <th>Date Accepted</th>
@@ -22,7 +22,7 @@
                     <tbody>
                         @foreach ($registrations as $registration)
                             <tr>
-                                <td><a href="{{route('participant.competition.submission.view', ['registration_id' => $registration->id])}}">{{ $registration->form->session->year }}</a></td>
+                                <td><a href="{{route('participant.competition.submission.view', ['registration_id' => $registration->id])}}">{{ $registration->code }}</a></td>
                                 <td>{{isset($registration->submission->title) ? $registration->submission->title : 'No Submission'}}</td>
                                 <td>{{isset($registration->submission->status_code) ? $registration->submission->getStatusLabel() : 'No Submission'}}</td>
                                 <td>{{isset($registration->submission->acceptedDate) ? $registration->submission->acceptedDate->translatedFormat('j F Y') : ''}}</td>

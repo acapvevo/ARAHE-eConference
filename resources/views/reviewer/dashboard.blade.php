@@ -90,7 +90,7 @@
                                 <tbody>
                                     @forelse ($submissions as $index => $submission)
                                     <tr>
-                                        <td>{{$index}}</td>
+                                        <td>{{$index + 1}}</td>
                                         <td>{{$submission->title}}</td>
                                     </tr>
                                     @empty

@@ -25,7 +25,12 @@ class ReviewController extends Controller
         $user = Auth::guard('reviewer')->user();
 
         $submissions = $this->getSubmissionByReviewerID($user->id)->filter(function ($submission) use ($currentForm) {
-            return $submission->registration->form->id == $currentForm->id && $submission->status_code == 'IR';
+            return $submission->registration->form->id == $currentForm->id;
+        })->sort(function ($a, $b) {
+            if ($a->status_code === "IR")
+                return 1;
+
+            return ($a < $b) ? -1 : 1;
         });
 
         return view('reviewer.submission.review.list')->with([
@@ -86,7 +91,7 @@ class ReviewController extends Controller
             $submission->save();
 
             return redirect(route('reviewer.submission.review.list'))->with('success', 'Submission ' . $submission->registration->code . ' has been successfully rejected.');
-        } else if($request->submit === 'return'){
+        } else if ($request->submit === 'return') {
             $submission->status_code = 'P';
             $submission->reviewer_id = null;
             $submission->deleteFile('correctionFile');
@@ -141,7 +146,7 @@ class ReviewController extends Controller
             $record->reviewing -= 1;
             $record->accept += 1;
             $record->save();
-        } else{
+        } else {
             $submission->status_code = 'C';
 
             Mail::to($submission->registration->participant->email)->send(new SubmissionCorrection($submission));
