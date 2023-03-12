@@ -20,7 +20,7 @@
                                             Registrations</span>
                                     </div>
                                 </div>
-                                <div class="col-auto"><i class="fas fa-calendar fa-2x text-gray-300"></i></div>
+                                <div class="col-auto"><i class="fa-solid fa-person-circle-question fa-2x text-gray-300"></i></div>
                             </div>
                         </div>
                     </div>
@@ -36,7 +36,7 @@
                                     <div class="text-dark fw-bold h5 mb-0"><span>{{ $form->getPaperPending() }}
                                             Papers</span></div>
                                 </div>
-                                <div class="col-auto"><i class="fas fa-calendar fa-2x text-gray-300"></i></div>
+                                <div class="col-auto"><i class="fa-solid fa-file-circle-question fa-2x text-gray-300"></i></div>
                             </div>
                         </div>
                     </div>
@@ -70,7 +70,7 @@
                                     <div class="text-dark fw-bold h5 mb-0"><span>{{ $form->getTotalPaper() }} Papers</span>
                                     </div>
                                 </div>
-                                <div class="col-auto"><i class="fas fa-comments fa-2x text-gray-300"></i></div>
+                                <div class="col-auto"><i class="fa-solid fa-file fa-2x text-gray-300"></i></div>
                             </div>
                         </div>
                     </div>

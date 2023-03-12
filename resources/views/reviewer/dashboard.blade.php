@@ -19,7 +19,7 @@
                                             Papers</span>
                                     </div>
                                 </div>
-                                <div class="col-auto"><i class="fas fa-calendar fa-2x text-gray-300"></i></div>
+                                <div class="col-auto"><i class="fa-solid fa-file-circle-plus fa-2x text-gray-300"></i></div>
                             </div>
                         </div>
                     </div>
@@ -36,7 +36,7 @@
                                             Papers</span>
                                     </div>
                                 </div>
-                                <div class="col-auto"><i class="fas fa-calendar fa-2x text-gray-300"></i></div>
+                                <div class="col-auto"><i class="fa-solid fa-file-circle-xmark fa-2x text-gray-300"></i></div>
                             </div>
                         </div>
                     </div>
@@ -51,7 +51,7 @@
                                     <div class="text-dark fw-bold h5 mb-0"><span>{{ $record->return }}
                                         Papers</span></div>
                                 </div>
-                                <div class="col-auto"><i class="fas fa-calendar fa-2x text-gray-300"></i></div>
+                                <div class="col-auto"><i class="fa-solid fa-file-circle-minus fa-2x text-gray-300"></i></div>
                             </div>
                         </div>
                     </div>
@@ -68,7 +68,7 @@
                                             Papers</span>
                                     </div>
                                 </div>
-                                <div class="col-auto"><i class="fas fa-dollar-sign fa-2x text-gray-300"></i></div>
+                                <div class="col-auto"><i class="fa-solid fa-file-circle-check fa-2x text-gray-300"></i></div>
                             </div>
                         </div>
                     </div>
