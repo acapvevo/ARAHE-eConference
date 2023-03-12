@@ -58,10 +58,6 @@
                                     <td>{{ $reviewer->participant->date_of_birth->format('j F Y') }}</td>
                                 </tr>
                                 <tr>
-                                    <th class="w-25">Type of Participation: </th>
-                                    <td>{{ $reviewer->participant->getType() }}</td>
-                                </tr>
-                                <tr>
                                     <th class="w-25">Email: </th>
                                     <td>{{ $reviewer->participant->email }}</td>
                                 </tr>
