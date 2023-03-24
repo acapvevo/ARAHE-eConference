@@ -11,8 +11,10 @@
         <div class="card-body">
             <div class="row pt-3 pb-3">
                 <div class="col d-flex justify-content-end">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-bs-target="#assignReviewerModal">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#assignReviewerModal"
+                        @disabled($reviewers->isEmpty()) {!! $reviewers->isEmpty()
+                            ? 'data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Hire Reviewer First"'
+                            : '' !!}>
                         Assign Reviewer
                     </button>
                     &nbsp;&nbsp;&nbsp;
@@ -43,7 +45,7 @@
                         @empty
                             <tr>
                                 <th class='w-25'>Authors</th>
-                                <td  colspan="2"></td>
+                                <td colspan="2"></td>
                             </tr>
                         @endforelse
                         @forelse ($submission->coAuthors ?? [] as $index => $coAuthor)
@@ -72,8 +74,8 @@
                             <th class='w-25'>Abstract File</th>
                             @if (isset($submission->abstractFile))
                                 <td colspan="2">
-                                    <form action="{{ route('admin.submission.assign.download') }}"
-                                        method="post" target="_blank">
+                                    <form action="{{ route('admin.submission.assign.download') }}" method="post"
+                                        target="_blank">
                                         @csrf
                                         <input type="hidden" name="type" value="abstractFile">
                                         <input type="hidden" name="filename" value="{{ $submission->abstractFile }}">
@@ -93,8 +95,8 @@
                             <th class='w-25'>Paper File</th>
                             @if (isset($submission->paperFile))
                                 <td colspan="2">
-                                    <form action="{{ route('admin.submission.assign.download') }}"
-                                        method="post" target="_blank">
+                                    <form action="{{ route('admin.submission.assign.download') }}" method="post"
+                                        target="_blank">
                                         @csrf
                                         <input type="hidden" name="type" value="paperFile">
                                         <input type="hidden" name="filename" value="{{ $submission->paperFile }}">
@@ -137,10 +139,13 @@
                             <th class='w-25'>Address</th>
                             <td colspan="2">{{ $submission->registration->participant->address->lineOne }},<br>
                                 {{ $submission->registration->participant->address->lineTwo }},<br>
-                                {!! $submission->registration->participant->address->lineThree ? $submission->registration->participant->address->lineThree . ',<br>' : '' !!}
-                                {{ $submission->registration->participant->address->postcode }} {{ $submission->registration->participant->address->city }},<br>
+                                {!! $submission->registration->participant->address->lineThree
+                                    ? $submission->registration->participant->address->lineThree . ',<br>'
+                                    : '' !!}
+                                {{ $submission->registration->participant->address->postcode }}
+                                {{ $submission->registration->participant->address->city }},<br>
                                 {{ $submission->registration->participant->address->state }},<br>
-                                {{ $submission->registration->participant->address->country}}
+                                {{ $submission->registration->participant->address->country }}
                             </td>
                         </tr>
                         <tr>
@@ -168,16 +173,16 @@
                 <div class="modal-body">
 
                     @error('reviewer_id')
-                    <div class="card text-bg-danger mb-3">
-                      <div class="card-body">
-                        <p class="card-text text-white">Please Choose a Reviewer</p>
-                      </div>
-                    </div>
-                    <div class="pt-3 pb-3"></div>
+                        <div class="card text-bg-danger mb-3">
+                            <div class="card-body">
+                                <p class="card-text text-white">Please Choose a Reviewer</p>
+                            </div>
+                        </div>
+                        <div class="pt-3 pb-3"></div>
                     @enderror
 
-                    <form action="{{ route('admin.submission.assign.update', ['id' => $submission->id]) }}" method="post"
-                        id="assignReviewer">
+                    <form action="{{ route('admin.submission.assign.update', ['id' => $submission->id]) }}"
+                        method="post" id="assignReviewer">
                         @csrf
                         @method('PATCH')
 
@@ -201,7 +206,9 @@
                                                 </div>
                                             </td>
                                             <td>{{ $reviewer->participant->name }}</td>
-                                            <td class="text-center">{{ $reviewer->getRecordByFormId($submission->registration->form->id)->assign }}</td>
+                                            <td class="text-center">
+                                                {{ $reviewer->getRecordByFormId($submission->registration->form->id)->assign }}
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
