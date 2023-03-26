@@ -44,5 +44,11 @@ class StatusPaymentSeeder extends Seeder
             'code' => '5',
             'description' => 'Your payment currently being processed, Please wait for a few minutes'
         ]);
+
+        DB::table('status_payment')->insertTs([
+            'label' => 'Expired',
+            'code' => '6',
+            'description' => 'Your payment session has expired, Please make new payment'
+        ]);
     }
 }

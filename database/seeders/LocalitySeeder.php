@@ -21,7 +21,6 @@ class LocalitySeeder extends Seeder
             'currency' => 'RM',
             'stripe_currency' => 'myr',
             'payment_methods' => json_encode([
-                'fpx',
                 'card'
             ])
         ]);
