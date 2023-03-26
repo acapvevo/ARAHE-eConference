@@ -107,10 +107,14 @@ class PayController extends Controller
             );
         } catch (UnexpectedValueException $e) {
             // Invalid payload
-            return response()->noContent(400);
+            return response()->json([
+                'message' => 'Invalid payload'
+            ], 400);
         } catch (SignatureVerificationException $e) {
             // Invalid signature
-            return response()->noContent(400);
+            return response()->json([
+                'message' => 'Invalid signature'
+            ], 400);
         }
 
         // Handle the event
@@ -165,10 +169,14 @@ class PayController extends Controller
 
                 // ... handle other event types
             default:
-                return response()->noContent(400);
+                return response()->json([
+                    'message' => 'Invalid event'
+                ], 400);
         }
 
-        return response()->noContent(200);
+        return response()->json([
+            'message' => 'Webhook Successfully Processed'
+        ], 200);
     }
 
     public function review($id)
