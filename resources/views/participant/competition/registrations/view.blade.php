@@ -660,8 +660,10 @@
                                                             {{ $registration->summary ? $registration->summary->getLocality()->currency : '' }}{{ $extraFee->amount ?? '' }}
                                                         @endif
                                                     </td>
-                                                    <input type="hidden" name="price_id[]"
-                                                        value="{{ $extraFee->price_id }}">
+                                                    @if (!$currentChosenPackageFee->parent->fullPackage)
+                                                        <input type="hidden" name="price_id[]"
+                                                            value="{{ $extraFee->price_id }}">
+                                                    @endif
                                                 </tr>
                                             @endforeach
                                         @endif
@@ -684,8 +686,6 @@
                                                 <td class="table-light"></td>
                                                 <td>{{ $registration->summary->getLocality()->currency }}{{ $hotelRate->amount ?? '' }}
                                                 </td>
-                                                <input type="hidden" name="price_id[]"
-                                                    value="{{ $hotelRate->price_id }}">
                                             </tr>
                                         @endif
                                         <tr>

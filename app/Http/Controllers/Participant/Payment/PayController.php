@@ -67,7 +67,6 @@ class PayController extends Controller
 
         $bill = $this->getBillByCheckoutSessionId($request->session_id);
         $bill->status = 5;
-        $bill->setPaymentIntent();
         $bill->pay_complete_at = Carbon::now();
 
         $bill->save();
@@ -116,50 +115,52 @@ class PayController extends Controller
 
         // Handle the event
         switch ($event->type) {
-            case 'payment_intent.canceled':
-                $payment_intent = $event->data->object;
+            case 'checkout.session.completed':
+                $checkout_session = $event->data->object;
 
-                $bill = $this->getBillByPaymentIntentId($payment_intent->id);
-                if ($bill) {
-                    $bill->status = 4;
+                $bill = $this->getBillByCheckoutSessionId($checkout_session->id);
 
-                    $bill->save();
+                // Check if the order is paid (for example, from a card payment)
+                //
+                // A delayed notification payment will have an `unpaid` status, as
+                // you're still waiting for funds to be transferred from the customer's
+                // account.
+                if ($checkout_session->payment_status == 'paid' && $bill) {
+                    $this->paymentSucceed($bill);
                 }
 
                 break;
-            case 'payment_intent.payment_failed':
-                $payment_intent = $event->data->object;
 
-                $bill = $this->getBillByPaymentIntentId($payment_intent->id);
+            case 'checkout.session.async_payment_succeeded':
+                $checkout_session = $event->data->object;
+
+                $bill = $this->getBillByCheckoutSessionId($checkout_session->id);
+
+                // Fulfill the purchase
                 if ($bill) {
-                    $bill->status = 3;
-
-                    $bill->save();
+                    $this->paymentSucceed($bill);
                 }
+
                 break;
-            case 'payment_intent.succeeded':
-                $payment_intent = $event->data->object;
 
-                $bill = $this->getBillByPaymentIntentId($payment_intent->id);
+            case 'checkout.session.async_payment_failed':
+                $checkout_session = $event->data->object;
+
+                $bill = $this->getBillByCheckoutSessionId($checkout_session->id);
                 if ($bill) {
-                    $bill->status = 1;
-                    $bill->pay_confirm_at = Carbon::now();
-
-                    $pdf = PDF::loadView('pdf.payment.receipt', [
-                        'bill' => $bill,
-                        'checkoutSession' => Stripes::getCheckoutSession($bill->checkoutSession_id),
-                        'imageBase64' => 'data:image/png;base64, ' . base64_encode(file_get_contents(public_path('assets/favicon/android-chrome-512x512.png')))
-                    ]);
-                    $pdf->save($bill->getReceiptFilepath(), 'local');
-
-                    Mail::to($bill->summary->registration->participant->email)->send(new PaymentCompleted($bill));
-
-                    $bill->save();
-
-                    $registration = $bill->summary->registration;
-                    $registration->status_code = 'AR';
-                    $registration->save();
+                    $this->paymentFailed($bill);
                 }
+
+                break;
+
+            case 'checkout.session.expired':
+                $checkout_session = $event->data->object;
+
+                $bill = $this->getBillByCheckoutSessionId($checkout_session->id);
+                if ($bill) {
+                    $this->paymentFailed($bill);
+                }
+
                 break;
 
                 // ... handle other event types
