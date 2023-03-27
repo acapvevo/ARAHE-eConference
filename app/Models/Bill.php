@@ -35,9 +35,9 @@ class Bill extends Model
      * @var array
      */
     protected $casts = [
-        'pay_attempt_at' => 'date',
-        'pay_complete_at' => 'date',
-        'pay_confirm_at' => 'date',
+        'pay_attempt_at' => 'datetime',
+        'pay_complete_at' => 'datetime',
+        'pay_confirm_at' => 'datetime',
     ];
 
     /**
