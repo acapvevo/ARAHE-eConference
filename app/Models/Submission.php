@@ -43,8 +43,8 @@ class Submission extends Model
      * @var array
      */
     protected $casts = [
-        'submitDate' => 'date',
-        'acceptedDate' => 'date',
+        'submitDate' => 'datetime',
+        'acceptedDate' => 'datetime',
         'authors' => AsCollection::class,
         'coAuthors' => AsCollection::class,
     ];
@@ -91,6 +91,16 @@ class Submission extends Model
     public function setAcceptedDate()
     {
         $this->acceptedDate = Carbon::now();
+    }
+
+    public function getSubmitDate()
+    {
+        return $this->submitDate ? Carbon::parse($this->submitDate)->toRfc2822String() : '';
+    }
+
+    public function getAcceptedDate()
+    {
+        return $this->acceptedDate ? Carbon::parse($this->acceptedDate)->toRfc2822String() : '';
     }
 
     public function checkEnableSubmit()

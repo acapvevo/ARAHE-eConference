@@ -98,6 +98,10 @@
                             <td colspan="2">{{ $submission->getStatusDescription() }}</td>
                         </tr>
                         <tr>
+                            <th class='w-25'>Date Submitted</th>
+                            <td colspan="2" class="date">{{ $submission->getSubmitDate() }}</td>
+                        </tr>
+                        <tr>
                             <th class="text-center table-primary" colspan='3'>Review</th>
                         </tr>
                         <tr>
@@ -130,6 +134,10 @@
                             @else
                                 <td colspan="2"></td>
                             @endif
+                        </tr>
+                        <tr>
+                            <th class='w-25'>Date Accepted</th>
+                            <td colspan="2" class="date">{{ $submission->getAcceptedDate() }}</td>
                         </tr>
                         <tr>
                             <th class="text-center table-primary" colspan='3'>Participant</th>

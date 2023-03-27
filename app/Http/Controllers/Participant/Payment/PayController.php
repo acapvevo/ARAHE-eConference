@@ -6,6 +6,7 @@ use Stripe\Webhook;
 use App\Models\Bill;
 use App\Plugins\Stripes;
 use App\Traits\BillTrait;
+use Carbon\CarbonImmutable;
 use App\Traits\SummaryTrait;
 use Illuminate\Http\Request;
 use UnexpectedValueException;
@@ -50,9 +51,9 @@ class PayController extends Controller
             ];
         }
 
-        $bill->pay_attempt_at = Carbon::now();
+        $bill->pay_attempt_at = CarbonImmutable::now();
 
-        $checkoutSession = Stripes::createCheckoutSession($line_items, $summary, $bill->pay_attempt_at);
+        $checkoutSession = Stripes::createCheckoutSession($line_items, $summary, CarbonImmutable::now());
         $bill->checkoutSession_id = $checkoutSession->id;
 
         $bill->save();

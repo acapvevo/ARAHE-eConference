@@ -29,7 +29,7 @@
                                         href="{{ route('admin.submission.registration.view', ['id' => $registration->id]) }}">{{ $registration->participant->name }}</a>
                                 </td>
                                 <td>{{ $registration->code }}</td>
-                                <td>{{ strtoupper($registration->register_as) }}</td>
+                                <td>{{ $registration->getType()->name }}</td>
                                 <td>{{ $registration->getStatusLabel() }}</td>
                             </tr>
                         @endforeach
