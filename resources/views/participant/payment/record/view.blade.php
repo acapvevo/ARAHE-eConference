@@ -30,13 +30,21 @@
                         </tr>
                         <tr>
                             <th class="w-25">Status</th>
-                            <td>{{ $bill->getStatusPayment()->description }}</td>
+                            <td>
+                                @if ($bill->status == 2)
+                                    {{ $bill->getStatusPayment()->description }}
+                                    <strong>{{ $bill->getPayExpiredAt() }}</strong>
+                                @else
+                                    {{ $bill->getStatusPayment()->description }}
+                                @endif
+                            </td>
                         </tr>
                         <tr>
                             <th class="w-25">Receipt</th>
                             <td>
                                 @if ($bill->receipt)
-                                    <form action="{{route('participant.payment.record.receipt')}}" method="post" target="_blank">
+                                    <form action="{{ route('participant.payment.record.receipt') }}" method="post"
+                                        target="_blank">
                                         @csrf
 
                                         <button type="submit" class="btn btn-link" value="{{ $bill->id }}"

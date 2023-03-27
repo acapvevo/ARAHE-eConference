@@ -50,10 +50,11 @@ class PayController extends Controller
             ];
         }
 
-        $checkoutSession = Stripes::createCheckoutSession($line_items, $summary, $summary->getLocality());
-
-        $bill->checkoutSession_id = $checkoutSession->id;
         $bill->pay_attempt_at = Carbon::now();
+
+        $checkoutSession = Stripes::createCheckoutSession($line_items, $summary, $bill->pay_attempt_at);
+        $bill->checkoutSession_id = $checkoutSession->id;
+
         $bill->save();
 
         return redirect()->away($checkoutSession->url);
@@ -85,8 +86,7 @@ class PayController extends Controller
         ]);
 
         $bill = $this->getBillByCheckoutSessionId($request->session_id);
-        $bill->status = 4;
-        $bill->save();
+        $this->paymentCancelled($bill);
 
         return redirect(route('participant.competition.registration.view', ['form_id' => $bill->summary->registration->form->id]))->with('error', 'Your payment has been cancelled');
     }
@@ -162,7 +162,7 @@ class PayController extends Controller
 
                 $bill = $this->getBillByCheckoutSessionId($checkout_session->id);
                 if ($bill) {
-                    $this->paymentFailed($bill);
+                    $this->paymentExpired($bill);
                 }
 
                 break;

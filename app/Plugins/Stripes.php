@@ -4,6 +4,7 @@ namespace App\Plugins;
 
 use Stripe\Stripe;
 use Stripe\StripeClient;
+use Illuminate\Support\Carbon;
 use Stripe\Exception\InvalidRequestException;
 
 class Stripes
@@ -56,16 +57,19 @@ class Stripes
         return $price->id;
     }
 
-    static function createCheckoutSession($line_items, $summary, $locality)
+    static function createCheckoutSession($line_items, $summary, $pay_attempt_at)
     {
         $stripe = self::getClient();
 
+        $expires_at = $pay_attempt_at->addHours(3)->timestamp;
+
         return $stripe->checkout->sessions->create([
-            'payment_method_types' => json_decode($locality->payment_methods),
+            'payment_method_types' => json_decode($summary->getLocality()->payment_methods),
             'line_items' => $line_items,
             'mode' => 'payment',
             'success_url' => route('participant.payment.pay.success') . '?session_id={CHECKOUT_SESSION_ID}',
             'cancel_url' => route('participant.payment.pay.cancel') . '?session_id={CHECKOUT_SESSION_ID}',
+            'expires_at' => $expires_at,
             'metadata' => [
                 'summary_id' => $summary->id,
             ],
@@ -79,6 +83,16 @@ class Stripes
         return $stripe->checkout->sessions->retrieve(
             $session_id,
             ['expand' => ['payment_intent.payment_method']]
+        );
+    }
+
+    static function exprireCheckoutSession($session_id)
+    {
+        $stripe = self::getClient();
+
+        $stripe->checkout->sessions->expire(
+            $session_id,
+            []
         );
     }
 }

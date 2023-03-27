@@ -34,7 +34,14 @@
                         </tr>
                         <tr>
                             <th class="w-25">Status</th>
-                            <td>{{ $bill->getStatusPayment()->description }}</td>
+                            <td>
+                                @if ($bill->status == 2)
+                                    {{ $bill->getStatusPayment()->description }}
+                                    <strong>{{ $bill->getPayExpiredAt() }}</strong>
+                                @else
+                                    {{ $bill->getStatusPayment()->description }}
+                                @endif
+                            </td>
                         </tr>
                         <tr>
                             <th colspan="2" class="text-center">Stripe Infomation</th>

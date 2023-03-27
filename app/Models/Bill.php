@@ -34,7 +34,11 @@ class Bill extends Model
      *
      * @var array
      */
-    protected $casts = [];
+    protected $casts = [
+        'pay_attempt_at' => 'date',
+        'pay_complete_at' => 'date',
+        'pay_confirm_at' => 'date',
+    ];
 
     /**
      * Get the Summary that owns the Bill.
@@ -46,17 +50,22 @@ class Bill extends Model
 
     public function getPayAttemptAt()
     {
-        return Carbon::parse($this->pay_attempt_at)->translatedFormat('j F Y h:m:s A');
+        return $this->pay_attempt_at ? $this->pay_attempt_at->translatedFormat('j F Y h:m:s A') : '';
     }
 
     public function getPayCompleteAt()
     {
-        return Carbon::parse($this->pay_complete_at)->translatedFormat('j F Y h:m:s A');
+        return $this->pay_complete_at ? $this->pay_complete_at->translatedFormat('j F Y h:m:s A') : '';
     }
 
     public function getPayConfirmAt()
     {
-        return Carbon::parse($this->pay_confirm_at)->translatedFormat('j F Y h:m:s A');
+        return $this->pay_confirm_at ? $this->pay_confirm_at->translatedFormat('j F Y h:m:s A') : '';
+    }
+
+    public function getPayExpiredAt()
+    {
+        return Carbon::parse($this->pay_attempt_at)->addHours(3)->translatedFormat('h:m:s A on j F Y');
     }
 
     public function getPayConfirmAtMonth()
@@ -66,7 +75,7 @@ class Bill extends Model
 
     public function getTransactionDate()
     {
-        return Carbon::parse($this->pay_complete_at)->translatedFormat('j F Y');
+        return $this->pay_confirm_at ? $this->pay_confirm_at->translatedFormat('j F Y') : '';
     }
 
     public function getReceiptDate()
