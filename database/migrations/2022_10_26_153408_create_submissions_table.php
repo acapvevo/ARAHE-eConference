@@ -29,8 +29,8 @@ return new class extends Migration
             $table->json('coAuthors');
             $table->string('presenter');
 
-            $table->date('acceptedDate')->nullable();
-            $table->date('submitDate');
+            $table->timestamp('submitDate');
+            $table->timestamp('acceptedDate')->nullable();
 
             $table->integer('totalMark')->default(0);
             $table->text('comment')->nullable();

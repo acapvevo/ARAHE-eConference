@@ -31,6 +31,9 @@
 <script src="{{ asset('js/app.js') }}"></script>
 <script src="{{ asset('js/colors.js') }}"></script>
 <script src="https://code.iconify.design/iconify-icon/1.0.0-beta.3/iconify-icon.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.42/moment-timezone-with-data.js"></script>
+<script src="{{ asset('js/changeDateTime.js') }}"></script>
 @include('components.notification')
 @yield('scripts')
 </body>

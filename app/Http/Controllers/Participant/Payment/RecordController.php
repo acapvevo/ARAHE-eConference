@@ -24,6 +24,7 @@ class RecordController extends Controller
     public function view($id)
     {
         $bill = Bill::find($id);
+
         $checkoutSession = Stripes::getCheckoutSession($bill->checkoutSession_id);
 
         return view('participant.payment.record.view')->with([

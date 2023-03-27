@@ -65,4 +65,12 @@ trait BillTrait
 
         $bill->save();
     }
+
+    public function paymentCancelled($bill)
+    {
+        Stripes::exprireCheckoutSession($bill->checkoutSession_id);
+        $bill->status = 4;
+
+        $bill->save();
+    }
 }

@@ -6,6 +6,7 @@ use Stripe\Webhook;
 use App\Models\Bill;
 use App\Plugins\Stripes;
 use App\Traits\BillTrait;
+use Carbon\CarbonImmutable;
 use App\Traits\SummaryTrait;
 use Illuminate\Http\Request;
 use UnexpectedValueException;
@@ -50,10 +51,11 @@ class PayController extends Controller
             ];
         }
 
-        $checkoutSession = Stripes::createCheckoutSession($line_items, $summary, $summary->getLocality());
+        $bill->pay_attempt_at = CarbonImmutable::now();
 
+        $checkoutSession = Stripes::createCheckoutSession($line_items, $summary, CarbonImmutable::now());
         $bill->checkoutSession_id = $checkoutSession->id;
-        $bill->pay_attempt_at = Carbon::now();
+
         $bill->save();
 
         return redirect()->away($checkoutSession->url);
@@ -85,8 +87,7 @@ class PayController extends Controller
         ]);
 
         $bill = $this->getBillByCheckoutSessionId($request->session_id);
-        $bill->status = 4;
-        $bill->save();
+        $this->paymentCancelled($bill);
 
         return redirect(route('participant.competition.registration.view', ['form_id' => $bill->summary->registration->form->id]))->with('error', 'Your payment has been cancelled');
     }
@@ -162,7 +163,7 @@ class PayController extends Controller
 
                 $bill = $this->getBillByCheckoutSessionId($checkout_session->id);
                 if ($bill) {
-                    $this->paymentFailed($bill);
+                    $this->paymentExpired($bill);
                 }
 
                 break;
