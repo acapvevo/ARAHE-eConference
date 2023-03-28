@@ -9,7 +9,11 @@
             <li class="nav-item"><a
                     class="nav-link {{ request()->routeIs('reviewer.submission.review.*') ? 'active' : '' }}"
                     href="{{ route('reviewer.submission.review.list') }}"><i
-                        class="fas fa-file-signature"></i><span>Give Review</span></a></li>
+                        class="fa-solid fa-file-pen"></i></i><span>Give Review</span></a></li>
+            <li class="nav-item"><a
+                    class="nav-link {{ request()->routeIs('reviewer.submission.history.*') ? 'active' : '' }}"
+                    href="{{ route('reviewer.submission.history.list') }}"><i
+                        class="fa-solid fa-file-lines"></i><span>Review History</span></a></li>
             <li class="nav-item"><a
                     class="nav-link {{ request()->routeIs('reviewer.system.manual.*') ? 'active' : '' }}"
                     href="{{ route('reviewer.system.manual.view') }}"><i class="fas fa-book-reader"></i><span>User
