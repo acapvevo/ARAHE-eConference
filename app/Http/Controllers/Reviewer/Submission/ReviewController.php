@@ -25,7 +25,7 @@ class ReviewController extends Controller
         $user = Auth::guard('reviewer')->user();
 
         $submissions = $this->getSubmissionByReviewerID($user->id)->filter(function ($submission) use ($currentForm) {
-            return $submission->registration->form->id == $currentForm->id;
+            return $submission->registration->form->id == $currentForm->id && $submission->status_code !== "A";
         })->sort(function ($a, $b) {
             if ($a->status_code === "IR")
                 return 1;
@@ -52,11 +52,21 @@ class ReviewController extends Controller
 
     public function update(Request $request, $id)
     {
+        $submission = $this->getSubmission($id);
+        $form = $submission->registration->form;
+
         $request->validate([
-            'comment' => 'required_if:submit,save|nullable|string',
-            'rubrics' => 'array|required_if:submit,save',
-            'rubrics.*' => [
+            'comment' => 'required_if:submit,save|sometimes|string',
+            'rubrics' => [
+                'array',
                 'required_if:submit,save',
+                function ($attribute, $value, $fail) use ($form){
+                    if(count($value) !== $form->rubrics->count())
+                        $fail('Please complete the rubrics form');
+                }
+            ],
+            'rubrics.*' => [
+                'required',
                 'string',
                 'exists:scale,code',
                 function ($attribute, $value, $fail) {
@@ -75,7 +85,6 @@ class ReviewController extends Controller
             'submit' => 'required|string|in:save,reject,return'
         ]);
 
-        $submission = $this->getSubmission($id);
         $record = $this->getRecordByReviewerIdAndFormId($submission->reviewer_id, $submission->registration->form_id);
 
         if ($request->submit === 'reject') {
@@ -107,7 +116,7 @@ class ReviewController extends Controller
         }
 
         $totalMark = 0;
-        foreach ($request->rubrics as $id => $value) {
+        foreach ($request->rubrics as $id => $code) {
             if (Mark::where('rubric_id', $id)->where('submission_id', $submission->id)->exists())
                 $mark = Mark::where('rubric_id', $id)->where('submission_id', $submission->id)->first();
             else {
@@ -117,7 +126,7 @@ class ReviewController extends Controller
                 $mark->submission_id = $submission->id;
             }
 
-            $mark->scale_code = $value;
+            $mark->scale_code = $code;
             $mark->save();
 
             $totalMark += $mark->getScale()->mark;

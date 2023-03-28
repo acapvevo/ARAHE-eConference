@@ -5,17 +5,17 @@
 @endsection
 
 @section('content')
-    <h3 class="text-dark mb-1">Give Review - Submission List</h3>
+    <h3 class="text-dark mb-1">Paper - Paper List</h3>
 
     <div class="card">
-        <h4 class="card-header text-center">Submission for ARAHE{{ $form->session->year }}</h4>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered" id="table_id">
                     <thead class="table-primary">
                         <tr>
+                            <th>Year</th>
                             <th>Registration ID</th>
-                            <th>Name</th>
+                            <th>Participant</th>
                             <th>Title</th>
                             <th>Status</th>
                         </tr>
@@ -23,12 +23,13 @@
                     <tbody>
                         @foreach ($submissions as $submission)
                             <tr>
+                                <td>{{ $submission->registration->form->session->year }}</td>
                                 <td><a
-                                        href="{{ route('reviewer.submission.review.view', ['id' => $submission->id]) }}">{{ $submission->registration->code }}</a>
+                                        href="{{ route('reviewer.submission.history.view', ['id' => $submission->id]) }}">{{ $submission->registration->code }}</a>
                                 </td>
-                                <td>{{$submission->registration->participant->name}}</td>
-                                <td>{{$submission->title}}</td>
-                                <td>{{$submission->getStatusLabel()}}</td>
+                                <td>{{ $submission->registration->participant->name }}</td>
+                                <td>{{ $submission->title }}</td>
+                                <td>{{ $submission->getStatusLabel() }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -48,10 +49,12 @@
                 "order": [],
                 "autoWidth": false,
                 "columns": [{
-                        "width": "10%"
+                        "width": "5%"
+                    }, {
+                        "width": "5%"
                     }, {
                         "width": "20%"
-                    }, {
+                    },{
                         "width": "40%"
                     },{
                         "width": "10%"

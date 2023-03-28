@@ -122,6 +122,29 @@
                             <td colspan="2" class="date">{{ $submission->getSubmitDate() }}</td>
                         </tr>
                         <tr>
+                            <th class="text-center table-primary" colspan='3'>Participant</th>
+                        </tr>
+                        <tr>
+                            <th class='w-25'>Name</th>
+                            <td colspan="2">{{ $submission->registration->participant->name }}</td>
+                        </tr>
+                        <tr>
+                            <th class='w-25'>Email</th>
+                            <td colspan="2">{{ $submission->registration->participant->email }}</td>
+                        </tr>
+                        <tr>
+                            <th class='w-25'>Institution</th>
+                            <td colspan="2">{{ $submission->registration->participant->institution->name }}</td>
+                        </tr>
+                        <tr>
+                            <th class='w-25'>Faculty</th>
+                            <td colspan="2">{{ $submission->registration->participant->institution->faculty }}</td>
+                        </tr>
+                        <tr>
+                            <th class='w-25'>Department</th>
+                            <td colspan="2">{{ $submission->registration->participant->institution->department }}</td>
+                        </tr>
+                        <tr>
                             <th class="text-center table-primary" colspan='3'>Review</th>
                         </tr>
                         <tr>
@@ -180,18 +203,33 @@
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link active" id="rubric-tab" data-bs-toggle="tab"
                                     data-bs-target="#rubric-tab-pane" type="button" role="tab"
-                                    aria-controls="rubric-tab-pane" aria-selected="true">Rubric</button>
+                                    aria-controls="rubric-tab-pane" aria-selected="true">Rubric
+                                    @error('rubrics.*')
+                                        &nbsp;<span class="badge text-bg-danger">!</span>
+                                    @enderror
+                                    @error('rubrics')
+                                        &nbsp;<span class="badge text-bg-danger">!</span>
+                                    @enderror
+                                </button>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="comment-tab" data-bs-toggle="tab"
                                     data-bs-target="#comment-tab-pane" type="button" role="tab"
-                                    aria-controls="comment-tab-pane" aria-selected="false">Comment</button>
+                                    aria-controls="comment-tab-pane" aria-selected="false">Comment
+                                    @error('comment')
+                                        &nbsp;<span class="badge text-bg-danger">!</span>
+                                    @enderror
+                                </button>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="correction-tab" data-bs-toggle="tab"
                                     data-bs-target="#correction-tab-pane" type="button" role="tab"
                                     aria-controls="correction-tab-pane" aria-selected="false">Paper with
-                                    Correction</button>
+                                    Correction
+                                    @error('correction')
+                                        &nbsp;<span class="badge text-bg-danger">!</span>
+                                    @enderror
+                                </button>
                             </li>
                         </ul>
 
@@ -263,7 +301,8 @@
                                                     <div class="d-flex justify-content-end">
                                                         TOTAL SCORE
                                                     </div>
-                                                <td colspan="{{ $scales->count() }}" id="total">0/{{$totalMark}}</td>
+                                                <td colspan="{{ $scales->count() }}" id="total">
+                                                    0/{{ $totalMark }}</td>
                                                 </th>
                                             </tr>
                                         </tbody>
@@ -355,11 +394,13 @@
                 total += parseInt(chosenScale);
             }
 
-            const percentage = total/parseInt({{$totalMark}}) * 100;
-            if(percentage >= 80){
-                totalEl.innerHTML = total + '/{{$totalMark}} (' + percentage.toFixed(2) + '%) <span class="badge bg-success">Excellent</span>';
+            const percentage = total / parseInt({{ $totalMark }}) * 100;
+            if (percentage >= 80) {
+                totalEl.innerHTML = total + '/{{ $totalMark }} (' + percentage.toFixed(2) +
+                    '%) <span class="badge bg-success">Excellent</span>';
             } else {
-                totalEl.innerHTML = total + '/{{$totalMark}} (' + percentage.toFixed(2) + '%) <span class="badge bg-danger">Need Correction</span>';
+                totalEl.innerHTML = total + '/{{ $totalMark }} (' + percentage.toFixed(2) +
+                    '%) <span class="badge bg-danger">Need Correction</span>';
             }
         }
     </script>
