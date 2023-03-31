@@ -43,7 +43,7 @@ class ReviewController extends Controller
     {
         $submission = $this->getSubmission($id);
 
-        if($submission->reviewer_id !== Auth::guard('reviewer')->user()->id){
+        if(!$submission || $submission->reviewer_id !== Auth::guard('reviewer')->user()->id){
             return view('reviewer.submission.review.unauthorize');
         }
 
