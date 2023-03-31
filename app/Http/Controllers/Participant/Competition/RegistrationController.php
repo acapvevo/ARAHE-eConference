@@ -34,7 +34,6 @@ class RegistrationController extends Controller
 
     public function view($form_id)
     {
-        dd(!$this->formExists($form_id));
         if(!$this->formExists($form_id)){
             return redirect()->route('participant.competition.registration.list')->with('error', 'Registration Not Found');
         }

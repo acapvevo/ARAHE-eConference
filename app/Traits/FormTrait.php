@@ -42,7 +42,7 @@ trait FormTrait
 
     public function formExists($form_id)
     {
-        return Form::exists($form_id);
+        return Form::where('form_id', $form_id)->exists();
     }
 
     public function getCurrentForm()
