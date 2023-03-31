@@ -43,7 +43,9 @@ class ReviewController extends Controller
     {
         $submission = $this->getSubmission($id);
 
-        session(['submission_id' => $submission->id]);
+        if(!$submission || $submission->reviewer_id !== Auth::guard('reviewer')->user()->id){
+            return view('reviewer.submission.review.unauthorize');
+        }
 
         return view('reviewer.submission.review.view')->with([
             'submission' => $submission,
