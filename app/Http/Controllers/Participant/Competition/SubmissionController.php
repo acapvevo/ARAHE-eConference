@@ -33,7 +33,7 @@ class SubmissionController extends Controller
     {
         $registration = $this->getRegistration($registration_id);
 
-        if($registration->participant_id !== Auth::guard('participant')->user()->id){
+        if(!$registration || $registration->participant_id !== Auth::guard('participant')->user()->id){
             return view('participant.competition.submissions.unauthorize');
         }
 
