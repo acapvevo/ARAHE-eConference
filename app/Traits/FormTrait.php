@@ -40,6 +40,11 @@ trait FormTrait
         return $yearsAvailable;
     }
 
+    public function formExists($form_id)
+    {
+        return Form::exists($form_id);
+    }
+
     public function getCurrentForm()
     {
         $session = $this->getCurrentSession();

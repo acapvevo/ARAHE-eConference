@@ -28,6 +28,10 @@ class HistoryController extends Controller
     {
         $submission = $this->getSubmission($id);
 
+        if($submission->reviewer_id !== Auth::guard('reviewer')->user()->id){
+            return view('reviewer.submission.history.unauthorize');
+        }
+
         return view('reviewer.submission.history.view')->with([
             'submission' => $submission,
         ]);

@@ -132,7 +132,7 @@ Route::prefix('participant')->name('participant.')->group(function () {
                 Route::post('', [PayController::class, 'main'])->name('main');
                 Route::get('/success', [PayController::class, 'success'])->name('success');
                 Route::get('/cancel', [PayController::class, 'cancel'])->name('cancel');
-                Route::get('/review/{id}', [PayController::class, 'review'])->name('review');
+                // Route::get('/review/{id}', [PayController::class, 'review'])->name('review');
             });
 
             Route::prefix('record')->name('record.')->group(function () {

@@ -25,6 +25,10 @@ class RecordController extends Controller
     {
         $bill = Bill::find($id);
 
+        if($bill->summary->registration->participant_id !== Auth::guard('participant')->user()->id){
+            return view('participant.payment.record.unauthorize');
+        }
+
         $checkoutSession = Stripes::getCheckoutSession($bill->checkoutSession_id);
 
         return view('participant.payment.record.view')->with([

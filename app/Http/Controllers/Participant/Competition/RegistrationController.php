@@ -34,6 +34,10 @@ class RegistrationController extends Controller
 
     public function view($form_id)
     {
+        if($this->formExists($form_id)){
+            return redirect()->route('participant.competition.registration.list')->with('error', 'Registration Not Found');
+        }
+
         $participant = Auth::guard('participant')->user();
         $registrationQuery = Registration::with(['category.packages.fees', 'form.extras.fees'])->where('form_id', $form_id)->where('participant_id', $participant->id);
 
