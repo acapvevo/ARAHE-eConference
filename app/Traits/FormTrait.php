@@ -40,9 +40,9 @@ trait FormTrait
         return $yearsAvailable;
     }
 
-    public function formExists($form_id)
+    public function formExists($id)
     {
-        return Form::where('form_id', $form_id)->exists();
+        return Form::where('id', $id)->exists();
     }
 
     public function getCurrentForm()
