@@ -2,6 +2,7 @@
 
 @section('styles')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+    {!! htmlScriptTagJsApi() !!}
 @endsection
 
 @section('content')
@@ -123,7 +124,7 @@
                                 value="{{ old('institution.university') }}">
                             <datalist id="universityList">
                             </datalist>
-                            @error('university')
+                            @error('institution.university')
                                 <div class="invalid-feedback">
                                     {{ $message }}
                                 </div>
@@ -169,7 +170,7 @@
                             <div class="invalid-feedback" id="alert-error-phoneNumber" style="display: none;">
                             </div>
                             @error('contact.phoneNumber')
-                                <div class="invalid-feedback">
+                                <div class="invalid-feedback d-block">
                                     {{ $message }}
                                 </div>
                             @enderror
@@ -183,7 +184,7 @@
                             <div class="invalid-feedback" id="alert-error-faxNumber" style="display: none;">
                             </div>
                             @error('contact.faxNumber')
-                                <div class="invalid-feedback">
+                                <div class="invalid-feedback d-block">
                                     {{ $message }}
                                 </div>
                             @enderror
@@ -325,7 +326,18 @@
                             <div class="invalid-feedback" id="alert-error-emergency-phoneNumber" style="display: none;">
                             </div>
                             @error('emergency.phoneNumber')
-                                <div class="invalid-feedback">
+                                <div class="invalid-feedback d-block">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="pt-3 pb-3">
+                        <div class="mb-3 d-flex justify-content-center align-items-center">
+                            {!! htmlFormSnippet() !!}
+                            @error('g-recaptcha-response')
+                                <div class="invalid-feedback d-block">
                                     {{ $message }}
                                 </div>
                             @enderror

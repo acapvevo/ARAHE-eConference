@@ -75,6 +75,7 @@ class RegisteredUserController extends Controller
             'emergency.name' => 'required|string|max:255',
             'emergency.email' => 'required|string|email|max:255',
             'emergency.phoneNumber' => 'required|string|max:255',
+            'g-recaptcha-response' => 'recaptcha'
         ]);
 
         $participant = new Participant([
