@@ -1,6 +1,8 @@
 @extends('admin.layouts.app')
 
 @section('styles')
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 @endsection
 
 @section('content')
@@ -143,26 +145,51 @@
                         @csrf
                         @method('PATCH')
 
-                        <input type="hidden" name="timezone" id="timezone">
-
                         <div class="mb-3">
-                            <label for="pay_attempt_at" class="form-label">Payement Done Date and Time <small>(Payment done
-                                    by
-                                    participant based on the proof given)</small></label>
-                            <input type="datetime-local" class="form-control {{ $errors->has('pay_attempt_at') ? 'is-invalid' : '' }}"
-                                name="pay_attempt_at" id="pay_attempt_at" value="{{ old('pay_attempt_at') }}">
-                            @error('pay_attempt_at')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
+                            <label for="payment_attempt" class="form-label">Payment Done <small>(Payment done by participant
+                                    based on the proof given)</small></label>
+                            <div class="row" id="payment_attempt">
+                                <div class="col-md-4">
+                                    <label for="date" class="form-label">Date</label>
+                                    <input type="date"
+                                        class="form-control {{ $errors->has('date') ? 'is-invalid' : '' }}" name="date"
+                                        id="date" value="{{ old('date') }}">
+                                    @error('date')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
                                 </div>
-                            @enderror
+                                <div class="col-md-4">
+                                    <label for="time" class="form-label">Time</label>
+                                    <input type="time"
+                                        class="form-control {{ $errors->has('time') ? 'is-invalid' : '' }}"
+                                        name="time" id="time" value="{{ old('time') }}">
+                                    @error('time')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="timezone" class="form-label">Timezone</label>
+                                    <select class="form-select {{ $errors->has('timezone') ? 'is-invalid' : '' }}"
+                                        name="timezone" id="timezone">
+                                    </select>
+                                    @error('timezone')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
                         </div>
 
                         <div class="mb-3">
                             <label for="proof" class="form-label">Payment Proof <small>(File: PDF, JPG, JPEG, PNG only
                                     Max Size: 2MB)</small></label>
-                            <input class="form-control {{ $errors->has('proof') ? 'is-invalid' : '' }}" type="file" id="proof"
-                                name="proof">
+                            <input class="form-control {{ $errors->has('proof') ? 'is-invalid' : '' }}" type="file"
+                                id="proof" name="proof">
                             @error('proof')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -182,13 +209,33 @@
 @endsection
 
 @section('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
-        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const updateProofModalEl = document.getElementById('updateProofModal')
         const timezoneInput = document.getElementById('timezone');
+        const timezoneList = moment.tz.names();
 
-        timezoneInput.value = timezone;
+        updateProofModalEl.addEventListener('shown.bs.modal', function(event) {
+            timezoneList.forEach(timezone => {
+                const offset = moment().tz(timezone).format('Z');
 
-        @if ($errors->has('proof') || $errors->has('pay_attempt_at'))
+                if (timezone !== 'Asia/Kuala_Lumpur') {
+                    var option = new Option(timezone + ' (GMT ' + offset + ')', timezone);
+                } else {
+                    var option = new Option(timezone + ' (GMT ' + offset + ')', timezone, false, true);
+                }
+
+                timezoneInput.appendChild(option);
+            });
+
+            $('#timezone').select2({
+                dropdownParent: $('#updateProofModal'),
+                theme: 'bootstrap-5',
+                placeholder: 'Select Timezone',
+            });
+        })
+
+        @if ($errors->has('proof') || $errors->has('date') || $errors->has('time') || $errors->has('timezone'))
             const updateProofModal = new bootstrap.Modal('#updateProofModal');
             updateProofModal.show();
         @endif

@@ -47,7 +47,8 @@ class RegistrationController extends Controller
     {
         $request->validate([
             'decision' => 'required|in:DR,UR,RR,UP',
-            'pay_attempt_at' => 'required_if:decision,UP|date_format:Y-m-d\TH:i|before_or_equal:tomorrow',
+            'date' => 'required_if:decision,UP|date|before_or_equal:tomorrow',
+            'time' => 'required_if:decision,UP|date_format:H:i',
             'timezone' => 'required_if:decision,UP|timezone',
             'proof' => 'required_if:decision,UP|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
@@ -58,7 +59,7 @@ class RegistrationController extends Controller
             $bill = $this->createBill();
 
             $bill->summary_id = $registration->summary->id;
-            $bill->pay_attempt_at = Carbon::parse($request->pay_attempt_at, $request->timezone)->setTimezone('UTC');
+            $bill->pay_attempt_at = Carbon::createFromFormat('Y-m-d H:i', $request->date . $request->time, $request->timezone)->setTimezone('UTC');
             $bill->pay_complete_at = $bill->pay_attempt_at;
             $bill->saveProof($request->file('proof'));
 
