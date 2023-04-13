@@ -30,6 +30,12 @@ class AddTimezoneColumnToUsersTable extends Migration
                 $table->string('timezone')->after('remember_token')->nullable();
             });
         }
+
+        if (!Schema::hasColumn('bills', 'proof')) {
+            Schema::table('bills', function (Blueprint $table) {
+                $table->string('proof')->nullable();
+            });
+        }
     }
 
     /**
