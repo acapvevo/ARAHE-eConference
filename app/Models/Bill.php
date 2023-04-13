@@ -105,7 +105,7 @@ class Bill extends Model
         if ($this->checkoutSession_id) {
             $checkoutSession = Stripes::getCheckoutSession($this->checkoutSession_id);
 
-            return strtoupper($checkoutSession->payment_intent->payment_method->type);
+            return strtoupper($checkoutSession->payment_intent->payment_method->type ?? '');
         } else {
             return "MANUAL";
         }
