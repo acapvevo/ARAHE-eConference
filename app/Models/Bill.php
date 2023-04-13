@@ -50,6 +50,11 @@ class Bill extends Model
         return $this->belongsTo(Summary::class);
     }
 
+    public function getCurrency()
+    {
+        return $this->summary->getLocality()->currency;
+    }
+
     public function getPayAttemptAt()
     {
         return $this->pay_attempt_at ? Timezone::convertToLocal($this->pay_attempt_at) : '';

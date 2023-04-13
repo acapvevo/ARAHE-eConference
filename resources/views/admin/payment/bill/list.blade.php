@@ -28,7 +28,7 @@
                                 </td>
                                 <td>{{ $bill->getPayAttemptAt() }}</td>
                                 <td>{{ $bill->getPayCompleteAt() }}</td>
-                                <td>RM {{ number_format($bill->summary->total, 2) }}</td>
+                                <td>{{ $bill->getCurrency() }} {{ number_format($bill->summary->total, 2) }}</td>
                                 <td>{{ $bill->getStatusPayment()->label }}</td>
                             </tr>
                         @endforeach

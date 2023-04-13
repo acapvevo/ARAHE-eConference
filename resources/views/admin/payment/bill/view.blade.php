@@ -29,7 +29,7 @@
                         </tr>
                         <tr>
                             <th class="w-25">Amount Paid</th>
-                            <td>{{ $bill->summary->getLocality()->currency }} {{ number_format($bill->summary->total, 2) }}
+                            <td>{{ $bill->getCurrency() }} {{ number_format($bill->summary->total, 2) }}
                             </td>
                         </tr>
                         <tr>
