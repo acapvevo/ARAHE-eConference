@@ -8,6 +8,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use JamesMills\LaravelTimezone\Facades\Timezone;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Bill extends Model
@@ -26,6 +27,7 @@ class Bill extends Model
         'pay_attempt_at',
         'pay_complete_at',
         'pay_confirm_at',
+        'proof',
         'status'
     ];
 
@@ -50,17 +52,17 @@ class Bill extends Model
 
     public function getPayAttemptAt()
     {
-        return $this->pay_attempt_at ? Carbon::parse($this->pay_attempt_at)->toRfc2822String() : '';
+        return $this->pay_attempt_at ? Timezone::convertToLocal($this->pay_attempt_at) : '';
     }
 
     public function getPayCompleteAt()
     {
-        return $this->pay_complete_at ? Carbon::parse($this->pay_complete_at)->toRfc2822String() : '';
+        return $this->pay_complete_at ? Timezone::convertToLocal($this->pay_complete_at) : '';
     }
 
     public function getPayConfirmAt()
     {
-        return $this->pay_confirm_at ? Carbon::parse($this->pay_confirm_at)->toRfc2822String() : '';
+        return $this->pay_confirm_at ? Timezone::convertToLocal($this->pay_confirm_at) : '';
     }
 
     public function getPayExpiredAt()
@@ -95,15 +97,34 @@ class Bill extends Model
 
     public function getPaymentMethod()
     {
-        $checkoutSession = Stripes::getCheckoutSession($this->checkoutSession_id);
+        if ($this->checkoutSession_id) {
+            $checkoutSession = Stripes::getCheckoutSession($this->checkoutSession_id);
 
-        return strtoupper($checkoutSession->payment_intent->payment_method->type);
+            return strtoupper($checkoutSession->payment_intent->payment_method->type);
+        } else {
+            return "MANUAL";
+        }
     }
 
     public function setPaymentIntent()
     {
         $checkout_session = Stripes::getCheckoutSession($this->checkoutSession_id);
         $this->payment_intent_id = $checkout_session->payment_intent->id;
+    }
+
+    public function saveProof($proofFile)
+    {
+        $fileName = str_replace('-', '_', '[PROOF]_' . $this->summary->registration->code . '.' . $proofFile->getClientOriginalExtension());
+        $proofFile->storeAs('ARAHE' . $this->summary->registration->form->session->year . '/proof', $fileName);
+
+        $this->proof = $fileName;
+    }
+
+    public function downloadProof()
+    {
+        $filePath = 'ARAHE' . $this->summary->registration->form->session->year . '/proof/' . $this->proof;
+
+        return Storage::response($filePath);
     }
 
     public function getReceiptFilepath()

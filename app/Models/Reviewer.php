@@ -23,6 +23,7 @@ class Reviewer extends Authenticatable
         'email',
         'password',
         'login_at',
+        'timezone',
     ];
 
     /**

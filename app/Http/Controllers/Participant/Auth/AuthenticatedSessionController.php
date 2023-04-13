@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Participant\Auth;
 
+use App\Plugins\Timezone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Torann\GeoIP\Facades\GeoIP;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Participant\Auth\LoginRequest;
@@ -34,6 +36,7 @@ class AuthenticatedSessionController extends Controller
 
         $user = Auth::guard('participant')->user();
         $user->login_at = Carbon::now();
+        $user->timezone = Timezone::getTimezone($request->ip()) ?? 'Asia/Kuala_Lumpur';
         $user->save();
 
         return redirect(route('participant.dashboard'));

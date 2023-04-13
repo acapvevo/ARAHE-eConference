@@ -23,6 +23,13 @@
                         <button class="btn btn-danger" type="submit" value="RR" name="decision">Reject</button>
                     </form>
                 </div>
+            @elseif ($registration->status_code === 'PR')
+                <div class="pt-3 pb-3 d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#updateProofModal">
+                        Update Payment
+                    </button>
+                </div>
             @endif
             <div class="table-responsive">
                 <table class="table table-bordered">
@@ -122,7 +129,68 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="updateProofModal" tabindex="-1" aria-labelledby="updateProofModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateProofModalLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('admin.submission.registration.update', ['id' => $registration->id]) }}"
+                        method="post" id="updateProof" enctype="multipart/form-data">
+                        @csrf
+                        @method('PATCH')
+
+                        <input type="hidden" name="timezone" id="timezone">
+
+                        <div class="mb-3">
+                            <label for="pay_attempt_at" class="form-label">Payement Done Date and Time <small>(Payment done
+                                    by
+                                    participant based on the proof given)</small></label>
+                            <input type="datetime-local" class="form-control {{ $errors->has('pay_attempt_at') ? 'is-invalid' : '' }}"
+                                name="pay_attempt_at" id="pay_attempt_at" value="{{ old('pay_attempt_at') }}">
+                            @error('pay_attempt_at')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="proof" class="form-label">Payment Proof <small>(File: PDF, JPG, JPEG, PNG only
+                                    Max Size: 2MB)</small></label>
+                            <input class="form-control {{ $errors->has('proof') ? 'is-invalid' : '' }}" type="file" id="proof"
+                                name="proof">
+                            @error('proof')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" form="updateProof" name="decision"
+                        value="UP">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
+    <script>
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const timezoneInput = document.getElementById('timezone');
+
+        timezoneInput.value = timezone;
+
+        @if ($errors->has('proof') || $errors->has('pay_attempt_at'))
+            const updateProofModal = new bootstrap.Modal('#updateProofModal');
+            updateProofModal.show();
+        @endif
+    </script>
 @endsection

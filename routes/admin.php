@@ -109,7 +109,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::get('', [PictureController::class, 'show'])->name('show');
             });
         });
-        
+
         Route::prefix('competition')->name('competition.')->group(function () {
             Route::prefix('form')->name('form.')->group(function () {
                 Route::get('', [FormController::class, 'list'])->name('list');
@@ -195,6 +195,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::prefix('bill')->name('bill.')->group(function () {
                 Route::get('', [BillController::class, 'list'])->name('list');
                 Route::get('/{id}', [BillController::class, 'view'])->name('view');
+                Route::post('/download', [BillController::class, 'download'])->name('download');
             });
         });
 

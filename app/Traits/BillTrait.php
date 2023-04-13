@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\Mail;
 
 trait BillTrait
 {
+    public function createBill()
+    {
+        return new Bill;
+    }
+
     public function getBill($id)
     {
         return Bill::find($id);
@@ -38,7 +43,6 @@ trait BillTrait
 
         $pdf = PDF::loadView('pdf.payment.receipt', [
             'bill' => $bill,
-            'checkoutSession' => Stripes::getCheckoutSession($bill->checkoutSession_id),
             'imageBase64' => 'data:image/png;base64, ' . base64_encode(file_get_contents(public_path('assets/favicon/android-chrome-512x512.png')))
         ]);
         $pdf->save($bill->getReceiptFilepath(), 'local');

@@ -125,7 +125,7 @@
                         </tr>
                         <tr>
                             <th class='w-25'>Date Submitted</th>
-                            <td colspan="2" class="date">{{ $submission->getSubmitDate() }}</td>
+                            <td colspan="2">{{ $submission->getSubmitDate() }}</td>
                         </tr>
                         <tr>
                             <th class="text-center" colspan='3'>Review</th>
@@ -163,7 +163,7 @@
                         </tr>
                         <tr>
                             <th class='w-25'>Date Accepted</th>
-                            <td colspan="2" class="date">{{ $submission->getAcceptedDate() }}</td>
+                            <td colspan="2">{{ $submission->getAcceptedDate() }}</td>
                         </tr>
                     </tbody>
                 </table>

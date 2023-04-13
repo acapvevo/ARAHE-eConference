@@ -25,6 +25,7 @@ class Participant extends Authenticatable
         'date_of_birth',
         'email',
         'image',
+        'timezone',
         'password',
         'login_at'
     ];

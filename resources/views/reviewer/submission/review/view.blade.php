@@ -119,7 +119,7 @@
                         </tr>
                         <tr>
                             <th class='w-25'>Date Submitted</th>
-                            <td colspan="2" class="date">{{ $submission->getSubmitDate() }}</td>
+                            <td colspan="2">{{ $submission->getSubmitDate() }}</td>
                         </tr>
                         <tr>
                             <th class="text-center table-primary" colspan='3'>Participant</th>

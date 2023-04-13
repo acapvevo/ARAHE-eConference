@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Participant\Auth;
 use App\Models\Address;
 use App\Models\Contact;
 use App\Models\Emergency;
+use App\Plugins\Timezone;
 use App\Rules\CheckState;
 use App\Models\Institution;
 use App\Models\Participant;
@@ -85,6 +86,7 @@ class RegisteredUserController extends Controller
             'email' => $request->account['email'],
             'password' => Hash::make($request->account['password']),
             'login_at' => Carbon::now(),
+            'timezone' => Timezone::getTimezone($request->ip()) ?? 'Asia/Kuala_Lumpur',
         ]);
 
         $participant->save();

@@ -12,6 +12,7 @@
         "fruitcake/laravel-cors": "^3.0",
         "guzzlehttp/guzzle": "^7.2",
         "intervention/image": "^2.7",
+        "jamesmills/laravel-timezone": "^1.13",
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
         "laravel/socialite": "^5.5",
@@ -25,7 +26,8 @@
         "spatie/laravel-health": "^1.15",
         "spatie/laravel-searchable": "^1.11",
         "spatie/laravel-validation-rules": "^3.2",
-        "stripe/stripe-php": "^10.7"
+        "stripe/stripe-php": "^10.7",
+        "torann/geoip": "^3.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",

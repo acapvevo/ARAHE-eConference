@@ -22,6 +22,7 @@ class Admin extends Authenticatable
         'image',
         'password',
         'login_at',
+        'timezone',
     ];
 
     /**
