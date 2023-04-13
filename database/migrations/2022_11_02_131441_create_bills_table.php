@@ -24,6 +24,7 @@ return new class extends Migration
             $table->timestamp('pay_confirm_at')->nullable();
             $table->integer('status')->default(2);
             $table->string('receipt')->nullable();
+            $table->string('proof')->nullable();
 
             $table->timestamps();
         });

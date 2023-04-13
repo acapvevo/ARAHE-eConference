@@ -25,7 +25,7 @@
                                 <td><a href="{{route('participant.competition.submission.view', ['registration_id' => $registration->id])}}">{{ $registration->code }}</a></td>
                                 <td>{{isset($registration->submission->title) ? $registration->submission->title : 'No Submission'}}</td>
                                 <td>{{isset($registration->submission->status_code) ? $registration->submission->getStatusLabel() : 'No Submission'}}</td>
-                                <td class="date">{{isset($registration->submission->acceptedDate) ? $registration->submission->setAcceptedDate() : ''}}</td>
+                                <td>{{isset($registration->submission->acceptedDate) ? $registration->submission->setAcceptedDate() : ''}}</td>
                             </tr>
                         @endforeach
                     </tbody>

@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers\Admin\Submission;
 
+use App\Traits\BillTrait;
 use App\Traits\FormTrait;
+use App\Models\Registration;
 use Illuminate\Http\Request;
 use App\Traits\ReviewerTrait;
+use Illuminate\Support\Carbon;
 use App\Traits\SubmissionTrait;
-use App\Http\Controllers\Controller;
 use App\Mail\RegistrationCompleted;
-use App\Models\Registration;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
 
 class RegistrationController extends Controller
 {
-    use FormTrait, SubmissionTrait, ReviewerTrait;
+    use FormTrait, SubmissionTrait, ReviewerTrait, BillTrait;
 
     public function list()
     {
@@ -44,18 +46,37 @@ class RegistrationController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'decision' => 'required|in:DR,UR,RR'
+            'decision' => 'required|in:DR,UR,RR,UP',
+            'date' => 'required_if:decision,UP|date|before_or_equal:tomorrow',
+            'time' => 'required_if:decision,UP|date_format:H:i',
+            'timezone' => 'required_if:decision,UP|timezone',
+            'proof' => 'required_if:decision,UP|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
 
         $registration = Registration::find($id);
 
-        $registration->status_code = $request->decision;
+        if ($request->decision === 'UP' && $registration->summary) {
+            $bill = $this->createBill();
 
-        Mail::to($registration->participant->email)->send(new RegistrationCompleted($registration));
+            $bill->summary_id = $registration->summary->id;
+            $bill->pay_attempt_at = Carbon::createFromFormat('Y-m-d H:i', $request->date . $request->time, $request->timezone)->setTimezone('UTC');
+            $bill->pay_complete_at = $bill->pay_attempt_at;
+            $bill->saveProof($request->file('proof'));
 
-        $registration->save();
+            $this->paymentSucceed($bill);
 
-        return redirect(route('admin.submission.registration.view', ['id' => $registration->id]))->with('success', 'Registration status for ' . $registration->code . ' has been updated');
+            $message = "Payment for Registration " . $registration->code . ' has been updated';
+        } else {
+            $registration->status_code = $request->decision;
+
+            Mail::to($registration->participant->email)->send(new RegistrationCompleted($registration));
+
+            $registration->save();
+
+            $message = 'Registration status for ' . $registration->code . ' has been updated';
+        }
+
+        return redirect(route('admin.submission.registration.view', ['id' => $registration->id]))->with('success', $message);
     }
 
     public function download(Request $request)

@@ -17,61 +17,73 @@
                         </tr>
                         <tr>
                             <th class="w-25">Date Attempt</th>
-                            <td class="date">{{ $bill->getPayAttemptAt() }}</td>
+                            <td>{{ $bill->getPayAttemptAt() }}</td>
                         </tr>
                         <tr>
                             <th class="w-25">Date Complete</th>
-                            <td class="date">{{ $bill->getPayCompleteAt() }}</td>
+                            <td>{{ $bill->getPayCompleteAt() }}</td>
                         </tr>
                         <tr>
                             <th class="w-25">Amount Paid</th>
-                            <td>{{ $bill->summary->getLocality()->currency }} {{ number_format($bill->summary->total, 2) }}
+                            <td>{{ $bill->getCurrency() }} {{ number_format($bill->summary->total, 2) }}
                             </td>
                         </tr>
                         <tr>
-                            <th class="w-25">Status</th>
-                            <td>
-                                @if ($bill->status == 2)
-                                    {{ $bill->getStatusPayment()->description }}
-                                    <strong class="date">{{ $bill->getPayExpiredAt() }}</strong>
-                                @else
-                                    {{ $bill->getStatusPayment()->description }}
-                                @endif
+                            <th class="w-25">Method</th>
+                            <td>{{ $bill->getPaymentMethod() }}
                             </td>
                         </tr>
                         <tr>
                             <th class="w-25">Receipt</th>
                             <td>
                                 @if ($bill->receipt)
-                                    <form action="{{ route('participant.payment.record.receipt') }}" method="post"
-                                        target="_blank">
+                                    <form action="{{ route('participant.payment.record.download') }}" method="post">
                                         @csrf
-
-                                        <button type="submit" class="btn btn-link" value="{{ $bill->id }}"
-                                            name="bill_id">{{ $bill->receipt }}</button>
+                                        <input type="hidden" name="id" value="{{ $bill->id }}">
+                                        <button type="submit" class="btn btn-link" name="attribute" value="receipt"
+                                            formtarget="_blank">{{ $bill->receipt }}</button>
                                     </form>
                                 @endif
                             </td>
                         </tr>
+                        @if ($bill->proof)
+                            <tr>
+                                <th class="w-25">Payment Proof</th>
+                                <td>
+                                    <form action="{{ route('participant.payment.record.download') }}" method="post">
+                                        @csrf
+                                        <input type="hidden" name="id" value="{{ $bill->id }}">
+                                        <button type="submit" class="btn btn-link" name="attribute" value="proof"
+                                            formtarget="_blank">{{ $bill->proof }}</button>
+                                    </form>
+                                </td>
+                                </td>
+                            </tr>
+                        @endif
                         <tr>
-                            <th colspan="2" class="text-center">Stripe Infomation</th>
+                            <th class="w-25">Status</th>
+                            <td>
+                                @if ($bill->status == 2)
+                                    {{ $bill->getStatusPayment()->description }}
+                                    <strong>{{ $bill->getPayExpiredAt() }}</strong>
+                                @else
+                                    {{ $bill->getStatusPayment()->description }}
+                                @endif
+                            </td>
                         </tr>
-                        <tr>
-                            <th class="w-25">Bill Status</th>
-                            <td>{{ strtoupper($checkoutSession->status ?? '') }}</td>
-                        </tr>
-                        <tr>
-                            <th class="w-25">Payment Status</th>
-                            <td>{{ strtoupper($checkoutSession->payment_status ?? '') }}</td>
-                        </tr>
-                        <tr>
-                            <th class="w-25">Payment Method</th>
-                            <td>{{ strtoupper($checkoutSession->payment_intent->payment_method->type ?? '') }}</td>
-                        </tr>
-                        <tr>
-                            <th class="w-25">Payment Link</th>
-                            <td>{!! $checkoutSession->url ? '<a href="' . $checkoutSession->url . '" target="_blank">Payment URL</a>' : '' !!}</td>
-                        </tr>
+                        @if ($bill->checkoutSession_id)
+                            <tr>
+                                <th colspan="2" class="text-center">Stripe Infomation</th>
+                            </tr>
+                            <tr>
+                                <th class="w-25">Bill Status</th>
+                                <td>{{ strtoupper($checkoutSession->status ?? '') }}</td>
+                            </tr>
+                            <tr>
+                                <th class="w-25">Payment Status</th>
+                                <td>{{ strtoupper($checkoutSession->payment_status ?? '') }}</td>
+                            </tr>
+                        @endif
                     </tbody>
                 </table>
             </div>

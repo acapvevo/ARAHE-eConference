@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Admin\Auth;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Torann\GeoIP\Facades\GeoIP;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Admin\Auth\LoginRequest;
+use App\Plugins\Timezone;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -30,10 +32,11 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
-        // $request->session()->regenerate();
+        $request->session()->regenerate();
 
         $user = Auth::guard('admin')->user();
         $user->login_at = Carbon::now();
+        $user->timezone = Timezone::getTimezone($request->ip()) ?? 'Asia/Kuala_Lumpur';
         $user->save();
 
         return redirect(route('admin.dashboard'));

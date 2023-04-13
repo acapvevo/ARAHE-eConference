@@ -78,12 +78,16 @@ class Stripes
 
     static function getCheckoutSession($session_id)
     {
-        $stripe = self::getClient();
+        if ($session_id) {
+            $stripe = self::getClient();
 
-        return $stripe->checkout->sessions->retrieve(
-            $session_id,
-            ['expand' => ['payment_intent.payment_method']]
-        );
+            return $stripe->checkout->sessions->retrieve(
+                $session_id,
+                ['expand' => ['payment_intent.payment_method']]
+            );
+        } else {
+            return null;
+        }
     }
 
     static function exprireCheckoutSession($session_id)

@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use JamesMills\LaravelTimezone\Facades\Timezone;
+use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Submission extends Model
@@ -95,12 +96,12 @@ class Submission extends Model
 
     public function getSubmitDate()
     {
-        return $this->submitDate ? Carbon::parse($this->submitDate)->toRfc2822String() : '';
+        return $this->submitDate ? Timezone::convertToLocal($this->submitDate) : '';
     }
 
     public function getAcceptedDate()
     {
-        return $this->acceptedDate ? Carbon::parse($this->acceptedDate)->toRfc2822String() : '';
+        return $this->acceptedDate ? Timezone::convertToLocal($this->acceptedDate) : '';
     }
 
     public function checkEnableSubmit()

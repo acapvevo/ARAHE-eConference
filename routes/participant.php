@@ -138,7 +138,7 @@ Route::prefix('participant')->name('participant.')->group(function () {
             Route::prefix('record')->name('record.')->group(function () {
                 Route::get('', [RecordController::class, 'list'])->name('list');
                 Route::get('/{id}', [RecordController::class, 'view'])->name('view');
-                Route::post('/receipt', [RecordController::class, 'receipt'])->name('receipt');
+                Route::post('/download', [RecordController::class, 'download'])->name('download');
             });
         });
 

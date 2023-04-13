@@ -29,4 +29,31 @@ class BillController extends Controller
             'checkoutSession' => $checkoutSession,
         ]);
     }
+
+    public function download(Request $request)
+    {
+        $request->validate([
+            'id' => [
+                'integer',
+                'required',
+                'exists:bills,id'
+            ],
+            'attribute' => 'required|string|in:proof,receipt'
+        ]);
+
+        $bill = Bill::find($request->id);
+
+        switch ($request->attribute) {
+            case 'proof':
+                return $bill->downloadProof();
+                break;
+
+            case 'receipt':
+                return $bill->downloadReceipt();
+                break;
+
+            default:
+                return redirect(route('admin.payment.bill.view', ['id' => $bill->id]))->with('error', 'Request cannot processed');
+        }
+    }
 }
