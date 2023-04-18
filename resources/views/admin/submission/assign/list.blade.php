@@ -22,10 +22,10 @@
                     <tbody>
                         @foreach ($registrations as $registration)
                             <tr>
-                                <td style="width:50%"><a
-                                        href="{{ route('admin.submission.assign.view', ['id' => $registration->submission->id]) }}">{{ $registration->participant->name }}</a>
+                                <td><a
+                                        href="{{ route('admin.submission.assign.view', ['id' => $registration->submission->id]) }}">{{ $registration->code }}</a>
                                 </td>
-                                <td>{{$registration->code}}</td>
+                                <td>{{$registration->participant->name}}</td>
                                 <td>{{$registration->submission->title}}</td>
                             </tr>
                         @endforeach
