@@ -68,13 +68,13 @@ class PayController extends Controller
         ]);
 
         $bill = $this->getBillByCheckoutSessionId($request->session_id);
-        $bill->status = 5;
+        $bill->status = 1;
         $bill->pay_complete_at = Carbon::now();
 
         $bill->save();
 
         $registration = $bill->summary->registration;
-        $registration->status_code = 'PW';
+        $registration->status_code = 'AR';
         $registration->save();
 
         return redirect(route('participant.competition.registration.view', ['form_id' => $bill->summary->registration->form->id]))->with('success', 'Your payment successfully completed. See you at the conference');
@@ -133,6 +133,7 @@ class PayController extends Controller
                 if ($checkout_session->payment_status == 'paid' && $bill) {
                     $this->paymentSucceed($bill);
                 }
+                $status = 'payment successful';
 
                 break;
 
@@ -145,6 +146,7 @@ class PayController extends Controller
                 if ($bill) {
                     $this->paymentSucceed($bill);
                 }
+                $status = 'payment successful';
 
                 break;
 
@@ -155,6 +157,7 @@ class PayController extends Controller
                 if ($bill) {
                     $this->paymentFailed($bill);
                 }
+                $status = 'payment failed';
 
                 break;
 
@@ -165,6 +168,7 @@ class PayController extends Controller
                 if ($bill) {
                     $this->paymentExpired($bill);
                 }
+                $status = 'payment expired';
 
                 break;
 
@@ -176,7 +180,8 @@ class PayController extends Controller
         }
 
         return response()->json([
-            'message' => 'Webhook Successfully Processed'
+            'message' => 'Webhook Successfully Processed',
+            'status' => $status
         ], 200);
     }
 

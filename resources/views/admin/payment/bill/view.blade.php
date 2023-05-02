@@ -16,7 +16,7 @@
                             <td>{{ $bill->summary->registration->code }}</td>
                         </tr>
                         <tr>
-                            <th class="w-25">Registration ID</th>
+                            <th class="w-25">Name</th>
                             <td>{{ $bill->summary->registration->participant->name }}</td>
                         </tr>
                         <tr>
