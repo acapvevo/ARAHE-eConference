@@ -133,6 +133,7 @@ class PayController extends Controller
                 if ($checkout_session->payment_status == 'paid' && $bill) {
                     $this->paymentSucceed($bill);
                 }
+                $status = 'payment successful';
 
                 break;
 
@@ -145,6 +146,7 @@ class PayController extends Controller
                 if ($bill) {
                     $this->paymentSucceed($bill);
                 }
+                $status = 'payment successful';
 
                 break;
 
@@ -155,6 +157,7 @@ class PayController extends Controller
                 if ($bill) {
                     $this->paymentFailed($bill);
                 }
+                $status = 'payment failed';
 
                 break;
 
@@ -165,6 +168,7 @@ class PayController extends Controller
                 if ($bill) {
                     $this->paymentExpired($bill);
                 }
+                $status = 'payment expired';
 
                 break;
 
@@ -176,7 +180,8 @@ class PayController extends Controller
         }
 
         return response()->json([
-            'message' => 'Webhook Successfully Processed'
+            'message' => 'Webhook Successfully Processed',
+            'status' => $status
         ], 200);
     }
 
