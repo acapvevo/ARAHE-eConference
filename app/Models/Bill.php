@@ -8,12 +8,23 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use OwenIt\Auditing\Contracts\Auditable;
 use JamesMills\LaravelTimezone\Facades\Timezone;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Bill extends Model
+class Bill extends Model implements Auditable
 {
     use HasFactory;
+    use \OwenIt\Auditing\Auditable;
+
+    /**
+     * Attributes to include in the Audit.
+     *
+     * @var array
+     */
+    protected $auditInclude = [
+        'status',
+    ];
 
     /**
      * The attributes that are mass assignable.
