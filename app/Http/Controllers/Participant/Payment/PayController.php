@@ -68,7 +68,6 @@ class PayController extends Controller
         ]);
 
         $bill = $this->getBillByCheckoutSessionId($request->session_id);
-        $bill->status = 1;
         $bill->pay_complete_at = Carbon::now();
 
         $bill->save();
