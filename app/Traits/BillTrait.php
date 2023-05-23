@@ -38,7 +38,7 @@ trait BillTrait
 
     public function paymentSucceed($bill)
     {
-        $bill->status = 5;
+        $bill->status = 1;
         $bill->pay_confirm_at = Carbon::now();
 
         $pdf = PDF::loadView('pdf.payment.receipt', [
