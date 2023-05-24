@@ -7,6 +7,10 @@
                     href="{{ route('super_admin.dashboard') }}"><i
                         class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
             <li class="nav-item"><a
+                    class="nav-link {{ request()->routeIs('super_admin.management.admin.*') ? 'active' : '' }}"
+                    href="{{ route('super_admin.management.admin.list') }}"><i
+                        class="fa-solid fa-user-tie"></i><span>Admin Management</span></a></li>
+            <li class="nav-item"><a
                     class="nav-link {{ request()->routeIs('super_admin.system.manual.*') ? 'active' : '' }}"
                     href="{{ route('super_admin.system.manual.list') }}"><i class="fas fa-book-reader"></i><span>User
                         Manual</span></a></li>
