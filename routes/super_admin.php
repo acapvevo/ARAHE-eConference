@@ -17,6 +17,7 @@ use App\Http\Controllers\SuperAdmin\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\SuperAdmin\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\SuperAdmin\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\SuperAdmin\Auth\EmailVerificationNotificationController;
+use App\Http\Controllers\SuperAdmin\Management\AdminController;
 
 Route::prefix('super_admin')->name('super_admin.')->group(function () {
 
@@ -107,6 +108,16 @@ Route::prefix('super_admin')->name('super_admin.')->group(function () {
             Route::prefix('health')->name('health.')->group(function () {
                 Route::get('/main', HealthCheckResultsController::class)->name('main');
                 Route::get('', [HealthController::class, 'view'])->name('view');
+            });
+        });
+
+        Route::prefix('management')->name('management.')->group(function () {
+            Route::prefix('admin')->name('admin.')->group(function () {
+                Route::get('', [AdminController::class, 'list'])->name('list');
+                Route::post('', [AdminController::class, 'create'])->name('create');
+                Route::get('/{id}', [AdminController::class, 'view'])->name('view');
+                // Route::patch('/{id}', [AdminController::class, 'update'])->name('update');
+                Route::delete('', [AdminController::class, 'delete'])->name('delete');
             });
         });
         // });
