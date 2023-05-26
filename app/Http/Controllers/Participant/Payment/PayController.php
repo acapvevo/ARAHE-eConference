@@ -72,10 +72,6 @@ class PayController extends Controller
 
         $bill->save();
 
-        $registration = $bill->summary->registration;
-        $registration->status_code = 'AR';
-        $registration->save();
-
         return redirect(route('participant.competition.registration.view', ['form_id' => $bill->summary->registration->form->id]))->with('success', 'Your payment successfully completed. See you at the conference');
     }
 
