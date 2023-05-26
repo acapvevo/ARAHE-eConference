@@ -52,7 +52,7 @@ trait BillTrait
         $bill->save();
 
         $registration = $bill->summary->registration;
-        $registration->status_code = 'PW';
+        $registration->status_code = 'AR';
         $registration->save();
     }
 
