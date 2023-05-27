@@ -83,6 +83,13 @@
                             <td colspan="2">{{ $registration->getStatusDescription() }}</td>
                         </tr>
                         <tr>
+                            <th class="text-center table-primary" colspan='3'>Package Details</th>
+                        </tr>
+                        <tr>
+                            <th class='w-25'>Status</th>
+                            <td colspan="2">{{ $registration->getStatusDescription() }}</td>
+                        </tr>
+                        <tr>
                             <th class="text-center table-primary" colspan='3'>Participant</th>
                         </tr>
                         <tr>
