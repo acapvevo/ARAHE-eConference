@@ -6,7 +6,7 @@
 @endsection
 
 @section('content')
-    <h3 class="text-dark mb-1">Paper - Submission Detail</h3>
+    <h3 class="text-dark mb-1">Registration - Participant Detail</h3>
 
     <div class="card">
         <div class="card-body">
@@ -77,13 +77,6 @@
                         <tr>
                             <th class='w-25'>Dietary Preference</th>
                             <td colspan="2">{{ $registration->getDietary()->name }}</td>
-                        </tr>
-                        <tr>
-                            <th class='w-25'>Status</th>
-                            <td colspan="2">{{ $registration->getStatusDescription() }}</td>
-                        </tr>
-                        <tr>
-                            <th class="text-center table-primary" colspan='3'>Package Details</th>
                         </tr>
                         <tr>
                             <th class='w-25'>Status</th>

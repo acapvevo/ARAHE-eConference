@@ -38,7 +38,7 @@ trait BillTrait
 
     public function paymentSucceed($bill)
     {
-        $bill->status = 1;
+        // $bill->status = 1;
         $bill->pay_confirm_at = Carbon::now();
 
         $pdf = PDF::loadView('pdf.payment.receipt', [
@@ -51,9 +51,9 @@ trait BillTrait
 
         $bill->save();
 
-        $registration = $bill->summary->registration;
-        $registration->status_code = 'AR';
-        $registration->save();
+        // $registration = $bill->summary->registration;
+        // $registration->status_code = 'AR';
+        // $registration->save();
     }
 
     public function paymentFailed($bill)
