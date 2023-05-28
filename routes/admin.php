@@ -157,6 +157,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::prefix('submission')->name('submission.')->group(function () {
             Route::prefix('registration')->name('registration.')->group(function () {
                 Route::get('', [RegistrationController::class, 'list'])->name('list');
+                Route::post('/export', [RegistrationController::class, 'export'])->name('export');
                 Route::get('/{id}', [RegistrationController::class, 'view'])->name('view');
                 Route::patch('/{id}', [RegistrationController::class, 'update'])->name('update');
                 Route::post('/download', [RegistrationController::class, 'download'])->name('download');

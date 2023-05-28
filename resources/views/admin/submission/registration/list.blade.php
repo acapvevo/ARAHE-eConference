@@ -12,6 +12,13 @@
             ARAHE {{ $form->session->year }}
         </h4>
         <div class="card-body">
+            <div class="pt-3 pb-3 d-grid gap-2 d-md-flex justify-content-md-end">
+                <form action="{{ route('admin.submission.registration.export') }}" method="post">
+                    @csrf
+                    <button type="submit" class="btn btn-primary" name="form_id" value="{{ $form->id }}">
+                        Export</button>
+                </form>
+            </div>
             <div class="table-responsive">
                 <table class="table table-bordered" id="table_id">
                     <thead class="table-primary">
