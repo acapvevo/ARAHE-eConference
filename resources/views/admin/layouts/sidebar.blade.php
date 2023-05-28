@@ -15,6 +15,10 @@
                     href="{{ route('admin.submission.registration.list') }}"><i
                         class="fa-solid fa-user-group"></i><span>Registration Management</span></a></li>
             <li class="nav-item"><a
+                    class="nav-link {{ request()->routeIs('admin.submission.package.*') ? 'active' : '' }}"
+                    href="{{ route('admin.submission.package.list') }}"><i
+                        class="fa-solid fa-users-between-lines"></i><span>Package Management</span></a></li>
+            <li class="nav-item"><a
                     class="nav-link {{ request()->routeIs('admin.submission.assign.*') ? 'active' : '' }}"
                     href="{{ route('admin.submission.assign.list') }}"><i class="fas fa-user-check"></i><span>Assign
                         Reviewer</span></a></li>
@@ -30,8 +34,7 @@
                     class="nav-link {{ request()->routeIs('admin.member.reviewer.*') ? 'active' : '' }}"
                     href="{{ route('admin.member.reviewer.list') }}"><i class="fas fa-user-tie"></i><span>Reviewer
                         Management</span></a></li>
-            <li class="nav-item"><a
-                    class="nav-link {{ request()->routeIs('admin.payment.bill.*') ? 'active' : '' }}"
+            <li class="nav-item"><a class="nav-link {{ request()->routeIs('admin.payment.bill.*') ? 'active' : '' }}"
                     href="{{ route('admin.payment.bill.list') }}"><i class="fas fa-money-check"></i><span>Payment
                         Management</span></a></li>
             <li class="nav-item"><a class="nav-link {{ request()->routeIs('admin.system.manual.*') ? 'active' : '' }}"

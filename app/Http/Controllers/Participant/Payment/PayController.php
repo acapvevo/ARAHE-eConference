@@ -69,8 +69,13 @@ class PayController extends Controller
 
         $bill = $this->getBillByCheckoutSessionId($request->session_id);
         $bill->pay_complete_at = Carbon::now();
+        $bill->status = 1;
 
         $bill->save();
+
+        $registration = $bill->summary->registration;
+        $registration->status_code = 'AR';
+        $registration->save();
 
         return redirect(route('participant.competition.registration.view', ['form_id' => $bill->summary->registration->form->id]))->with('success', 'Your payment successfully completed. See you at the conference');
     }
