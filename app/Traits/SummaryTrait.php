@@ -14,7 +14,7 @@ trait SummaryTrait
     public function getSummariesByFormID($form_id)
     {
         return Summary::all()->filter(function ($summary) use ($form_id) {
-            return $summary->registration->form_id == $form_id;
+            return $summary->registration->form_id == $form_id && $summary->registration->status == 'AR';
         });
     }
 }
