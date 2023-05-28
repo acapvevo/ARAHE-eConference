@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Submission;
 
+use App\Exports\RegistrationExport;
 use App\Traits\BillTrait;
 use App\Traits\FormTrait;
 use App\Models\Registration;
@@ -32,6 +33,17 @@ class RegistrationController extends Controller
             'registrations' => $registrations,
             'form' => $currentForm
         ]);
+    }
+
+    public function export(Request $request)
+    {
+        $request->validate([
+            'form_id' => 'required|integer|exists:forms,id'
+        ]);
+
+        $form = $this->getForm($request->form_id);
+
+        return (new RegistrationExport($form->id))->download('Participant_List_ARAHE' . $form->session->year . '.xlsx');
     }
 
     public function view($id)
