@@ -23,7 +23,7 @@
                         type="button" role="tab" aria-controls="nav-extra" aria-selected="false">Extra</button>
                 </div>
             </nav>
-            <div class="tab-content" id="nav-tabContent">
+            <div class="tab-content pt-3" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="nav-fullPackage" role="tabpanel"
                     aria-labelledby="nav-fullPackage-tab" tabindex="0">
 
@@ -87,6 +87,7 @@
                                         <td style="width:25%">{{ $summary->registration->participant->name }}</td>
                                         @if ($summary->getPackage()->fullPackage)
                                             <td colspan="2">Included in Package {{ $summary->getPackage()->code }}</td>
+                                            <td style="display: none"></td>
                                         @else
                                             <td>{{ $summary->getHotel()->code }}</td>
                                             <td>{{ $summary->getOccupancy()->type }}</td>
