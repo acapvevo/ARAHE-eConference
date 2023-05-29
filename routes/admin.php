@@ -28,7 +28,6 @@ use App\Http\Controllers\Admin\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Admin\Competition\ExtraController;
 use App\Http\Controllers\Admin\Competition\HotelController;
 use App\Http\Controllers\Admin\Competition\RateController;
-use App\Http\Controllers\Admin\Submission\PackageController as SubmissionPackageController;
 use App\Http\Controllers\Admin\Submission\RegistrationController;
 
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -161,12 +160,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::get('/{id}', [RegistrationController::class, 'view'])->name('view');
                 Route::patch('/{id}', [RegistrationController::class, 'update'])->name('update');
                 Route::post('/download', [RegistrationController::class, 'download'])->name('download');
-            });
-
-            Route::prefix('package')->name('package.')->group(function () {
-                Route::get('', [SubmissionPackageController::class, 'list'])->name('list');
-                Route::get('/{id}', [SubmissionPackageController::class, 'view'])->name('view');
-                Route::post('/download', [SubmissionPackageController::class, 'download'])->name('download');
             });
 
             Route::prefix('assign')->name('assign.')->group(function () {

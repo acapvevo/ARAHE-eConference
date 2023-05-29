@@ -2,12 +2,14 @@
 
 namespace App\Exports;
 
-use Illuminate\View\View;
-use App\Models\Registration;
-use Maatwebsite\Excel\Concerns\FromView;
+use App\Exports\Sheets\AccomodationsSheet;
+use App\Exports\Sheets\ExtrasSheet;
+use App\Exports\Sheets\PackageSheet;
+use App\Exports\Sheets\RegistrationsSheet;
 use Maatwebsite\Excel\Concerns\Exportable;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
-class RegistrationExport implements FromView
+class RegistrationExport implements WithMultipleSheets
 {
     use Exportable;
 
@@ -18,10 +20,16 @@ class RegistrationExport implements FromView
         $this->form_id = $form_id;
     }
 
-    public function view(): View
+    /**
+     * @return array
+     */
+    public function sheets(): array
     {
-        return view('exports.registration', [
-            'registrations' => Registration::where('form_id', $this->form_id)->get(),
-        ]);
+        return [
+            new RegistrationsSheet($this->form_id),
+            new PackageSheet($this->form_id),
+            new AccomodationsSheet($this->form_id),
+            new ExtrasSheet($this->form_id),
+        ];
     }
 }

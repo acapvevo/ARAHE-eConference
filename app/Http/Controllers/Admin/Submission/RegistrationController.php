@@ -2,21 +2,23 @@
 
 namespace App\Http\Controllers\Admin\Submission;
 
-use App\Exports\RegistrationExport;
 use App\Traits\BillTrait;
 use App\Traits\FormTrait;
 use App\Models\Registration;
+use App\Traits\SummaryTrait;
 use Illuminate\Http\Request;
 use App\Traits\ReviewerTrait;
 use Illuminate\Support\Carbon;
 use App\Traits\SubmissionTrait;
+use App\Exports\RegistrationExport;
 use App\Mail\RegistrationCompleted;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 
 class RegistrationController extends Controller
 {
-    use FormTrait, SubmissionTrait, ReviewerTrait, BillTrait;
+    use FormTrait, SubmissionTrait, ReviewerTrait, BillTrait, SummaryTrait;
 
     public function list()
     {
@@ -29,9 +31,21 @@ class RegistrationController extends Controller
         $registrations = $registrations->merge($registrationsNotApproved);
         $registrations = $registrations->merge($registrationsApproved);
 
+        $summaries = $this->getSummariesByFormID($currentForm->id);
+
+        $acommadationSummaries = $summaries->filter(function ($summary) {
+            return ($summary->hotel_id && $summary->occupancy_id) || $summary->getPackage()->fullPackage;
+        });
+        $extraSummaries = $summaries->filter(function ($summary) {
+            return $summary->extras->isNotEmpty();
+        });
+
         return view('admin.submission.registration.list')->with([
             'registrations' => $registrations,
-            'form' => $currentForm
+            'form' => $currentForm,
+            'summaries' => $summaries,
+            'acommadationSummaries' => $acommadationSummaries,
+            'extraSummaries' => $extraSummaries
         ]);
     }
 
@@ -48,6 +62,13 @@ class RegistrationController extends Controller
 
     public function view($id)
     {
+        $validation = Validator::make(['registration_id' => $id], [
+            'registration_id' => 'required|integer|exists:registrations,id',
+        ]);
+
+        if ($validation->fails())
+            return redirect(route('admin.submission.registration.list'))->with('error', 'Please Try Again');
+
         $registration = Registration::find($id);
 
         return view('admin.submission.registration.view')->with([

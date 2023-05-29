@@ -2,7 +2,8 @@
 
 @section('styles')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 @endsection
 
 @section('content')
@@ -17,7 +18,8 @@
                         @csrf
                         @method('PATCH')
 
-                        <button class="btn btn-success me-md-2" type="submit" value="DR" name="decision">Accept</button>
+                        <button class="btn btn-success me-md-2" type="submit" value="DR"
+                            name="decision">Accept</button>
                         @if ($registration->proof)
                             <button class="btn btn-warning me-md-2" type="submit" value="UR" name="decision">Reupload
                                 Proof</button>
@@ -82,6 +84,51 @@
                             <th class='w-25'>Status</th>
                             <td colspan="2">{{ $registration->getStatusDescription() }}</td>
                         </tr>
+                        @if ($registration->summary)
+
+                            <tr>
+                                <th class="text-center table-primary" colspan='3'>Packages Details</th>
+                            </tr>
+                            <tr>
+                                <th class='w-25'>Main</th>
+                                <td colspan="2">{{ $registration->summary->getPackage()->code }}
+                                    {{ $registration->summary->getPackage()->fullPackage ? '(FULL PACKAGE)' : '' }}</td>
+                            </tr>
+                            <tr>
+                                <th class='w-25'>Extra</th>
+                                <td colspan="2">
+                                    @if ($registration->summary->extras->isNotEmpty())
+                                        <ul>
+                                            @foreach ($registration->summary->extras as $extra)
+                                                @php
+                                                    $extraInfo = DB::table('extras')
+                                                        ->where('id', $extra['id'])
+                                                        ->first();
+                                                    $options = collect(json_decode($extraInfo->options));
+                                                @endphp
+                                                <li> {{ $extraInfo->description }}
+                                                    {{ $options->isNotEmpty() ? ' - ' . $options[$extra['option']] : '' }}
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    @else
+                                        Not Included
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class='w-25'>Hotel</th>
+                                <td colspan="2">
+                                    @if ($registration->summary->getPackage()->fullPackage)
+                                        Included
+                                    @elseif ($registration->summary->hotel_id && $registration->summary->occupancy_id)
+                                        {{ $registration->summary->getHotel()->code }} - {{ $registration->summary->getOccupancy()->type }}
+                                    @else
+                                        Not Included
+                                    @endif
+                                </td>
+                            </tr>
+                        @endif
                         <tr>
                             <th class="text-center table-primary" colspan='3'>Participant</th>
                         </tr>
@@ -146,14 +193,15 @@
                         @method('PATCH')
 
                         <div class="mb-3">
-                            <label for="payment_attempt" class="form-label">Payment Done <small>(Payment done by participant
+                            <label for="payment_attempt" class="form-label">Payment Done <small>(Payment done by
+                                    participant
                                     based on the proof given)</small></label>
                             <div class="row" id="payment_attempt">
                                 <div class="col-md-4">
                                     <label for="date" class="form-label">Date</label>
                                     <input type="date"
-                                        class="form-control {{ $errors->has('date') ? 'is-invalid' : '' }}" name="date"
-                                        id="date" value="{{ old('date') }}">
+                                        class="form-control {{ $errors->has('date') ? 'is-invalid' : '' }}"
+                                        name="date" id="date" value="{{ old('date') }}">
                                     @error('date')
                                         <div class="invalid-feedback">
                                             {{ $message }}
