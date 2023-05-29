@@ -15,10 +15,6 @@
                     href="{{ route('admin.submission.registration.list') }}"><i
                         class="fa-solid fa-user-group"></i><span>Registration Management</span></a></li>
             <li class="nav-item"><a
-                    class="nav-link {{ request()->routeIs('admin.submission.package.*') ? 'active' : '' }}"
-                    href="{{ route('admin.submission.package.list') }}"><i
-                        class="fa-solid fa-users-between-lines"></i><span>Package Management</span></a></li>
-            <li class="nav-item"><a
                     class="nav-link {{ request()->routeIs('admin.submission.assign.*') ? 'active' : '' }}"
                     href="{{ route('admin.submission.assign.list') }}"><i class="fas fa-user-check"></i><span>Assign
                         Reviewer</span></a></li>
