@@ -97,25 +97,32 @@
                                                 <td style="width:25%">{{ $summary->registration->participant->name }}</td>
                                                 <td style="width:5%">{{ $summary->getPackage()->code }}</td>
                                                 <td>
-                                                    <ul>
-                                                        @foreach ($summary->extras as $extra)
-                                                            @php
-                                                                $extraInfo = DB::table('extras')
-                                                                    ->where('id', $extra['id'])
-                                                                    ->first();
-                                                                $options = collect(json_decode($extraInfo->options));
-                                                            @endphp
-                                                            <li> {{ $extraInfo->description }}
-                                                                {{ $options->isNotEmpty() ? ' - ' . $options[$extra['option']] : '' }}
-                                                            </li>
-                                                        @endforeach
-                                                    </ul>
+                                                    @if ($summary->extras->isNotEmpty())
+                                                        <ul>
+                                                            @foreach ($summary->extras as $extra)
+                                                                @php
+                                                                    $extraInfo = DB::table('extras')
+                                                                        ->where('id', $extra['id'])
+                                                                        ->first();
+                                                                    $options = collect(json_decode($extraInfo->options));
+                                                                @endphp
+                                                                <li> {{ $extraInfo->description }}
+                                                                    {{ $options->isNotEmpty() ? ' - ' . $options[$extra['option']] : '' }}
+                                                                </li>
+                                                            @endforeach
+                                                        </ul>
+                                                    @else
+                                                        Not Included
+                                                    @endif
                                                 </td>
                                                 @if ($summary->getPackage()->fullPackage)
                                                     <td colspan="2">Included in Package
                                                         {{ $summary->getPackage()->code }}</td>
+                                                @elseif (!$summary->hotel_id && !$summary->occupancy_id)
+                                                    <td>Not Included</td>
                                                 @else
-                                                    <td>{{ $summary->getHotel()->code }} - {{ $summary->getOccupancy()->type }}</td>
+                                                    <td>{{ $summary->getHotel()->code }} -
+                                                        {{ $summary->getOccupancy()->type }}</td>
                                                 @endif
                                             </tr>
                                         @endforeach
