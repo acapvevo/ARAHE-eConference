@@ -34,6 +34,17 @@
                         Update Payment
                     </button>
                 </div>
+            @elseif ($registration->status_code === 'RR')
+                <div class="pt-3 pb-3 d-grid gap-2 d-md-flex justify-content-md-end">
+                    <form action="{{ route('admin.submission.registration.update', ['id' => $registration->id]) }}"
+                        method="post">
+                        @csrf
+                        @method('PATCH')
+
+                        <button class="btn btn-primary me-md-2" type="submit" value="NR"
+                            name="decision">Resubmit</button>
+                    </form>
+                </div>
             @endif
             <div class="table-responsive">
                 <table class="table table-bordered">
@@ -122,7 +133,8 @@
                                     @if ($registration->summary->getPackage()->fullPackage)
                                         Included
                                     @elseif ($registration->summary->hotel_id && $registration->summary->occupancy_id)
-                                        {{ $registration->summary->getHotel()->code }} - {{ $registration->summary->getOccupancy()->type }}
+                                        {{ $registration->summary->getHotel()->code }} -
+                                        {{ $registration->summary->getOccupancy()->type }}
                                     @else
                                         Not Included
                                     @endif

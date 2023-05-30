@@ -107,8 +107,23 @@ class RegistrationController extends Controller
     public function create(Request $request)
     {
         $request->validate([
+            'code' => 'required'
+        ]);
+
+        $codeHasRegistered = Registration::where('code', $request->code)->exists();
+
+        if($codeHasRegistered){
+            $registration = Registration::where('code', $request->code)->first();
+        } else {
+            $registration = new Registration;
+        }
+
+        $request->validate([
             'form_id' => 'required|exists:App\Models\Form,id',
-            'code' => 'required|unique:App\Models\Registration,code',
+            'code' => [
+                'required',
+                $codeHasRegistered ? Rule::unique('registrations')->ignore($registration->id) : 'unique:App\Models\Registration,code',
+            ],
             'type' => 'required|string|exists:participant_type,code',
             'category' => 'required|exists:App\Models\Category,id',
             'proof' => [
@@ -127,8 +142,6 @@ class RegistrationController extends Controller
         ]);
 
         $participant = Auth::guard('participant')->user();
-
-        $registration = new Registration;
 
         $registration->participant_id = $participant->id;
         $registration->form_id = $request->form_id;

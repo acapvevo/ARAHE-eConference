@@ -79,7 +79,7 @@ class RegistrationController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'decision' => 'required|in:DR,UR,RR,UP',
+            'decision' => 'required|in:DR,UR,RR,UP,NR',
             'date' => 'required_if:decision,UP|date|before_or_equal:tomorrow',
             'time' => 'required_if:decision,UP|date_format:H:i',
             'timezone' => 'required_if:decision,UP|timezone',
