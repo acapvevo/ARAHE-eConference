@@ -50,6 +50,10 @@ class RegistrationCompleted extends Mailable
                 $status = 'Amendment';
                 break;
 
+            case 'NR':
+                $status = 'Resubmission';
+                break;
+
             default:
                 $status = '';
                 break;
@@ -84,6 +88,12 @@ class RegistrationCompleted extends Mailable
                 $mainMessage1 = 'Your Registration';
                 $mainMessage2 = 'need Admenment';
                 $secondaryMessage = 'Your Registration need some admenment regarding the proof given. Please reupload with new file as proof for your chosen category';
+                break;
+
+            case 'NR':
+                $mainMessage1 = 'Your Registration';
+                $mainMessage2 = 'need to be Resubmitted';
+                $secondaryMessage = 'Your Registration has been rejected and need to be resubmitted. Please resubmit the registration again.';
                 break;
 
             default:

@@ -20,7 +20,7 @@ class SubmissionController extends Controller
     public function list()
     {
         $participant = Auth::guard('participant')->user();
-        $registrations = $this->getRegistrationByParticipantID($participant->id)->sortByDesc(function($registration){
+        $registrations = $this->getRegistrationByParticipantID($participant->id)->whereNotIn('status_code', ['NR', 'WR', 'RR', 'UR'])->sortByDesc(function ($registration) {
             return $registration->form->session->year;
         });
 
@@ -33,7 +33,7 @@ class SubmissionController extends Controller
     {
         $registration = $this->getRegistration($registration_id);
 
-        if(!$registration || $registration->participant_id !== Auth::guard('participant')->user()->id){
+        if (!$registration || $registration->participant_id !== Auth::guard('participant')->user()->id) {
             return view('participant.competition.submissions.unauthorize');
         }
 
