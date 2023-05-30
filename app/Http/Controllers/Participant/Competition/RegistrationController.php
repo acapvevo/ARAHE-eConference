@@ -34,7 +34,7 @@ class RegistrationController extends Controller
 
     public function view($form_id)
     {
-        if(!$this->formExists($form_id)){
+        if (!$this->formExists($form_id)) {
             return redirect()->route('participant.competition.registration.list')->with('error', 'Registration Not Found');
         }
 
@@ -112,7 +112,7 @@ class RegistrationController extends Controller
 
         $codeHasRegistered = Registration::where('code', $request->code)->exists();
 
-        if($codeHasRegistered){
+        if ($codeHasRegistered) {
             $registration = Registration::where('code', $request->code)->first();
         } else {
             $registration = new Registration;
@@ -157,6 +157,9 @@ class RegistrationController extends Controller
             $request->file('proof')->storeAs($filePath, $fileName);
 
             $registration->proof = $fileName;
+        } else {
+            $registration->deleteProofFile();
+            $registration->proof = '';
         }
 
         $registration->link = $request->link ?? null;

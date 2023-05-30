@@ -112,6 +112,12 @@ class Registration extends Model
         return Storage::response($filePath, $this->proof);
     }
 
+    public function deleteProofFile()
+    {
+        if (Storage::exists('ARAHE' . $this->form->session->year . '/registration/' . $this->proof))
+            return Storage::delete('ARAHE' . $this->form->session->year . '/registration/' . $this->proof);
+    }
+
     public function generateCode()
     {
         $currentYearSubmissions = DB::table('registrations')->where('code', 'LIKE', '%ARAHE-' . Carbon::now()->year . '-%')->get();
