@@ -147,7 +147,7 @@
                                         @foreach ($acommadationSummaries as $summary)
                                             <tr>
                                                 <td style="width:15%"><a
-                                                        href="{{ route('admin.submission.registration.view', ['id' => $summary->registration->->id]) }}">{{ $summary->registration->code }}</a>
+                                                        href="{{ route('admin.submission.registration.view', ['id' => $summary->registration->id]) }}">{{ $summary->registration->code }}</a>
                                                 </td>
                                                 <td style="width:25%">{{ $summary->registration->participant->name }}</td>
                                                 @if ($summary->getPackage()->fullPackage)
