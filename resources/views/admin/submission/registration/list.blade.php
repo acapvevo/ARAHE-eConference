@@ -92,7 +92,7 @@
                                         @foreach ($summaries as $summary)
                                             <tr>
                                                 <td style="width:15%"><a
-                                                        href="{{ route('admin.submission.registration.view', ['id' => $summary->id]) }}">{{ $summary->registration->code }}</a>
+                                                        href="{{ route('admin.submission.registration.view', ['id' => $summary->registration->id]) }}">{{ $summary->registration->code }}</a>
                                                 </td>
                                                 <td style="width:25%">{{ $summary->registration->participant->name }}</td>
                                                 <td style="width:5%">{{ $summary->getPackage()->code }}</td>
@@ -147,7 +147,7 @@
                                         @foreach ($acommadationSummaries as $summary)
                                             <tr>
                                                 <td style="width:15%"><a
-                                                        href="{{ route('admin.submission.registration.view', ['id' => $summary->id]) }}">{{ $summary->registration->code }}</a>
+                                                        href="{{ route('admin.submission.registration.view', ['id' => $summary->registration->->id]) }}">{{ $summary->registration->code }}</a>
                                                 </td>
                                                 <td style="width:25%">{{ $summary->registration->participant->name }}</td>
                                                 @if ($summary->getPackage()->fullPackage)
@@ -180,7 +180,7 @@
                                         @foreach ($extraSummaries as $summary)
                                             <tr>
                                                 <td style="width:15%"><a
-                                                        href="{{ route('admin.submission.registration.view', ['id' => $summary->id]) }}">{{ $summary->registration->code }}</a>
+                                                        href="{{ route('admin.submission.registration.view', ['id' => $summary->registration->id]) }}">{{ $summary->registration->code }}</a>
                                                 </td>
                                                 <td style="width:25%">{{ $summary->registration->participant->name }}</td>
                                                 <td>

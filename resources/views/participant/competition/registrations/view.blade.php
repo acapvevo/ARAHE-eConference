@@ -363,8 +363,6 @@
                                 $locality_code = $registration->category->getLocality()->code;
                                 $currentDuration = $registration->form->getDurationBasedCurrentDate($locality_code);
 
-                                dd($currentDuration);
-
                                 $currentChosenPackageFee = $registration->summary ? $registration->summary->getPackageFee() : null;
                             @endphp
                             <div class="mb-3 table-responsive">
@@ -689,6 +687,10 @@
                                                 <td>{{ $registration->summary->getLocality()->currency }}{{ $hotelRate->amount ?? '' }}
                                                 </td>
                                             </tr>
+                                            @if (!$currentChosenPackageFee->parent->fullPackage)
+                                                <input type="hidden" name="price_id[]"
+                                                    value="{{ $hotelRate->price_id }}">
+                                            @endif
                                         @endif
                                         <tr>
                                             <td colspan="3"><strong class="float-end">TOTAL NEED TO PAY</strong>
