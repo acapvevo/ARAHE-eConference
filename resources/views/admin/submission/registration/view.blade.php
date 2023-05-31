@@ -142,6 +142,10 @@
                             </tr>
                         @endif
                         <tr>
+                            <th class='w-25'>Total</th>
+                            <td colspan="2">{{ $registration->summary->getFormalOutputTotal() }}</td>
+                        </tr>
+                        <tr>
                             <th class="text-center table-primary" colspan='3'>Participant</th>
                         </tr>
                         <tr>
