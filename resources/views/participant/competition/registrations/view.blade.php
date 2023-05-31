@@ -363,6 +363,8 @@
                                 $locality_code = $registration->category->getLocality()->code;
                                 $currentDuration = $registration->form->getDurationBasedCurrentDate($locality_code);
 
+                                dd($currentDuration);
+
                                 $currentChosenPackageFee = $registration->summary ? $registration->summary->getPackageFee() : null;
                             @endphp
                             <div class="mb-3 table-responsive">
