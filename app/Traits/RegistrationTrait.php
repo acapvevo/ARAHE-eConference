@@ -16,4 +16,9 @@ trait RegistrationTrait
     {
         return Registration::find($id);
     }
+
+    public function getRegistrationsCompletedByFormID($form_id)
+    {
+        return Registration::where('status_code', 'AR')->where('form_id', $form_id)->get();
+    }
 }

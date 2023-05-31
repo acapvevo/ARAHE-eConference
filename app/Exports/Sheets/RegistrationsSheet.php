@@ -6,8 +6,9 @@ use App\Models\Registration;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithTitle;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-class RegistrationsSheet implements FromView, WithTitle
+class RegistrationsSheet implements FromView, WithTitle, ShouldAutoSize
 {
     private $form_id;
 

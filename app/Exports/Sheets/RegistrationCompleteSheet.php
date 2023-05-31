@@ -2,15 +2,15 @@
 
 namespace App\Exports\Sheets;
 
-use App\Traits\SummaryTrait;
+use App\Traits\RegistrationTrait;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-class ExtrasSheet implements FromView, WithTitle, ShouldAutoSize
+class RegistrationCompleteSheet implements FromView, WithTitle, ShouldAutoSize
 {
-    use SummaryTrait;
+    use RegistrationTrait;
 
     private $form_id;
 
@@ -21,10 +21,8 @@ class ExtrasSheet implements FromView, WithTitle, ShouldAutoSize
 
     public function view(): View
     {
-        return view('exports.sheets.extra', [
-            'summaries' => $this->getSummariesByFormID($this->form_id)->filter(function ($summary) {
-                return $summary->extras->isNotEmpty();
-            }),
+        return view('exports.sheets.registration_complete', [
+            'registrations' => $this->getRegistrationsCompletedByFormID($this->form_id),
         ]);
     }
 
@@ -33,6 +31,6 @@ class ExtrasSheet implements FromView, WithTitle, ShouldAutoSize
      */
     public function title(): string
     {
-        return 'By Extras';
+        return 'Completed Registrations List';
     }
 }
