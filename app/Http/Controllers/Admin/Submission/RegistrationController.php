@@ -104,6 +104,10 @@ class RegistrationController extends Controller
 
             Mail::to($registration->participant->email)->send(new RegistrationCompleted($registration));
 
+            if($registration->summary && $registration->status_code == 'NR'){
+                $registration->status_code = "PR";
+            }
+
             $registration->save();
 
             $message = 'Registration status for ' . $registration->code . ' has been updated';

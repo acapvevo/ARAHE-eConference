@@ -687,6 +687,10 @@
                                                 <td>{{ $registration->summary->getLocality()->currency }}{{ $hotelRate->amount ?? '' }}
                                                 </td>
                                             </tr>
+                                            @if (!$currentChosenPackageFee->parent->fullPackage)
+                                                <input type="hidden" name="price_id[]"
+                                                    value="{{ $hotelRate->price_id }}">
+                                            @endif
                                         @endif
                                         <tr>
                                             <td colspan="3"><strong class="float-end">TOTAL NEED TO PAY</strong>

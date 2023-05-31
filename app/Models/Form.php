@@ -112,7 +112,7 @@ class Form extends Model
         $currentDate = Carbon::now();
 
         return $this->durations->where('locality', $locality_code)->first(function ($duration) use ($currentDate) {
-            return $currentDate->between($duration->start, $duration->end);
+            return $currentDate->between($duration->start, $duration->end->addDay());
         });
     }
 
