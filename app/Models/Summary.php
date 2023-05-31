@@ -102,4 +102,9 @@ class Summary extends Model
     {
         return $this->getLocality()->currency . ' ' . number_format($this->total, 2);
     }
+
+    public function getSuccessPaidBill()
+    {
+        return Bill::where('summary_id', $this->id)->where('status', 1)->latest()->first();
+    }
 }

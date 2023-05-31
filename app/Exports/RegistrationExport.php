@@ -2,11 +2,12 @@
 
 namespace App\Exports;
 
-use App\Exports\Sheets\AccomodationsSheet;
 use App\Exports\Sheets\ExtrasSheet;
 use App\Exports\Sheets\PackageSheet;
+use App\Exports\Sheets\AccomodationsSheet;
 use App\Exports\Sheets\RegistrationsSheet;
 use Maatwebsite\Excel\Concerns\Exportable;
+use App\Exports\Sheets\RegistrationCompleteSheet;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
 class RegistrationExport implements WithMultipleSheets
@@ -30,6 +31,7 @@ class RegistrationExport implements WithMultipleSheets
             new PackageSheet($this->form_id),
             new AccomodationsSheet($this->form_id),
             new ExtrasSheet($this->form_id),
+            new RegistrationCompleteSheet($this->form_id),
         ];
     }
 }

@@ -6,8 +6,9 @@ use App\Traits\SummaryTrait;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithTitle;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-class PackageSheet implements FromView, WithTitle
+class PackageSheet implements FromView, WithTitle, ShouldAutoSize
 {
     use SummaryTrait;
 
