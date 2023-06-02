@@ -184,7 +184,7 @@
         </div>
     </div>
 
-    @if ($registration->status_code === 'NR' || $registration->status_code === 'WR')
+    @if ($registration->status_code === 'NR' || $registration->status_code === 'WR' || $registration->status_code === 'UR')
         <div class="modal fade" id="registrationModal" tabindex="-1" aria-labelledby="registrationModalLabel"
             aria-hidden="true">
             <div class="modal-dialog modal-xl">
@@ -298,7 +298,7 @@
         </div>
     @endif
 
-    @if ($registration->status_code === 'NR' || $registration->status_code === 'WR')
+    @if ($registration->status_code === 'NR' || $registration->status_code === 'WR' || $registration->status_code === 'UR')
         <div class="modal fade" id="chooseLocalityModal" tabindex="-1" aria-labelledby="chooseLocalityModalLabel"
             aria-hidden="true" {!! $registration->status_code === 'NR' ? 'data-bs-backdrop="static" data-bs-keyboard="false"' : '' !!}>
             <div class="modal-dialog modal-xl modal-dialog-centered">
@@ -716,7 +716,7 @@
 @section('scripts')
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-    @if ($registration->status_code === 'NR' || $registration->status_code === 'WR')
+    @if ($registration->status_code === 'NR' || $registration->status_code === 'WR' || $registration->status_code === 'UR')
         <script>
             const feeCategoryInput = document.getElementById('category');
             const proofDiv = document.getElementById('proofDiv');
