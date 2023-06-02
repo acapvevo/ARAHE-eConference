@@ -127,15 +127,14 @@ class RegistrationController extends Controller
             'type' => 'required|string|exists:participant_type,code',
             'category' => 'required|exists:App\Models\Category,id',
             'proof' => [
-                'sometimes',
-                'file',
-                'mimes:pdf,jpg,jpeg,png',
-                'max:2048',
                 Rule::requiredIf(function () use ($request) {
                     $category = Category::find($request->category);
 
                     return $category->needProof;
-                })
+                }),
+                'file',
+                'mimes:pdf,jpg,jpeg,png',
+                'max:2048',
             ],
             'link' => 'sometimes|integer|exists:App\Models\Participant,id',
             'dietary' => 'required|string|exists:dietary_preference,code'
