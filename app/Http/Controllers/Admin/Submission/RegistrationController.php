@@ -24,8 +24,8 @@ class RegistrationController extends Controller
     {
         $currentForm = $this->getCurrentForm();
 
-        $registrationsNotApproved = Registration::with('participant')->where('form_id', $currentForm->id)->whereIn('status_code', ['WR', 'UR'])->orderBy('updated_at', 'DESC')->get();
-        $registrationsApproved = Registration::with('participant')->where('form_id', $currentForm->id)->whereIntegerNotInRaw('id', $registrationsNotApproved->pluck('id'))->orderBy('updated_at', 'DESC')->get();
+        $registrationsNotApproved = Registration::with('participant')->where('form_id', $currentForm->id)->whereIn('status_code', ['WR', 'UR'])->get();
+        $registrationsApproved = Registration::with('participant')->where('form_id', $currentForm->id)->whereIntegerNotInRaw('id', $registrationsNotApproved->pluck('id'))->get();
 
         $registrations = collect();
         $registrations = $registrations->merge($registrationsNotApproved);
@@ -41,7 +41,7 @@ class RegistrationController extends Controller
         });
 
         return view('admin.submission.registration.list')->with([
-            'registrations' => $registrations,
+            'registrations' => $registrations->orderBy('updated_at', 'DESC'),
             'form' => $currentForm,
             'summaries' => $summaries,
             'acommadationSummaries' => $acommadationSummaries,
