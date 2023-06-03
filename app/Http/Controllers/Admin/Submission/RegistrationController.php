@@ -41,7 +41,7 @@ class RegistrationController extends Controller
         });
 
         return view('admin.submission.registration.list')->with([
-            'registrations' => $registrations->orderBy('updated_at', 'DESC'),
+            'registrations' => $registrations->sortByDesc('updated_at'),
             'form' => $currentForm,
             'summaries' => $summaries,
             'acommadationSummaries' => $acommadationSummaries,
