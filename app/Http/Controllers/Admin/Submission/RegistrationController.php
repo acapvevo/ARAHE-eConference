@@ -24,8 +24,8 @@ class RegistrationController extends Controller
     {
         $currentForm = $this->getCurrentForm();
 
-        $registrationsNotApproved = Registration::with('participant')->where('form_id', $currentForm->id)->whereIn('status_code', ['WR', 'UR'])->get();
-        $registrationsApproved = Registration::with('participant')->where('form_id', $currentForm->id)->whereIntegerNotInRaw('id', $registrationsNotApproved->pluck('id'))->get();
+        $registrationsNotApproved = Registration::with('participant')->where('form_id', $currentForm->id)->whereIn('status_code', ['WR', 'UR'])->orderBy('updated_at', 'DESC')->get();
+        $registrationsApproved = Registration::with('participant')->where('form_id', $currentForm->id)->whereIntegerNotInRaw('id', $registrationsNotApproved->pluck('id'))->orderBy('updated_at', 'DESC')->get();
 
         $registrations = collect();
         $registrations = $registrations->merge($registrationsNotApproved);
