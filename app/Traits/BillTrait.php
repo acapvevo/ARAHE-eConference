@@ -36,9 +36,8 @@ trait BillTrait
         return Bill::where('payment_intent_id', $payment_intent_id)->first();
     }
 
-    public function paymentSucceed($bill)
+    public function paymentSucceed($bill, $needChangeStatus = false)
     {
-        // $bill->status = 1;
         $bill->pay_confirm_at = Carbon::now();
 
         $pdf = PDF::loadView('pdf.payment.receipt', [
@@ -49,11 +48,15 @@ trait BillTrait
 
         Mail::to($bill->summary->registration->participant->email)->send(new PaymentCompleted($bill));
 
-        $bill->save();
+        if($needChangeStatus){
+            $bill->status = 1;
 
-        // $registration = $bill->summary->registration;
-        // $registration->status_code = 'AR';
-        // $registration->save();
+            $registration = $bill->summary->registration;
+            $registration->status_code = 'AR';
+            $registration->save();
+        }
+
+        $bill->save();
     }
 
     public function paymentFailed($bill)

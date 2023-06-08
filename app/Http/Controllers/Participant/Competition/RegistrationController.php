@@ -136,7 +136,15 @@ class RegistrationController extends Controller
                 'mimes:pdf,jpg,jpeg,png',
                 'max:2048',
             ],
-            'link' => 'sometimes|integer|exists:App\Models\Participant,id',
+            'link' => [
+                Rule::requiredIf(function () use ($request) {
+                    $category = Category::find($request->category);
+
+                    return $category->needLink;
+                }),
+                'integer',
+                'exists:App\Models\Participant,id',
+            ],
             'dietary' => 'required|string|exists:dietary_preference,code'
         ]);
 
@@ -186,7 +194,15 @@ class RegistrationController extends Controller
                 'mimes:pdf,jpg,jpeg,png',
                 'max:2048',
             ],
-            'link' => 'sometimes|integer|exists:App\Models\Participant,id',
+            'link' => [
+                Rule::requiredIf(function () use ($request) {
+                    $category = Category::find($request->category);
+
+                    return $category->needLink;
+                }),
+                'integer',
+                'exists:App\Models\Participant,id',
+            ],
             'dietary' => 'required|string|exists:dietary_preference,code'
         ]);
 

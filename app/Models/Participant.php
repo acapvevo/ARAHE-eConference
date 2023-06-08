@@ -139,4 +139,9 @@ class Participant extends Authenticatable
     {
         return DB::table('participant_title')->where('code', $this->title)->first()->name;
     }
+
+    public function getRegistrationIDByFormID($form_id)
+    {
+        return $this->registrations->where('form_id', $form_id)->first();
+    }
 }
