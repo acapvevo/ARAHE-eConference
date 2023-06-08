@@ -5,6 +5,7 @@
             <th>Participant</th>
             <th>Code</th>
             <th>Occupancy</th>
+            <th>Accompany</th>
         </tr>
     </thead>
     <tbody>
@@ -20,6 +21,13 @@
                     <td>{{ $summary->getHotel()->code }}</td>
                     <td>{{ $summary->getOccupancy()->type }}</td>
                 @endif
+                <td>
+                    @if ($summary->registration->linkParticipant)
+                        {{ $summary->registration->linkParticipant->getRegistrationIDByFormID($summary->registration->form_id) ?? $summary->registration->linkParticipant->name . ' (Not Registered)' }}
+                    @else
+                        N/A
+                    @endif
+                </td>
             </tr>
         @endforeach
     </tbody>

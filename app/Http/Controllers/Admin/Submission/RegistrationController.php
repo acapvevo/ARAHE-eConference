@@ -96,7 +96,7 @@ class RegistrationController extends Controller
             $bill->pay_complete_at = $bill->pay_attempt_at;
             $bill->saveProof($request->file('proof'));
 
-            $this->paymentSucceed($bill);
+            $this->paymentSucceed($bill, true);
 
             $message = "Payment for Registration " . $registration->code . ' has been updated';
         } else {
