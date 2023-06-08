@@ -94,17 +94,56 @@ class SubmissionController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'paperFileCorrection' => 'required|file|mimes:pdf,docx,doc|max:4096',
-        ]);
-
         $submission = Submission::find($id);
 
-        $submission->saveFile('Submission_With_Correction', 'paperFile', $request->file('paperFileCorrection'));
-        $submission->totalMark = 0;
-        $submission->comment = null;
-        $submission->deleteFile('correctionFile');
-        $submission->status_code = 'IR';
+        if (!$submission || $submission->registration->participant_id !== Auth::guard('participant')->user()->id) {
+            return view('participant.competition.submissions.unauthorize');
+        }
+
+        if($submission->status_code === 'P'){
+            $request->validate([
+                'title' => [
+                    'required',
+                    'string',
+                    Rule::unique('submissions')->ignore($submission->id),
+                ],
+                'authors' => 'required|array',
+                'authors.*.name' => 'required|string|distinct',
+                'authors.*.email' => 'required|string|distinct',
+                'coAuthors' => 'nullable|array',
+                'coAuthors.*.name' => 'required|string|distinct',
+                'coAuthors.*.email' => 'required|string|distinct',
+                'keywords' => 'required|string',
+                'presenter' => 'required|string',
+                'abstract' => 'required|string',
+                'abstractFile' => 'sometimes|file|mimes:pdf,docx,doc|max:4096',
+                'paperFile' => 'sometimes|file|mimes:pdf,docx,doc|max:4096',
+            ]);
+
+            $submission->title = $request->title;
+            $submission->authors = $request->authors;
+            $submission->coAuthors = $request->coAuthors ?? [];
+            $submission->presenter = $request->presenter;
+            $submission->abstract = $request->abstract;
+            $submission->keywords = $request->keywords;
+
+            if($request->has('abstractFile')){
+                $submission->saveFile('Submission', 'abstractFile', $request->file('abstractFile'));
+            }
+            if($request->has('paperFile')){
+                $submission->saveFile('Submission', 'paperFile', $request->file('paperFile'));
+            }
+        } else {
+            $request->validate([
+                'paperFileCorrection' => 'required|file|mimes:pdf,docx,doc|max:4096',
+            ]);
+
+            $submission->saveFile('Submission_With_Correction', 'paperFile', $request->file('paperFileCorrection'));
+            $submission->totalMark = 0;
+            $submission->comment = null;
+            $submission->deleteFile('correctionFile');
+            $submission->status_code = 'IR';
+        }
 
         $submission->save();
 
