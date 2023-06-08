@@ -16,7 +16,6 @@
                 @if ($summary->getPackage()->fullPackage)
                     <td colspan="2">Included in Package
                         {{ $summary->getPackage()->code }}</td>
-                    <td style="display: none"></td>
                 @else
                     <td>{{ $summary->getHotel()->code }}</td>
                     <td>{{ $summary->getOccupancy()->type }}</td>
