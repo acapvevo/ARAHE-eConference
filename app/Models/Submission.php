@@ -106,7 +106,7 @@ class Submission extends Model
 
     public function checkEnableSubmit()
     {
-        return $this->status_code === 'N' || $this->status_code === 'C';
+        return $this->status_code === 'N' || $this->status_code === 'C' || $this->status_code === 'P';
     }
 
     public function calculatePercentage()
