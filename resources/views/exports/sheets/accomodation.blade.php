@@ -23,7 +23,7 @@
                 @endif
                 <td>
                     @if ($summary->registration->linkParticipant)
-                        {{ $summary->registration->linkParticipant->getRegistrationIDByFormID($summary->registration->form_id) ?? $summary->registration->linkParticipant->name . ' (Not Registered)' }}
+                        {{ $summary->registration->linkParticipant->getRegistrationIDByFormID($summary->registration->form_id) }}
                     @else
                         N/A
                     @endif
