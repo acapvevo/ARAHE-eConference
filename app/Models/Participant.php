@@ -142,6 +142,6 @@ class Participant extends Authenticatable
 
     public function getRegistrationIDByFormID($form_id)
     {
-        return $this->registrations->where('form_id', $form_id)->exists() ? $this->registrations->where('form_id', $form_id)->first()->code : $this->name . ' (Not Registered)';
+        return $this->registrations->where('form_id', $form_id)->first() ? $this->registrations->where('form_id', $form_id)->first()->code : $this->name . ' (Not Registered)';
     }
 }
