@@ -14,7 +14,7 @@
         @foreach ($summaries as $summary)
             <tr>
                 <td>{{ $summary->registration->code }}</td>
-                <td>{{ $registration->participant->getTitle() }}</td>
+                <td>{{ $summary->registration->participant->getTitle() }}</td>
                 <td>{{ $summary->registration->participant->name }}</td>
                 <td>{{ $summary->registration->participant->address->country }}</td>
                 @if ($summary->getPackage()->fullPackage)
