@@ -113,13 +113,7 @@ class Bill extends Model implements Auditable
 
     public function getPaymentMethod()
     {
-        if ($this->checkoutSession_id) {
-            $checkoutSession = Stripes::getCheckoutSession($this->checkoutSession_id);
-
-            return strtoupper($checkoutSession->payment_intent->payment_method->type ?? '');
-        } else {
-            return "MANUAL";
-        }
+        return $this->checkoutSession_id ? 'STRIPE' : "MANUAL";
     }
 
     public function setPaymentIntent()

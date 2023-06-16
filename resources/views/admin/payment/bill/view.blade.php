@@ -84,8 +84,12 @@
                             <td>{{ strtoupper($checkoutSession->status ?? '') }}</td>
                         </tr>
                         <tr>
-                            <th class="w-25">Payment Status</th>
-                            <td>{{ strtoupper($checkoutSession->payment_status ?? '') }}</td>
+                            <th class="w-25">Bill Status</th>
+                            <td>{{ strtoupper($checkoutSession->status ?? '') }}</td>
+                        </tr>
+                        <tr>
+                            <th class="w-25">Payment Type</th>
+                            <td>{{ strtoupper($checkoutSession->payment_intent->payment_method->type ?? '') }}</td>
                         </tr>
                         @endif
                     </tbody>

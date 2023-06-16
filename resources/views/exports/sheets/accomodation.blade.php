@@ -2,7 +2,9 @@
     <thead>
         <tr>
             <th>Registration ID</th>
+            <th>Title</th>
             <th>Participant</th>
+            <th>Country</th>
             <th>Code</th>
             <th>Occupancy</th>
             <th>Accompany</th>
@@ -12,7 +14,9 @@
         @foreach ($summaries as $summary)
             <tr>
                 <td>{{ $summary->registration->code }}</td>
+                <td>{{ $registration->participant->getTitle() }}</td>
                 <td>{{ $summary->registration->participant->name }}</td>
+                <td>{{ $summary->registration->participant->address->country }}</td>
                 @if ($summary->getPackage()->fullPackage)
                     <td colspan="2">Included in Package
                         {{ $summary->getPackage()->code }}</td>

@@ -18,6 +18,7 @@
                             <th>Date Completed</th>
                             <th>Amount</th>
                             <th>Status</th>
+                            <th>Method</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -30,6 +31,7 @@
                                 <td>{{ $bill->getPayCompleteAt() }}</td>
                                 <td>{{ $bill->getCurrency() }} {{ number_format($bill->summary->total, 2) }}</td>
                                 <td>{{ $bill->getStatusPayment()->label }}</td>
+                                <td>{{ $bill->getPaymentMethod() }}</td>
                             </tr>
                         @endforeach
                     </tbody>
