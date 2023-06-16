@@ -2,7 +2,9 @@
     <thead>
         <tr>
             <th>Registration ID</th>
+            <th>Title</th>
             <th>Participant</th>
+            <th>Country</th>
             <th>Extras</th>
         </tr>
     </thead>
@@ -10,7 +12,9 @@
         @foreach ($summaries as $summary)
             <tr>
                 <td>{{ $summary->registration->code }}</td>
+                <td>{{ $registration->participant->getTitle() }}</td>
                 <td>{{ $summary->registration->participant->name }}</td>
+                <td>{{ $summary->registration->participant->address->country }}</td>
                 <td>
                     <ul>
                         @foreach ($summary->extras as $extra)

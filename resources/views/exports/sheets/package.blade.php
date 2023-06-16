@@ -2,18 +2,26 @@
     <thead>
         <tr>
             <th>Registration ID</th>
+            <th>Title</th>
             <th>Participant</th>
+            <th>Country</th>
             <th>Package</th>
             <th>Extras</th>
             <th>Hotel</th>
+            <th>Amount Need to Pay</th>
+            <th>Amount Paid</th>
+            <th>Payment Date</th>
+            <th>Payment Method</th>
         </tr>
     </thead>
     <tbody>
         @foreach ($summaries as $summary)
             <tr>
                 <td>{{ $summary->registration->code }}</td>
+                <td>{{ $registration->participant->getTitle() }}</td>
                 <td>{{ $summary->registration->participant->name }}</td>
-                <td>{{ $summary->getPackage()->code }}</td>
+                <td>{{ $summary->registration->participant->address->country }}</td>
+                <td>{{ $summary->getPackage()->code }} - {{}}</td>
                 <td>
                     @if ($summary->extras->isNotEmpty())
                         <ul>
@@ -43,6 +51,10 @@
                         {{ $summary->getOccupancy()->type }}</td>
                 @endif
             </tr>
+            <td>{{ $registration->summary->getFormalOutputTotal() }}</td>
+            <td>{{ $registration->summary->getFormalOutputTotal() }}</td>
+            <td>{{ $registration->summary->getSuccessPaidBill()->getPayCompleteAt() }}</td>
+            <td>{{ $registration->summary->getSuccessPaidBill()->getPaymentMethod() }}</td>
         @endforeach
     </tbody>
 </table>
