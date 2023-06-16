@@ -51,10 +51,10 @@
                         {{ $summary->getOccupancy()->type }}</td>
                 @endif
             </tr>
-            <td>{{ $registration->summary->getFormalOutputTotal() }}</td>
-            <td>{{ $registration->summary->getFormalOutputTotal() }}</td>
-            <td>{{ $registration->summary->getSuccessPaidBill()->getPayCompleteAt() }}</td>
-            <td>{{ $registration->summary->getSuccessPaidBill()->getPaymentMethod() }}</td>
+            <td>{{ $summary->registration->summary->getFormalOutputTotal() }}</td>
+            <td>{{ $summary->registration->summary->getFormalOutputTotal() }}</td>
+            <td>{{ $summary->registration->summary->getSuccessPaidBill()->getPayCompleteAt() }}</td>
+            <td>{{ $summary->registration->summary->getSuccessPaidBill()->getPaymentMethod() }}</td>
         @endforeach
     </tbody>
 </table>
