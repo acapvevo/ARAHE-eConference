@@ -21,7 +21,7 @@
                 <td>{{ $registration->participant->getTitle() }}</td>
                 <td>{{ $summary->registration->participant->name }}</td>
                 <td>{{ $summary->registration->participant->address->country }}</td>
-                <td>{{ $summary->getPackage()->code }} - {{}}</td>
+                <td>{{ $summary->getPackage()->code }}</td>
                 <td>
                     @if ($summary->extras->isNotEmpty())
                         <ul>
