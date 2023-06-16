@@ -42,7 +42,7 @@
                     @endif
                 </td>
                 @if ($summary->getPackage()->fullPackage)
-                    <td colspan="2">Included in Package
+                    <td>Included in Package
                         {{ $summary->getPackage()->code }}</td>
                 @elseif (!$summary->hotel_id && !$summary->occupancy_id)
                     <td>Not Included</td>
