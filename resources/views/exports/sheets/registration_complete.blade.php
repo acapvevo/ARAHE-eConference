@@ -4,6 +4,7 @@
             <th>Registration ID</th>
             <th>Title</th>
             <th>Name</th>
+            <th>Country</th>
             <th>Package</th>
             <th>Amount Paid</th>
             <th>Payment Date</th>
@@ -15,6 +16,7 @@
                 <td>{{ $registration->code }}</td>
                 <td>{{ $registration->participant->getTitle() }}</td>
                 <td>{{ $registration->participant->name }}</td>
+                <td>{{ $registration->participant->address->country }}</td>
                 <td>{{ $registration->summary->getPackage()->code }}</td>
                 <td>{{ $registration->summary->getFormalOutputTotal() }}</td>
                 <td>{{ $registration->summary->getSuccessPaidBill()->getPayCompleteAt() }}</td>
