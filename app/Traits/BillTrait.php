@@ -36,7 +36,7 @@ trait BillTrait
         return Bill::where('payment_intent_id', $payment_intent_id)->first();
     }
 
-    public function paymentSucceed($bill, $needChangeStatus = false)
+    public function paymentSucceed($bill, $needChangeStatus = true)
     {
         $bill->pay_confirm_at = Carbon::now();
 
