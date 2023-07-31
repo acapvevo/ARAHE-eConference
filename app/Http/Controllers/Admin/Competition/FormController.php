@@ -76,9 +76,9 @@ class FormController extends Controller
         $form = Form::find($id);
         $session = $form->session;
 
-        $session->congress = $session['congress'];
-        $session->registration = $session['registration'];
-        $session->submission = $session['submission'];
+        $session->congress = $request->session['congress'];
+        $session->registration = $request->session['registration'];
+        $session->submission = $request->session['submission'];
 
         $session->save();
 
